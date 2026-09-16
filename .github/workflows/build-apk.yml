@@ -2,54 +2,47 @@ name: Build Elimu Bora APK
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Extract Elimu Bora
+      - name: Extract Elimu Bora project
         run: |
-          unzip -q Elimu_Bora_Phone_Build.zip -d extracted
-          PROJECT=$(dirname "$(find extracted -name pubspec.yaml | head -1)")
-          echo "PROJECT=$PROJECT" >> "$GITHUB_ENV"
+          set -e
+          mkdir project
+          unzip -q Elimu_Bora_GitHub_READY.zip -d project
 
-      - name: Install Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      - name: Replace old Android project
-        working-directory: ${{ env.PROJECT }}
+      - name: Complete Android project
+        working-directory: project
         run: |
-          cp android/app/google-services.json /tmp/google-services.json
+          set -e
+          flutter create --project-name elimu_bora --org com.elimubora --platforms=android .
+          cp lib/main.dart /tmp/main.dart
+          cp /tmp/main.dart lib/main.dart
 
-          flutter create \
-            --no-pub \
-            --platforms=android \
-            --org com.elimubora \
-            --project-name app \
-            /tmp/flutter_template
-
-          rm -rf android
-          cp -R /tmp/flutter_template/android android
-
-          cp /tmp/google-services.json android/app/google-services.json
-
-      - name: Get dependencies
-        working-directory: ${{ env.PROJECT }}
+      - name: Install dependencies
+        working-directory: project
         run: flutter pub get
 
-      - name: Build release APK
-        working-directory: ${{ env.PROJECT }}
+      - name: Build APK
+        working-directory: project
         run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Elimu-Bora-APK
-          path: ${{ env.PROJECT }}/build/app/outputs/flutter-apk/app-release.apk
+          name: elimu-bora-release
+          path: project/build/app/outputs/flutter-apk/app-release.apk
