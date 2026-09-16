@@ -13,11 +13,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Extract Elimu Bora project
+      - name: Extract Elimu Bora source
         run: |
           set -e
-          mkdir project
-          unzip -q Elimu_Bora_GitHub_READY.zip -d project
+          rm -rf source fresh
+          mkdir source
+          unzip -q Elimu_Bora_GitHub_READY.zip -d source
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -25,24 +26,32 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Complete Android project
-        working-directory: project
+      - name: Create fresh Flutter Android project
         run: |
           set -e
-          flutter create --project-name elimu_bora --org com.elimubora --platforms=android .
-          cp lib/main.dart /tmp/main.dart
-          cp /tmp/main.dart lib/main.dart
+          flutter create -t app --org com.elimubora --project-name elimu_bora --platforms android fresh
+
+          cp -r source/lib fresh/lib
+          cp source/pubspec.yaml fresh/pubspec.yaml
+
+          if [ -f source/android/app/google-services.json ]; then
+            cp source/android/app/google-services.json fresh/android/app/google-services.json
+          fi
+
+          sed -i "/id ['\"]com.android.application['\"]/a\    id 'com.google.gms.google-services'" fresh/android/app/build.gradle
+
+          sed -i "/id ['\"]com.android.application['\"].*apply false/a\    id 'com.google.gms.google-services' version '4.4.3' apply false" fresh/android/settings.gradle
 
       - name: Install dependencies
-        working-directory: project
+        working-directory: fresh
         run: flutter pub get
 
       - name: Build APK
-        working-directory: project
+        working-directory: fresh
         run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: elimu-bora-release
-          path: project/build/app/outputs/flutter-apk/app-release.apk
+          path: fresh/build/app/outputs/flutter-apk/app-release.apk
