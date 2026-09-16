@@ -1,57 +1,100 @@
 name: Build Elimu Bora APK
 
 on:
-  workflow_dispatch:
-  push:
-    branches: [ main ]
+workflow_dispatch:
+push:
+branches: [ main ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+build:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
 
-      - name: Extract Elimu Bora source
-        run: |
-          set -e
-          rm -rf source fresh
-          mkdir source
-          unzip -q Elimu_Bora_GitHub_READY.zip -d source
+  - name: Extract Elimu Bora source
+    run: |
+      set -e
+      rm -rf source fresh
+      mkdir source
+      unzip -q Elimu_Bora_GitHub_READY.zip -d source
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
+      if [ -f source/elimu_bora/pubspec.yaml ]; then
+        mv source/elimu_bora/* source/
+        mv source/elimu_bora/.[!.]* source/ 2>/dev/null || true
+        rm -rf source/elimu_bora
+      fi
 
-      - name: Create fresh Flutter Android project
-        run: |
-          set -e
-          flutter create -t app --org com.elimubora --project-name elimu_bora --platforms android fresh
+  - name: Set up Flutter
+    uses: subosito/flutter-action@v2
+    with:
+      channel: stable
+      cache: true
 
-          cp -r source/lib fresh/lib
-          cp source/pubspec.yaml fresh/pubspec.yaml
+  - name: Create fresh Flutter Android project
+    run: |
+      set -e
 
-          if [ -f source/android/app/google-services.json ]; then
-            cp source/android/app/google-services.json fresh/android/app/google-services.json
-          fi
+      flutter create \
+        -t app \
+        --org com.elimubora \
+        --project-name elimu_bora \
+        --platforms android \
+        fresh
 
-          sed -i "/id ['\"]com.android.application['\"]/a\    id 'com.google.gms.google-services'" fresh/android/app/build.gradle
+      rm -rf fresh/lib
+      cp -r source/lib fresh/lib
+      cp source/pubspec.yaml fresh/pubspec.yaml
 
-          sed -i "/id ['\"]com.android.application['\"].*apply false/a\    id 'com.google.gms.google-services' version '4.4.3' apply false" fresh/android/settings.gradle
+      if [ -f source/android/app/google-services.json ]; then
+        cp source/android/app/google-services.json \
+          fresh/android/app/google-services.json
+      fi
 
-      - name: Install dependencies
-        working-directory: fresh
-        run: flutter pub get
+  - name: Configure Firebase
+    working-directory: fresh
+    run: |
+      set -e
 
-      - name: Build APK
-        working-directory: fresh
-        run: flutter build apk --release
+      python3 - <<'PY'
+      from pathlib import Path
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: elimu-bora-release
-          path: fresh/build/app/outputs/flutter-apk/app-release.apk
+      settings = Path("android/settings.gradle.kts")
+      text = settings.read_text()
+
+      if 'com.google.gms.google-services' not in text:
+          text = text.replace(
+              'plugins {',
+              'plugins {\n'
+              '    id("com.google.gms.google-services") version "4.4.3" apply false'
+          )
+
+      settings.write_text(text)
+
+      app = Path("android/app/build.gradle.kts")
+      text = app.read_text()
+
+      if 'com.google.gms.google-services' not in text:
+          text = text.replace(
+              'plugins {',
+              'plugins {\n'
+              '    id("com.google.gms.google-services")'
+          )
+
+      app.write_text(text)
+      PY
+
+  - name: Install dependencies
+    working-directory: fresh
+    run: flutter pub get
+
+  - name: Build APK
+    working-directory: fresh
+    run: flutter build apk --release
+
+  - name: Upload APK
+    uses: actions/upload-artifact@v4
+    with:
+      name: elimu-bora-release
+      path: fresh/build/app/outputs/flutter-apk/app-release.apk
