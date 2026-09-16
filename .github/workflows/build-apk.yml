@@ -11,14 +11,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Extract project
+      - name: Extract Elimu Bora
         run: |
           unzip -q Elimu_Bora_Phone_Build.zip -d extracted
-
-      - name: Find Flutter project
-        run: |
           PROJECT=$(dirname "$(find extracted -name pubspec.yaml | head -1)")
-          echo "PROJECT=$PROJECT" >> $GITHUB_ENV
+          echo "PROJECT=$PROJECT" >> "$GITHUB_ENV"
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
@@ -26,11 +23,28 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Replace old Android project
+        working-directory: ${{ env.PROJECT }}
+        run: |
+          cp android/app/google-services.json /tmp/google-services.json
+
+          flutter create \
+            --no-pub \
+            --platforms=android \
+            --org com.elimubora \
+            --project-name app \
+            /tmp/flutter_template
+
+          rm -rf android
+          cp -R /tmp/flutter_template/android android
+
+          cp /tmp/google-services.json android/app/google-services.json
+
       - name: Get dependencies
         working-directory: ${{ env.PROJECT }}
         run: flutter pub get
 
-      - name: Build APK
+      - name: Build release APK
         working-directory: ${{ env.PROJECT }}
         run: flutter build apk --release
 
