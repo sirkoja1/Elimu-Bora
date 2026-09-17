@@ -822,19 +822,24 @@
       memberMessage.textContent = "";
     }
   });
-// Member-only resource access
-document.querySelectorAll(".member-resource").forEach((button) => {
-  button.addEventListener("click", (event) => {
-    event.preventDefault();
+  // Member-only resource access
+document.addEventListener("click", (event) => {
+  const button = event.target.closest(".member-resource");
 
-    if (!auth.currentUser) {
-      alert("🔐 Please log in or create a member account to access this resource.");
-      return;
-    }
+  if (!button) {
+    return;
+  }
 
-    alert("✅ Member access confirmed. This resource will be available here.");
-  });
-});/script>
+  event.preventDefault();
+
+  if (!auth.currentUser) {
+    alert("🔐 Please log in or create a member account to access this resource.");
+    return;
+  }
+
+  alert("✅ Member access confirmed. This resource will be available here.");
+});    
+</script>
 
 </body>
 </html>
