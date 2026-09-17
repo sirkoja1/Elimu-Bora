@@ -1,9 +1,10 @@
- name: Build Elimu Bora APK
+name: Build Elimu Bora APK
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
