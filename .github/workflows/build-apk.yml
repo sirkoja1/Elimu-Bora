@@ -27,6 +27,8 @@ jobs:
           set -e
 
           rm -rf /tmp/elimu_project
+          rm -rf /tmp/elimu_zip
+
           mkdir -p /tmp/elimu_project
 
           if [ -f "pubspec.yaml" ]; then
@@ -35,11 +37,13 @@ jobs:
             mkdir -p /tmp/elimu_zip
             unzip -q "Elimu_Bora_Phone_Build_FIXED.zip" -d /tmp/elimu_zip
             PROJECT=$(find /tmp/elimu_zip -name pubspec.yaml -type f | head -1 | xargs dirname)
+            test -n "$PROJECT"
             cp -a "$PROJECT"/. /tmp/elimu_project/
           elif [ -f "Elimu_Bora_Phone_Build.zip" ]; then
             mkdir -p /tmp/elimu_zip
             unzip -q "Elimu_Bora_Phone_Build.zip" -d /tmp/elimu_zip
             PROJECT=$(find /tmp/elimu_zip -name pubspec.yaml -type f | head -1 | xargs dirname)
+            test -n "$PROJECT"
             cp -a "$PROJECT"/. /tmp/elimu_project/
           else
             echo "Elimu Bora project not found."
@@ -47,13 +51,14 @@ jobs:
           fi
 
           test -f /tmp/elimu_project/pubspec.yaml
+          test -d /tmp/elimu_project/android
 
       - name: Backup original Android
         working-directory: /tmp/elimu_project
         shell: bash
         run: |
           set -e
-          test -d android
+          rm -rf /tmp/android_original
           cp -a android /tmp/android_original
 
       - name: Create modern Android project
@@ -74,22 +79,17 @@ jobs:
           rm -rf /tmp/elimu_project/android
           cp -a /tmp/android_template/android /tmp/elimu_project/android
 
-      - name: Restore original Elimu Bora Android files
+      - name: Restore original Android files
         working-directory: /tmp/elimu_project
         shell: bash
         run: |
           set -e
 
           ORIGINAL=/tmp/android_original
+          TEMPLATE=/tmp/android_template/android
 
-          if [ -d "$ORIGINAL/app/src/main" ]; then
-            rm -rf android/app/src/main
-            cp -a "$ORIGINAL/app/src/main" android/app/src/main
-          fi
-
-          if [ -f "$ORIGINAL/app/google-services.json" ]; then
-            cp "$ORIGINAL/app/google-services.json" android/app/google-services.json
-          fi
+          rm -rf android/app/src/main
+          cp -a "$ORIGINAL/app/src/main" android/app/src/main
 
           if [ -d "$ORIGINAL/app/src/debug" ]; then
             rm -rf android/app/src/debug
@@ -100,6 +100,25 @@ jobs:
             rm -rf android/app/src/profile
             cp -a "$ORIGINAL/app/src/profile" android/app/src/profile
           fi
+
+          if [ -f "$ORIGINAL/app/google-services.json" ]; then
+            cp "$ORIGINAL/app/google-services.json" android/app/google-services.json
+          fi
+
+          mkdir -p android/app/src/main/res
+
+          for DIR in "$TEMPLATE"/app/src/main/res/mipmap*; do
+            if [ -d "$DIR" ]; then
+              NAME=$(basename "$DIR")
+              rm -rf "android/app/src/main/res/$NAME"
+              cp -a "$DIR" "android/app/src/main/res/$NAME"
+            fi
+          done
+
+          echo "Original Android files restored."
+          echo "Modern launcher icons restored."
+
+          find android/app/src/main/res -maxdepth 2 -type f | sort
 
       - name: Set Elimu Bora package
         working-directory: /tmp/elimu_project
@@ -128,7 +147,7 @@ jobs:
 
           grep -nE 'namespace|applicationId' android/app/build.gradle.kts
 
-      - name: Add missing Elimu Bora themes
+      - name: Add Elimu Bora themes
         working-directory: /tmp/elimu_project
         shell: bash
         run: |
@@ -141,19 +160,16 @@ jobs:
           <resources>
 
               <style name="LaunchTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
-                  <item name="android:fontFamily">sans</item>
-                  <item name="android:windowFullscreen">false</item>
-                  <item name="android:windowActionModeOverlay">true</item>
                   <item name="android:windowNoTitle">true</item>
+                  <item name="android:windowActionModeOverlay">true</item>
                   <item name="android:windowDrawsSystemBarBackgrounds">true</item>
                   <item name="android:statusBarColor">@android:color/transparent</item>
                   <item name="android:navigationBarColor">@android:color/black</item>
               </style>
 
               <style name="NormalTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
-                  <item name="android:fontFamily">sans</item>
-                  <item name="android:windowActionModeOverlay">true</item>
                   <item name="android:windowNoTitle">true</item>
+                  <item name="android:windowActionModeOverlay">true</item>
                   <item name="android:windowBackground">@android:color/white</item>
                   <item name="android:statusBarColor">@android:color/transparent</item>
                   <item name="android:navigationBarColor">@android:color/black</item>
@@ -162,9 +178,6 @@ jobs:
           </resources>
           EOF
 
-          echo "Themes created:"
-          cat android/app/src/main/res/values/elimu_bora_themes.xml
-
       - name: Configure Firebase
         working-directory: /tmp/elimu_project
         shell: bash
@@ -172,7 +185,6 @@ jobs:
           set -e
 
           if [ -f android/app/google-services.json ]; then
-
             python3 - <<'PY'
           from pathlib import Path
 
@@ -199,7 +211,6 @@ jobs:
           settings.write_text(s)
           app.write_text(a)
           PY
-
           fi
 
       - name: Get dependencies
