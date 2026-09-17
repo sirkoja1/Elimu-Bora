@@ -20,43 +20,118 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Locate Elimu Bora source
+      - name: Find Elimu Bora source
+        shell: bash
         run: |
-          echo "Repository contents:"
-          ls -la
-          echo "Searching for pubspec.yaml..."
-          find . -name pubspec.yaml -not -path './.git/*'
+          set -e
 
-      - name: Prepare Flutter project
-        run: |
-          mkdir -p /tmp/elimu_source
+          echo "=== Repository files ==="
+          find . -maxdepth 4 -type f | head -200
 
-          if [ -f "source/elimu_bora/pubspec.yaml" ]; then
-            cp -r source/elimu_bora/. /tmp/elimu_source/
-          elif [ -f "pubspec.yaml" ]; then
-            cp -r . /tmp/elimu_source/
+          echo "=== Searching for pubspec.yaml ==="
+
+          PUBSPEC=$(find . \
+            -type f \
+            -name "pubspec.yaml" \
+            -not -path "./.git/*" \
+            -print -quit)
+
+          if [ -n "$PUBSPEC" ]; then
+            echo "Found pubspec.yaml at: $PUBSPEC"
+            SOURCE_DIR=$(dirname "$PUBSPEC")
           else
-            echo "ERROR: Could not find pubspec.yaml"
-            exit 1
+            echo "No pubspec.yaml found directly."
+            echo "Searching for ZIP files..."
+
+            mkdir -p /tmp/elimu_extract
+
+            ZIP=$(find . \
+              -type f \
+              \( -iname "*.zip" \) \
+              -not -path "./.git/*" \
+              -print -quit)
+
+            if [ -z "$ZIP" ]; then
+              echo "ERROR: No pubspec.yaml or ZIP file containing the project was found."
+              exit 1
+            fi
+
+            echo "Found ZIP: $ZIP"
+
+            unzip -q "$ZIP" -d /tmp/elimu_extract
+
+            echo "=== Extracted files ==="
+            find /tmp/elimu_extract -maxdepth 5 -type f | head -200
+
+            PUBSPEC=$(find /tmp/elimu_extract \
+              -type f \
+              -name "pubspec.yaml" \
+              -print -quit)
+
+            if [ -z "$PUBSPEC" ]; then
+              echo "ERROR: ZIP was found, but no pubspec.yaml exists inside it."
+              exit 1
+            fi
+
+            echo "Found pubspec.yaml at: $PUBSPEC"
+            SOURCE_DIR=$(dirname "$PUBSPEC")
           fi
+
+          echo "SOURCE_DIR=$SOURCE_DIR" >> "$GITHUB_ENV"
+
+          echo "=== Elimu Bora source directory ==="
+          echo "$SOURCE_DIR"
+
+          echo "=== Source contents ==="
+          ls -la "$SOURCE_DIR"
+
+      - name: Create fresh Android Flutter project
+        run: |
+          set -e
 
           flutter create \
             --platforms=android \
             --org=com.elimubora \
+            --project-name=elimu_bora \
             /tmp/elimu_project
 
-          cp -r /tmp/elimu_source/. /tmp/elimu_project/
+      - name: Copy Elimu Bora application files
+        shell: bash
+        run: |
+          set -e
 
-          cd /tmp/elimu_project
+          echo "Copying application source..."
 
-          echo "Flutter project:"
-          ls -la
+          cp "$SOURCE_DIR/pubspec.yaml" /tmp/elimu_project/pubspec.yaml
+
+          if [ -f "$SOURCE_DIR/pubspec.lock" ]; then
+            cp "$SOURCE_DIR/pubspec.lock" /tmp/elimu_project/pubspec.lock
+          fi
+
+          if [ -d "$SOURCE_DIR/lib" ]; then
+            cp -r "$SOURCE_DIR/lib" /tmp/elimu_project/
+          fi
+
+          if [ -d "$SOURCE_DIR/assets" ]; then
+            cp -r "$SOURCE_DIR/assets" /tmp/elimu_project/
+          fi
+
+          if [ -d "$SOURCE_DIR/fonts" ]; then
+            cp -r "$SOURCE_DIR/fonts" /tmp/elimu_project/
+          fi
+
+          if [ -f "$SOURCE_DIR/analysis_options.yaml" ]; then
+            cp "$SOURCE_DIR/analysis_options.yaml" /tmp/elimu_project/
+          fi
+
+          echo "=== Prepared project ==="
+          ls -la /tmp/elimu_project
 
       - name: Get dependencies
         working-directory: /tmp/elimu_project
         run: flutter pub get
 
-      - name: Build APK
+      - name: Build release APK
         working-directory: /tmp/elimu_project
         run: flutter build apk --release
 
