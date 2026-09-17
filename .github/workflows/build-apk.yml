@@ -24,114 +24,52 @@ jobs:
         shell: bash
         run: |
           set -e
-
-          if [ -f "pubspec.yaml" ]; then
+          if [ -f pubspec.yaml ]; then
             echo "PROJECT_DIR=." >> "$GITHUB_ENV"
-            exit 0
-          fi
-
-          mkdir -p /tmp/elimu_source
-
-          if [ -f "Elimu_Bora_Phone_Build_FIXED.zip" ]; then
-            unzip -q "Elimu_Bora_Phone_Build_FIXED.zip" -d /tmp/elimu_source
-          elif [ -f "Elimu_Bora_Phone_Build.zip" ]; then
-            unzip -q "Elimu_Bora_Phone_Build.zip" -d /tmp/elimu_source
-          elif [ -f "Elimu_Bora_GitHub_READY.zip" ]; then
-            unzip -q "Elimu_Bora_GitHub_READY.zip" -d /tmp/elimu_source
           else
-            echo "No Elimu Bora ZIP file found."
-            exit 1
+            mkdir -p /tmp/elimu_source
+            if [ -f Elimu_Bora_Phone_Build_FIXED.zip ]; then
+              unzip -q Elimu_Bora_Phone_Build_FIXED.zip -d /tmp/elimu_source
+            elif [ -f Elimu_Bora_Phone_Build.zip ]; then
+              unzip -q Elimu_Bora_Phone_Build.zip -d /tmp/elimu_source
+            elif [ -f Elimu_Bora_GitHub_READY.zip ]; then
+              unzip -q Elimu_Bora_GitHub_READY.zip -d /tmp/elimu_source
+            else
+              echo "Elimu Bora ZIP not found"
+              exit 1
+            fi
+            PROJECT=$(find /tmp/elimu_source -name pubspec.yaml -type f | head -1 | xargs dirname)
+            echo "PROJECT_DIR=$PROJECT" >> "$GITHUB_ENV"
           fi
 
-          PROJECT=$(find /tmp/elimu_source -name pubspec.yaml -type f | head -1 | xargs dirname)
-
-          if [ -z "$PROJECT" ]; then
-            echo "Could not find pubspec.yaml."
-            exit 1
-          fi
-
-          echo "PROJECT_DIR=$PROJECT" >> "$GITHUB_ENV"
-          echo "Found project at: $PROJECT"
-
-      - name: Backup original Android files
+      - name: Backup original Android
         shell: bash
         run: |
           set -e
           cd "$PROJECT_DIR"
-
           if [ -d android ]; then
             cp -a android /tmp/original_android
-            echo "Original Android folder backed up."
-          else
-            echo "No original Android folder found."
           fi
 
-      - name: Create modern Android Gradle project
+      - name: Create modern Android project
         shell: bash
         run: |
           set -e
-
           rm -rf /tmp/android_template
-
           flutter create \
             --platforms=android \
             --project-name=elimu_bora \
             --org=com.elimubora \
             /tmp/android_template
-
           rm -rf "$PROJECT_DIR/android"
           cp -a /tmp/android_template/android "$PROJECT_DIR/android"
 
-      - name: Restore original Android resources
+      - name: Restore Android files
         shell: bash
         run: |
           set -e
-          cd "$PROJECT_DIR"
-
-          if [ -d /tmp/original_android/app/src/main ]; then
-
-            echo "Saving modern launcher icons..."
-
-            rm -rf /tmp/generated_mipmaps
-            mkdir -p /tmp/generated_mipmaps
-
-            for d in android/app/src/main/res/mipmap*; do
-              if [ -d "$d" ]; then
-                cp -a "$d" /tmp/generated_mipmaps/
-              fi
-            done
-
-            echo "Restoring original Android main folder..."
-
-            rm -rf android/app/src/main
-
-            mkdir -p android/app/src/main
-
-            cp -a /tmp/original_android/app/src/main/. \
-              android/app/src/main/
-
-            echo "Restoring modern launcher icons..."
-
-            mkdir -p android/app/src/main/res
-
-            for d in /tmp/generated_mipmaps/mipmap*; do
-              if [ -d "$d" ]; then
-                cp -a "$d" android/app/src/main/res/
-              fi
-            done
-
-            if [ -f /tmp/original_android/app/google-services.json ]; then
-              cp -f /tmp/original_android/app/google-services.json \
-                android/app/google-services.json
-            fi
-
-            echo "Android resources restored successfully."
-
-          else
-            echo "Original Android main folder was not found."
-          fi
-
-      - name: Add required Android themes
+          cd
+             - name: Fix Android themes
         shell: bash
         run: |
           set -e
@@ -142,55 +80,45 @@ jobs:
           cat > android/app/src/main/res/values/elimu_bora_themes.xml <<'EOF'
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
-
               <style name="LaunchTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
-                  <item name="android:windowBackground">@drawable/launch_background</item>
+                  <item name="android:windowBackground">@android:color/white</item>
                   <item name="android:windowNoTitle">true</item>
-                  <item name="android:fontFamily">sans</item>
               </style>
 
               <style name="NormalTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
                   <item name="android:windowBackground">@android:color/white</item>
               </style>
-
           </resources>
           EOF
 
-      - name: Configure package name
+      - name: Configure package
         shell: bash
         run: |
           set -e
           cd "$PROJECT_DIR"
 
-          sed -i 's/namespace = "[^"]*"/namespace = "com.elimubora.app"/' \
-            android/app/build.gradle.kts
+          sed -i 's/namespace = "[^"]*"/namespace = "com.elimubora.app"/' android/app/build.gradle.kts
+          sed -i 's/applicationId = "[^"]*"/applicationId = "com.elimubora.app"/' android/app/build.gradle.kts
 
-          sed -i 's/applicationId = "[^"]*"/applicationId = "com.elimubora.app"/' \
-            android/app/build.gradle.kts
-
-      - name: Configure Google Services
+      - name: Configure Firebase
         shell: bash
         run: |
           set -e
           cd "$PROJECT_DIR"
 
           if [ -f android/app/google-services.json ]; then
-            echo "Firebase configuration found."
 
             if ! grep -q 'com.google.gms.google-services' android/settings.gradle.kts; then
-              sed -i '/^plugins {/a\    id("com.google.gms.google-services") version "4.4.3" apply false' \
-                android/settings.gradle.kts
+              sed -i '/^plugins {/a\    id("com.google.gms.google-services") version "4.4.3" apply false' android/settings.gradle.kts
             fi
 
             if ! grep -q 'com.google.gms.google-services' android/app/build.gradle.kts; then
-              sed -i '/^plugins {/a\    id("com.google.gms.google-services")' \
-                android/app/build.gradle.kts
+              sed -i '/^plugins {/a\    id("com.google.gms.google-services")' android/app/build.gradle.kts
             fi
-          else
-            echo "No google-services.json found."
+
           fi
 
-      - name: Flutter pub get
+      - name: Get packages
         shell: bash
         run: |
           set -e
@@ -212,7 +140,7 @@ jobs:
           cp build/app/outputs/flutter-apk/app-release.apk \
             /tmp/elimu_apk/app-release.apk
 
-          echo "APK created successfully:"
+          echo "APK CREATED:"
           ls -lh /tmp/elimu_apk/app-release.apk
 
       - name: Enable KVM
@@ -224,8 +152,7 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Test APK on Android emulator
-        id: emulator_test
+      - name: Test APK
         continue-on-error: true
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
@@ -240,74 +167,39 @@ jobs:
           script: |
             set +e
 
-            echo "Installing Elimu Bora APK..."
-
             adb install -r /tmp/elimu_apk/app-release.apk
-
-            echo "Clearing logcat..."
 
             adb logcat -c
 
-            echo "Starting Elimu Bora..."
-
             adb shell am force-stop com.elimubora.app
-
             adb shell monkey -p com.elimubora.app 1
-
-            echo "Waiting 45 seconds..."
 
             sleep 45
 
-            echo "========== PACKAGE =========="
-
-            adb shell pm list packages | grep elimubora
-
-            echo "========== PROCESS =========="
-
+            echo "PROCESS:"
             adb shell pidof com.elimubora.app
 
-            echo "========== ACTIVITY =========="
-
-            adb shell dumpsys activity activities | \
-              grep -i elimubora | tail -30
-
-            echo "========== LOGCAT =========="
+            echo "ACTIVITY:"
+            adb shell dumpsys activity activities | grep -i elimubora | tail -30
 
             adb logcat -d -v time > /tmp/elimu_logcat.txt
 
-            echo "========== IMPORTANT ERRORS =========="
-
-            grep -iE \
-              "FATAL EXCEPTION|AndroidRuntime|flutter|exception|crash|error|firebase|google" \
+            grep -iE "FATAL EXCEPTION|AndroidRuntime|flutter|exception|crash|error|firebase|google" \
               /tmp/elimu_logcat.txt | tail -200 > /tmp/elimu_errors.txt || true
-
-            echo "========== SCREENSHOT =========="
 
             adb exec-out screencap -p > /tmp/elimu_screenshot.png
 
-            echo "Emulator test completed."
-
-      - name: Collect diagnostic files
+      - name: Collect diagnostics
         if: always()
         shell: bash
         run: |
           mkdir -p diagnostic
 
-          if [ -f /tmp/elimu_logcat.txt ]; then
-            cp /tmp/elimu_logcat.txt diagnostic/
-          fi
+          [ -f /tmp/elimu_logcat.txt ] && cp /tmp/elimu_logcat.txt diagnostic/
+          [ -f /tmp/elimu_errors.txt ] && cp /tmp/elimu_errors.txt diagnostic/
+          [ -f /tmp/elimu_screenshot.png ] && cp /tmp/elimu_screenshot.png diagnostic/
 
-          if [ -f /tmp/elimu_errors.txt ]; then
-            cp /tmp/elimu_errors.txt diagnostic/
-          fi
-
-          if [ -f /tmp/elimu_screenshot.png ]; then
-            cp /tmp/elimu_screenshot.png diagnostic/
-          fi
-
-          echo "Diagnostic collection finished."
-
-      - name: Upload diagnostic results
+      - name: Upload diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -321,4 +213,4 @@ jobs:
         with:
           name: elimu-bora-apk-diagnostic
           path: /tmp/elimu_apk/app-release.apk
-          if-no-files-found: error
+          if-no-files-found: error   
