@@ -442,3 +442,43 @@
         from one place.
       </p>
   </div>
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC6JBx_7_aZl6zhFAXUMgbi3EBMQaFzYpc",
+    authDomain: "elimu-bora-7144f.firebaseapp.com",
+    projectId: "elimu-bora-7144f",
+    storageBucket: "elimu-bora-7144f.firebasestorage.app",
+    messagingSenderId: "993419610752",
+    appId: "1:993419610752:web:b50639b4da658e88a8b465",
+    measurementId: "G-SGVQCH2QCY"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  window.elimuBoraAuth = {
+    auth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("Elimu Bora member signed in:", user.email);
+    } else {
+      console.log("Elimu Bora: no member signed in");
+    }
+  });
+    </script>
+    </body>
+  </html>
