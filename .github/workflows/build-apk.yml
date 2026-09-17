@@ -21,130 +21,282 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Find Elimu Bora project
-        shell: bash
-        run: |
-          set -e
-
-          PUBSPEC=$(find . \
-            -type f \
-            -name "pubspec.yaml" \
-            -not -path "./.git/*" \
-            -print -quit)
-
-          if [ -n "$PUBSPEC" ]; then
-            SOURCE_DIR=$(dirname "$PUBSPEC")
-          else
-            ZIP=$(find . \
-              -type f \
-              \( -iname "Elimu_Bora_Phone_Build_FIXED.zip" \
-                 -o -iname "*.zip" \) \
-              -not -path "./.git/*" \
-              -print -quit)
-
-            if [ -z "$ZIP" ]; then
-              echo "ERROR: No Flutter project or ZIP found."
-              exit 1
-            fi
-
-            rm -rf /tmp/elimu_extract
-            mkdir -p /tmp/elimu_extract
-            unzip -q "$ZIP" -d /tmp/elimu_extract
-
-            PUBSPEC=$(find /tmp/elimu_extract \
-              -type f \
-              -name "pubspec.yaml" \
-              -print -quit)
-
-            if [ -z "$PUBSPEC" ]; then
-              echo "ERROR: ZIP does not contain pubspec.yaml."
-              exit 1
-            fi
-
-            SOURCE_DIR=$(dirname "$PUBSPEC")
-          fi
-
-          echo "SOURCE_DIR=$SOURCE_DIR" >> "$GITHUB_ENV"
-
-          echo "=== Flutter project ==="
-          ls -la "$SOURCE_DIR"
-
-          if [ ! -d "$SOURCE_DIR/android" ]; then
-            echo "ERROR: Original Android project is missing."
-            exit 1
-          fi
-
-          echo "Original Android project FOUND."
-
       - name: Prepare original Elimu Bora project
         shell: bash
         run: |
           set -e
 
           rm -rf /tmp/elimu_project
+          rm -rf /tmp/android_original
+          rm -rf /tmp/android_template
+
           mkdir -p /tmp/elimu_project
 
-          cp -a "$SOURCE_DIR"/. /tmp/elimu_project/
+          if [ -f "pubspec.yaml" ]; then
+            echo "Direct Flutter project found."
+            cp -a . /tmp/elimu_project/
+          elif [ -f "Elimu_Bora_Phone_Build_FIXED.zip" ]; then
+            echo "Extracting fixed Elimu Bora ZIP..."
+            unzip -q "Elimu_Bora_Phone_Build_FIXED.zip" -d /tmp/elimu_zip
 
-          echo "=== Original project copied ==="
-          ls -la /tmp/elimu_project
+            PROJECT_DIR=$(find /tmp/elimu_zip -name pubspec.yaml -type f | head -n 1 | xargs -r dirname)
 
-          echo "=== Android folder ==="
-          ls -la /tmp/elimu_project/android
+            if [ -z "$PROJECT_DIR" ]; then
+              echo "ERROR: pubspec.yaml was not found in the ZIP."
+              exit 1
+            fi
 
-          if [ -f "/tmp/elimu_project/android/app/google-services.json" ]; then
-            echo "Firebase google-services.json FOUND."
+            cp -a "$PROJECT_DIR"/. /tmp/elimu_project/
+          elif [ -f "Elimu_Bora_Phone_Build.zip" ]; then
+            echo "Extracting Elimu Bora ZIP..."
+            unzip -q "Elimu_Bora_Phone_Build.zip" -d /tmp/elimu_zip
+
+            PROJECT_DIR=$(find /tmp/elimu_zip -name pubspec.yaml -type f | head -n 1 | xargs -r dirname)
+
+            if [ -z "$PROJECT_DIR" ]; then
+              echo "ERROR: pubspec.yaml was not found in the ZIP."
+              exit 1
+            fi
+
+            cp -a "$PROJECT_DIR"/. /tmp/elimu_project/
           else
-            echo "Firebase google-services.json not found."
+            echo "ERROR: No Elimu Bora Flutter project or supported ZIP was found."
+            exit 1
           fi
 
-      - name: Get Flutter dependencies
-        working-directory: /tmp/elimu_project
-        run: |
-          set -e
-          flutter --version
-          flutter clean
-          flutter pub get
+          if [ ! -f "/tmp/elimu_project/pubspec.yaml" ]; then
+            echo "ERROR: Elimu Bora pubspec.yaml not found."
+            exit 1
+          fi
 
-      - name: Check Android configuration
+          echo "Project contents:"
+          ls -la /tmp/elimu_project
+
+      - name: Backup original Android configuration
         working-directory: /tmp/elimu_project
         shell: bash
         run: |
           set -e
 
-          echo "=== Gradle files ==="
-          find android -maxdepth 4 -type f \
-            \( -name "*.gradle" -o -name "*.gradle.kts" \) \
-            -print
+          if [ ! -d android ]; then
+            echo "ERROR: Original android folder was not found."
+            exit 1
+          fi
 
-          echo "=== Gradle wrapper ==="
+          cp -a android /tmp/android_original
+
+          echo "Original Android project backed up."
+
+      - name: Read original Android identity
+        working-directory: /tmp/elimu_project
+        shell: bash
+        run: |
+          set -e
+
+          echo "Searching for original applicationId and namespace..."
+
+          grep -RniE "applicationId|namespace|package " android/app 2>/dev/null | head -n 80 || true
+
+      - name: Create modern Android project
+        working-directory: /tmp/elimu_project
+        shell: bash
+        run: |
+          set -e
+
+          echo "Creating a modern Android Gradle project..."
+
+          mkdir -p /tmp/android_template
+
+          flutter create \
+            --platforms=android \
+            --project-name=elimu_bora \
+            --org=com.elimubora \
+            /tmp/android_template
+
+          if [ ! -d "/tmp/android_template/android" ]; then
+            echo "ERROR: Modern Android template was not created."
+            exit 1
+          fi
+
+          rm -rf android
+          cp -a /tmp/android_template/android android
+
+          echo "Modern Android project installed."
+
+      - name: Restore Elimu Bora Android files
+        working-directory: /tmp/elimu_project
+        shell: bash
+        run: |
+          set -e
+
+          ORIGINAL=/tmp/android_original
+
+          echo "Restoring Elimu Bora native Android files..."
+
+          # Restore the application's main Android source/resources.
+          if [ -d "$ORIGINAL/app/src/main" ]; then
+            rm -rf android/app/src/main
+            cp -a "$ORIGINAL/app/src/main" android/app/src/main
+          fi
+
+          # Restore Firebase configuration if present.
+          if [ -f "$ORIGINAL/app/google-services.json" ]; then
+            cp "$ORIGINAL/app/google-services.json" android/app/google-services.json
+            echo "google-services.json restored."
+          fi
+
+          # Restore debug/profile application resources if they exist.
+          if [ -d "$ORIGINAL/app/src/debug" ]; then
+            rm -rf android/app/src/debug
+            cp -a "$ORIGINAL/app/src/debug" android/app/src/debug
+          fi
+
+          if [ -d "$ORIGINAL/app/src/profile" ]; then
+            rm -rf android/app/src/profile
+            cp -a "$ORIGINAL/app/src/profile" android/app/src/profile
+          fi
+
+          echo "Elimu Bora Android files restored."
+
+      - name: Preserve original package identity
+        working-directory: /tmp/elimu_project
+        shell: bash
+        run: |
+          set -e
+
+          ORIGINAL=/tmp/android_original
+
+          ORIGINAL_ID=$(grep -RhoE 'applicationId[[:space:]]*[= ]+[\"'\''][^\"'\'']+[\"'\'']' "$ORIGINAL/app" 2>/dev/null \
+            | head -n 1 \
+            | sed -E 's/.*[\"'\'']([^\"'\'']+)[\"'\''].*/\1/' || true)
+
+          if [ -z "$ORIGINAL_ID" ]; then
+            ORIGINAL_ID=$(grep -RhoE 'applicationId[[:space:]]+[\"'\''][^\"'\'']+[\"'\'']' "$ORIGINAL/app" 2>/dev/null \
+              | head -n 1 \
+              | sed -E 's/.*[\"'\'']([^\"'\'']+)[\"'\''].*/\1/' || true)
+          fi
+
+          if [ -z "$ORIGINAL_ID" ]; then
+            ORIGINAL_ID="com.elimubora.app"
+          fi
+
+          echo "Using application ID: $ORIGINAL_ID"
+
+          APP_GRADLE="android/app/build.gradle.kts"
+
+          if [ -f "$APP_GRADLE" ]; then
+            sed -i -E "s/applicationId[[:space:]]*=[[:space:]]*\"[^\"]+\"/applicationId = \"$ORIGINAL_ID\"/" "$APP_GRADLE"
+            sed -i -E "s/namespace[[:space:]]*=[[:space:]]*\"[^\"]+\"/namespace = \"$ORIGINAL_ID\"/" "$APP_GRADLE"
+          fi
+
+          echo "Final Android identity:"
+          grep -nE "namespace|applicationId" "$APP_GRADLE" 2>/dev/null || true
+
+      - name: Restore Google Services plugin when required
+        working-directory: /tmp/elimu_project
+        shell: bash
+        run: |
+          set -e
+
+          ORIGINAL=/tmp/android_original
+
+          if [ ! -f "android/app/google-services.json" ]; then
+            echo "No google-services.json found. Skipping Google Services plugin."
+            exit 0
+          fi
+
+          echo "Firebase configuration detected."
+
+          SETTINGS="android/settings.gradle.kts"
+
+          if [ -f "$SETTINGS" ]; then
+            if ! grep -q "com.google.gms.google-services" "$SETTINGS"; then
+              echo "Adding Google Services plugin to settings..."
+
+              sed -i '/plugins {/a\
+    id("com.google.gms.google-services") version("4.4.4") apply false' "$SETTINGS"
+            fi
+          fi
+
+          APP_GRADLE="android/app/build.gradle.kts"
+
+          if [ -f "$APP_GRADLE" ]; then
+            if ! grep -q "com.google.gms.google-services" "$APP_GRADLE"; then
+              echo "Applying Google Services plugin..."
+
+              sed -i '/plugins {/a\
+    id("com.google.gms.google-services")' "$APP_GRADLE"
+            fi
+          fi
+
+          echo "Google Services configuration:"
+          grep -Rni "google-services" android 2>/dev/null || true
+
+      - name: Get Flutter dependencies
+        working-directory: /tmp/elimu_project
+        shell: bash
+        run: |
+          set -e
+
+          flutter --version
+          flutter clean
+          flutter pub get
+
+      - name: Analyze project
+        working-directory: /tmp/elimu_project
+        shell: bash
+        run: |
+          set -e
+
+          flutter analyze --suggestions || true
+
+      - name: Check final Android project
+        working-directory: /tmp/elimu_project
+        shell: bash
+        run: |
+          set -e
+
+          echo "===== Android files ====="
+          find android -maxdepth 4 -type f | sort
+
+          echo "===== App Gradle ====="
+          if [ -f android/app/build.gradle.kts ]; then
+            sed -n '1,240p' android/app/build.gradle.kts
+          fi
+
+          echo "===== Settings Gradle ====="
+          if [ -f android/settings.gradle.kts ]; then
+            sed -n '1,240p' android/settings.gradle.kts
+          fi
+
+          echo "===== Gradle wrapper ====="
           if [ -f android/gradle/wrapper/gradle-wrapper.properties ]; then
             cat android/gradle/wrapper/gradle-wrapper.properties
           fi
 
-          echo "=== Android manifest ==="
-          if [ -f android/app/src/main/AndroidManifest.xml ]; then
-            sed -n '1,220p' android/app/src/main/AndroidManifest.xml
-          fi
-
-      - name: Analyze Android compatibility
-        working-directory: /tmp/elimu_project
-        run: |
-          set -e
-          flutter analyze --suggestions || true
-
       - name: Build release APK
         working-directory: /tmp/elimu_project
+        shell: bash
         run: |
           set -e
+
           flutter build apk --release
 
       - name: Show APK information
         working-directory: /tmp/elimu_project
+        shell: bash
         run: |
           set -e
-          ls -lh build/app/outputs/flutter-apk/
-          file build/app/outputs/flutter-apk/app-release.apk
+
+          APK="build/app/outputs/flutter-apk/app-release.apk"
+
+          if [ ! -f "$APK" ]; then
+            echo "ERROR: APK was not created."
+            exit 1
+          fi
+
+          echo "APK successfully created."
+          ls -lh "$APK"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -152,3 +304,4 @@ jobs:
           name: elimu-bora-apk-fixed
           path: /tmp/elimu_project/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
+          retention-days: 7
