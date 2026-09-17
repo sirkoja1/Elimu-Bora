@@ -69,10 +69,12 @@ jobs:
             --org=com.elimubora \
             /tmp/android_template
 
+          test -d /tmp/android_template/android
+
           rm -rf /tmp/elimu_project/android
           cp -a /tmp/android_template/android /tmp/elimu_project/android
 
-      - name: Restore Elimu Bora Android files
+      - name: Restore original Elimu Bora Android files
         working-directory: /tmp/elimu_project
         shell: bash
         run: |
@@ -87,6 +89,16 @@ jobs:
 
           if [ -f "$ORIGINAL/app/google-services.json" ]; then
             cp "$ORIGINAL/app/google-services.json" android/app/google-services.json
+          fi
+
+          if [ -d "$ORIGINAL/app/src/debug" ]; then
+            rm -rf android/app/src/debug
+            cp -a "$ORIGINAL/app/src/debug" android/app/src/debug
+          fi
+
+          if [ -d "$ORIGINAL/app/src/profile" ]; then
+            rm -rf android/app/src/profile
+            cp -a "$ORIGINAL/app/src/profile" android/app/src/profile
           fi
 
       - name: Set Elimu Bora package
@@ -116,6 +128,43 @@ jobs:
 
           grep -nE 'namespace|applicationId' android/app/build.gradle.kts
 
+      - name: Add missing Elimu Bora themes
+        working-directory: /tmp/elimu_project
+        shell: bash
+        run: |
+          set -e
+
+          mkdir -p android/app/src/main/res/values
+
+          cat > android/app/src/main/res/values/elimu_bora_themes.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+
+              <style name="LaunchTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+                  <item name="android:fontFamily">sans</item>
+                  <item name="android:windowFullscreen">false</item>
+                  <item name="android:windowActionModeOverlay">true</item>
+                  <item name="android:windowNoTitle">true</item>
+                  <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+                  <item name="android:statusBarColor">@android:color/transparent</item>
+                  <item name="android:navigationBarColor">@android:color/black</item>
+              </style>
+
+              <style name="NormalTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+                  <item name="android:fontFamily">sans</item>
+                  <item name="android:windowActionModeOverlay">true</item>
+                  <item name="android:windowNoTitle">true</item>
+                  <item name="android:windowBackground">@android:color/white</item>
+                  <item name="android:statusBarColor">@android:color/transparent</item>
+                  <item name="android:navigationBarColor">@android:color/black</item>
+              </style>
+
+          </resources>
+          EOF
+
+          echo "Themes created:"
+          cat android/app/src/main/res/values/elimu_bora_themes.xml
+
       - name: Configure Firebase
         working-directory: /tmp/elimu_project
         shell: bash
@@ -123,6 +172,7 @@ jobs:
           set -e
 
           if [ -f android/app/google-services.json ]; then
+
             python3 - <<'PY'
           from pathlib import Path
 
@@ -133,18 +183,23 @@ jobs:
           a = app.read_text()
 
           if "com.google.gms.google-services" not in s:
-              marker = 'plugins {'
-              addition = '\n    id("com.google.gms.google-services") version "4.4.4" apply false'
-              s = s.replace(marker, marker + addition, 1)
+              s = s.replace(
+                  "plugins {",
+                  'plugins {\n    id("com.google.gms.google-services") version "4.4.4" apply false',
+                  1
+              )
 
           if "com.google.gms.google-services" not in a:
-              marker = 'plugins {'
-              addition = '\n    id("com.google.gms.google-services")'
-              a = a.replace(marker, marker + addition, 1)
+              a = a.replace(
+                  "plugins {",
+                  'plugins {\n    id("com.google.gms.google-services")',
+                  1
+              )
 
           settings.write_text(s)
           app.write_text(a)
           PY
+
           fi
 
       - name: Get dependencies
@@ -154,6 +209,12 @@ jobs:
           set -e
           flutter clean
           flutter pub get
+
+      - name: Analyze project
+        working-directory: /tmp/elimu_project
+        shell: bash
+        run: |
+          flutter analyze --suggestions || true
 
       - name: Build APK
         working-directory: /tmp/elimu_project
@@ -176,3 +237,4 @@ jobs:
           name: elimu-bora-apk-fixed
           path: /tmp/elimu_project/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
+          retention-days: 7
