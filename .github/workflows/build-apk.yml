@@ -20,106 +20,39 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Extract FIXED Elimu Bora project
+      - name: Find Flutter project
         shell: bash
         run: |
-          set -e
+          PROJECT_DIR=$(find . -name pubspec.yaml -not -path './fresh/*' | head -1 | xargs dirname)
+          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+          echo "Found Flutter project at: $PROJECT_DIR"
 
-          ZIP="./Elimu_Bora_Phone_Build_FIXED.zip"
-
-          if [ ! -f "$ZIP" ]; then
-            echo "ERROR: $ZIP was not found."
-            exit 1
-          fi
-
-          echo "Using: $ZIP"
-
-          rm -rf /tmp/elimu_extract
-          mkdir -p /tmp/elimu_extract
-
-          unzip -q "$ZIP" -d /tmp/elimu_extract
-
-          echo "=== Searching for Flutter project ==="
-
-          PUBSPEC=$(find /tmp/elimu_extract \
-            -type f \
-            -name "pubspec.yaml" \
-            -print -quit)
-
-          if [ -z "$PUBSPEC" ]; then
-            echo "ERROR: pubspec.yaml was not found."
-            exit 1
-          fi
-
-          SOURCE_DIR=$(dirname "$PUBSPEC")
-
-          echo "Found project at:"
-          echo "$SOURCE_DIR"
-
-          if [ ! -d "$SOURCE_DIR/android" ]; then
-            echo "ERROR: Android project folder was not found."
-            exit 1
-          fi
-
-          echo "SOURCE_DIR=$SOURCE_DIR" >> "$GITHUB_ENV"
-
-          echo "=== Project contents ==="
-          ls -la "$SOURCE_DIR"
-
-      - name: Get Flutter dependencies
-        working-directory: /tmp/elimu_extract
+      - name: Create fresh Android project
+        run: |
+          flutter create fresh
+          
+      - name: Copy Elimu Bora source
         shell: bash
         run: |
-          set -e
-          cd "$SOURCE_DIR"
-          flutter pub get
+          cp "$PROJECT_DIR/pubspec.yaml" fresh/pubspec.yaml
+          rm -rf fresh/lib
+          cp -r "$PROJECT_DIR/lib" fresh/lib
 
-      - name: Check Android project
-        shell: bash
-        run: |
-          set -e
-
-          echo "=== Android files ==="
-          find "$SOURCE_DIR/android" -maxdepth 3 -type f | head -100
-
-          echo "=== Checking Gradle files ==="
-
-          if [ -f "$SOURCE_DIR/android/app/build.gradle.kts" ]; then
-            echo "Using build.gradle.kts"
-          elif [ -f "$SOURCE_DIR/android/app/build.gradle" ]; then
-            echo "Using build.gradle"
-          else
-            echo "ERROR: Android app Gradle file not found."
-            exit 1
+          if [ -d "$PROJECT_DIR/assets" ]; then
+            rm -rf fresh/assets
+            cp -r "$PROJECT_DIR/assets" fresh/assets
           fi
 
-      - name: Build release APK
-        shell: bash
-        run: |
-          set -e
+      - name: Get Flutter packages
+        working-directory: fresh
+        run: flutter pub get
 
-          cd "$SOURCE_DIR"
-
-          flutter build apk --release
-
-      - name: Verify APK
-        shell: bash
-        run: |
-          set -e
-
-          APK="$SOURCE_DIR/build/app/outputs/flutter-apk/app-release.apk"
-
-          if [ ! -f "$APK" ]; then
-            echo "ERROR: APK was not created."
-            exit 1
-          fi
-
-          echo "APK successfully created:"
-          ls -lh "$APK"
+      - name: Build APK
+        working-directory: fresh
+        run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: elimu-bora-apk-fixed
-          path: ${{ env.SOURCE_DIR }}/build/app/outputs/flutter-apk/app-release.apk
-          if-no-files-found: error   
+          name: elimu-bora-apk
+          path: fresh/build/app/outputs/flutter-apk/app-release.apk      
