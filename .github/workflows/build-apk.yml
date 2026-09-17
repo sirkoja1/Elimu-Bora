@@ -17,7 +17,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.4'
+          flutter-version: '3.24.5'
           channel: stable
           cache: true
 
@@ -94,8 +94,6 @@ jobs:
             echo "Android project FOUND."
           else
             echo "ERROR: Android project is missing."
-            echo "We will NOT create a fresh Android project because"
-            echo "that could remove Firebase and launcher configuration."
             exit 1
           fi
 
@@ -121,14 +119,14 @@ jobs:
           if [ -f "/tmp/elimu_project/android/app/google-services.json" ]; then
             echo "google-services.json FOUND."
           else
-            echo "google-services.json not found in android/app."
-            echo "Continuing because Firebase may not be required at build time."
+            echo "google-services.json not found."
           fi
 
       - name: Get Flutter dependencies
         working-directory: /tmp/elimu_project
         run: |
           set -e
+          flutter --version
           flutter clean
           flutter pub get
 
