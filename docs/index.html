@@ -442,7 +442,62 @@
         from one place.
       </p>
   </div>
-<script type="module">
+<section id="resources" class="resources">
+  <div class="container">
+
+    <div class="section-title">
+      <h2>📚 Learning Resources</h2>
+      <p>Access quality learning materials for study, revision and teaching.</p>
+    </div>
+
+    <div class="resource-grid">
+
+      <div class="resource-card">
+        <div class="resource-top">📖</div>
+        <div class="resource-body">
+          <h3>Revision Notes</h3>
+          <p>Useful notes and revision materials for students.</p>
+          <a href="#" class="resource-btn member-resource">Open Resource</a>
+        </div>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-top">📝</div>
+        <div class="resource-body">
+          <h3>Examinations</h3>
+          <p>Past papers and examination practice materials.</p>
+          <a href="#" class="resource-btn member-resource">Open Resource</a>
+        </div>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-top">👨‍🏫</div>
+        <div class="resource-body">
+          <h3>Teaching Resources</h3>
+          <p>Educational materials to support teachers and schools.</p>
+          <a href="#" class="resource-btn member-resource">Open Resource</a>
+        </div>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-top">🎓</div>
+        <div class="resource-body">
+          <h3>Study Materials</h3>
+          <p>Learning materials to help students improve their studies.</p>
+          <a href="#" class="resource-btn member-resource">Open Resource</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="text-align:center; margin-top:25px;">
+      <p><strong>🔐 Member access</strong></p>
+      <p>Create an account or log in to access learning resources.</p>
+    </div>
+
+  </div>
+</section>
+    <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
   import {
@@ -767,7 +822,19 @@
       memberMessage.textContent = "";
     }
   });
-</script>
+// Member-only resource access
+document.querySelectorAll(".member-resource").forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    if (!auth.currentUser) {
+      alert("🔐 Please log in or create a member account to access this resource.");
+      return;
+    }
+
+    alert("✅ Member access confirmed. This resource will be available here.");
+  });
+});/script>
 
 </body>
 </html>
