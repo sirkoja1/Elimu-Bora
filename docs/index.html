@@ -442,21 +442,17 @@
         from one place.
       </p>
   </div>
-  <script type="module">
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
   import {
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    sendPasswordResetEmail,
     signOut,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-
-
-  /* ==============================
-     FIREBASE CONFIGURATION
-     ============================== */
 
   const firebaseConfig = {
     apiKey: "AIzaSyC6JBx_7_aZl6zhFAXUMgbi3EBMQaFzYpc",
@@ -468,23 +464,11 @@
     measurementId: "G-SGVQCH2QCY"
   };
 
-
-  /* ==============================
-     START FIREBASE
-     ============================== */
-
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-
-  /* ==============================
-     MEMBER LOGIN BUTTON
-     ============================== */
-
   const loginButton = document.createElement("button");
-
   loginButton.textContent = "🔐 Member Login";
-
   loginButton.style.position = "fixed";
   loginButton.style.right = "18px";
   loginButton.style.bottom = "18px";
@@ -498,16 +482,9 @@
   loginButton.style.fontWeight = "bold";
   loginButton.style.boxShadow = "0 4px 12px rgba(0,0,0,0.25)";
   loginButton.style.cursor = "pointer";
-
   document.body.appendChild(loginButton);
 
-
-  /* ==============================
-     LOGIN MODAL
-     ============================== */
-
   const modal = document.createElement("div");
-
   modal.style.display = "none";
   modal.style.position = "fixed";
   modal.style.inset = "0";
@@ -517,16 +494,13 @@
   modal.style.justifyContent = "center";
   modal.style.padding = "20px";
 
-
   const box = document.createElement("div");
-
   box.style.background = "white";
   box.style.width = "100%";
   box.style.maxWidth = "400px";
   box.style.borderRadius = "18px";
   box.style.padding = "25px";
   box.style.boxSizing = "border-box";
-
 
   box.innerHTML = `
     <button id="closeMemberLogin"
@@ -583,11 +557,24 @@
       "
     >
 
+    <button id="forgotPassword"
+      style="
+        display:block;
+        width:100%;
+        border:none;
+        background:none;
+        color:#1769aa;
+        font-size:15px;
+        margin:8px 0 12px;
+        cursor:pointer;
+      ">
+      Forgot Password?
+    </button>
+
     <button id="loginMember"
       style="
         width:100%;
         padding:13px;
-        margin-top:10px;
         border:none;
         border-radius:8px;
         background:#1769aa;
@@ -638,42 +625,25 @@
     </p>
   `;
 
-
   modal.appendChild(box);
   document.body.appendChild(modal);
 
-
-  /* ==============================
-     GET ELEMENTS
-     ============================== */
-
   const emailInput = document.getElementById("memberEmail");
   const passwordInput = document.getElementById("memberPassword");
-
   const loginMember = document.getElementById("loginMember");
   const createMember = document.getElementById("createMember");
+  const forgotPassword = document.getElementById("forgotPassword");
   const logoutMember = document.getElementById("logoutMember");
-
-  const closeMemberLogin =
-    document.getElementById("closeMemberLogin");
-
-  const memberMessage =
-    document.getElementById("memberMessage");
-
-
-  /* ==============================
-     OPEN / CLOSE LOGIN
-     ============================== */
+  const closeMemberLogin = document.getElementById("closeMemberLogin");
+  const memberMessage = document.getElementById("memberMessage");
 
   loginButton.onclick = () => {
     modal.style.display = "flex";
   };
 
-
   closeMemberLogin.onclick = () => {
     modal.style.display = "none";
   };
-
 
   modal.onclick = (event) => {
     if (event.target === modal) {
@@ -681,13 +651,7 @@
     }
   };
 
-
-  /* ==============================
-     CREATE ACCOUNT
-     ============================== */
-
   createMember.onclick = async () => {
-
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
@@ -704,7 +668,6 @@
     }
 
     try {
-
       await createUserWithEmailAndPassword(
         auth,
         email,
@@ -713,22 +676,12 @@
 
       memberMessage.textContent =
         "Account created successfully!";
-
     } catch (error) {
-
-      memberMessage.textContent =
-        error.message;
-
+      memberMessage.textContent = error.message;
     }
   };
 
-
-  /* ==============================
-     LOGIN
-     ============================== */
-
   loginMember.onclick = async () => {
-
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
@@ -739,7 +692,6 @@
     }
 
     try {
-
       await signInWithEmailAndPassword(
         auth,
         email,
@@ -748,71 +700,73 @@
 
       memberMessage.textContent =
         "Login successful!";
-
     } catch (error) {
-
-      memberMessage.textContent =
-        error.message;
-
+      memberMessage.textContent = error.message;
     }
   };
 
+  forgotPassword.onclick = async () => {
+    const email = emailInput.value.trim();
 
-  /* ==============================
-     LOGOUT
-     ============================== */
-
-  logoutMember.onclick = async () => {
+    if (!email) {
+      memberMessage.textContent =
+        "Please enter your email address first.";
+      return;
+    }
 
     try {
+      await sendPasswordResetEmail(auth, email);
 
+      memberMessage.textContent =
+        "Password reset email sent. Check your email.";
+    } catch (error) {
+      if (error.code === "auth/user-not-found") {
+        memberMessage.textContent =
+          "No account was found with this email.";
+      } else if (error.code === "auth/invalid-email") {
+        memberMessage.textContent =
+          "Please enter a valid email address.";
+      } else {
+        memberMessage.textContent = error.message;
+      }
+    }
+  };
+
+  logoutMember.onclick = async () => {
+    try {
       await signOut(auth);
 
       memberMessage.textContent =
         "You have logged out.";
-
     } catch (error) {
-
-      memberMessage.textContent =
-        error.message;
-
+      memberMessage.textContent = error.message;
     }
   };
 
-
-  /* ==============================
-     AUTHENTICATION STATUS
-     ============================== */
-
   onAuthStateChanged(auth, (user) => {
-
     if (user) {
-
       loginButton.textContent =
         "👤 " + user.email;
 
       loginMember.style.display = "none";
       createMember.style.display = "none";
+      forgotPassword.style.display = "none";
       logoutMember.style.display = "block";
 
       memberMessage.textContent =
         "Logged in as " + user.email;
-
     } else {
-
       loginButton.textContent =
         "🔐 Member Login";
 
       loginMember.style.display = "block";
       createMember.style.display = "block";
+      forgotPassword.style.display = "block";
       logoutMember.style.display = "none";
 
       memberMessage.textContent = "";
-
     }
-
   });
-
 </script>
 
 </body>
