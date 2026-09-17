@@ -1,4 +1,4 @@
-name: Build Elimu Bora APK
+name: Diagnose Elimu Bora APK
 
 on:
   workflow_dispatch:
@@ -58,7 +58,6 @@ jobs:
         shell: bash
         run: |
           set -e
-          rm -rf /tmp/android_original
           cp -a android /tmp/android_original
 
       - name: Create modern Android project
@@ -115,12 +114,7 @@ jobs:
             fi
           done
 
-          echo "Original Android files restored."
-          echo "Modern launcher icons restored."
-
-          find android/app/src/main/res -maxdepth 2 -type f | sort
-
-      - name: Set Elimu Bora package
+      - name: Set package
         working-directory: /tmp/elimu_project
         shell: bash
         run: |
@@ -145,9 +139,7 @@ jobs:
           p.write_text(text)
           PY
 
-          grep -nE 'namespace|applicationId' android/app/build.gradle.kts
-
-      - name: Add Elimu Bora themes
+      - name: Add themes
         working-directory: /tmp/elimu_project
         shell: bash
         run: |
@@ -221,12 +213,6 @@ jobs:
           flutter clean
           flutter pub get
 
-      - name: Analyze project
-        working-directory: /tmp/elimu_project
-        shell: bash
-        run: |
-          flutter analyze --suggestions || true
-
       - name: Build APK
         working-directory: /tmp/elimu_project
         shell: bash
@@ -234,18 +220,66 @@ jobs:
           set -e
           flutter build apk --release
 
-      - name: Check APK
-        working-directory: /tmp/elimu_project
-        shell: bash
-        run: |
-          set -e
           test -f build/app/outputs/flutter-apk/app-release.apk
-          ls -lh build/app/outputs/flutter-apk/app-release.apk
 
-      - name: Upload APK
+      - name: Test APK on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          cores: 2
+          ram-size: 2048M
+          disk-size: 4096M
+          emulator-options: -no-window -no-audio -no-boot-anim
+          disable-animations: true
+          script: |
+            set -e
+
+            echo "===== Installing APK ====="
+            adb install -r /tmp/elimu_project/build/app/outputs/flutter-apk/app-release.apk
+
+            echo "===== Clearing old log ====="
+            adb logcat -c
+
+            echo "===== Launching Elimu Bora ====="
+            adb shell monkey -p com.elimubora.app 1
+
+            echo "===== Waiting for application ====="
+            sleep 30
+
+            echo "===== Package status ====="
+            adb shell dumpsys package com.elimubora.app | head -80
+
+            echo "===== Flutter process ====="
+            adb shell pidof com.elimubora.app || true
+
+            echo "===== Logcat ====="
+            adb logcat -d -v time > /tmp/elimu_logcat.txt
+
+            echo "===== Relevant errors ====="
+            grep -iE "FATAL EXCEPTION|AndroidRuntime|flutter|exception|error|crash|firebase|Unable to start|ActivityTaskManager" /tmp/elimu_logcat.txt | tail -200 || true
+
+            echo "===== Screenshot ====="
+            adb exec-out screencap -p > /tmp/elimu_screen.png
+
+      - name: Upload diagnostic logs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elimu-bora-apk-fixed
+          name: elimu-bora-diagnostic
+          path: |
+            /tmp/elimu_logcat.txt
+            /tmp/elimu_screen.png
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: elimu-bora-apk-diagnostic
           path: /tmp/elimu_project/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
           retention-days: 7
