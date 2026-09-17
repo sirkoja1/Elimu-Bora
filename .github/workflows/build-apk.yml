@@ -17,7 +17,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.47.4'
           channel: stable
           cache: true
 
@@ -25,11 +25,6 @@ jobs:
         shell: bash
         run: |
           set -e
-
-          echo "=== Repository contents ==="
-          find . -maxdepth 3 -type f | head -200
-
-          echo "=== Looking for Flutter project ==="
 
           PUBSPEC=$(find . \
             -type f \
@@ -39,12 +34,7 @@ jobs:
 
           if [ -n "$PUBSPEC" ]; then
             SOURCE_DIR=$(dirname "$PUBSPEC")
-            echo "Found Flutter project:"
-            echo "$SOURCE_DIR"
           else
-            echo "No Flutter project found directly."
-            echo "Looking for Elimu Bora ZIP..."
-
             ZIP=$(find . \
               -type f \
               \( -iname "Elimu_Bora_Phone_Build_FIXED.zip" \
@@ -53,20 +43,13 @@ jobs:
               -print -quit)
 
             if [ -z "$ZIP" ]; then
-              echo "ERROR: No Flutter project or ZIP file found."
+              echo "ERROR: No Flutter project or ZIP found."
               exit 1
             fi
 
-            echo "Using ZIP:"
-            echo "$ZIP"
-
             rm -rf /tmp/elimu_extract
             mkdir -p /tmp/elimu_extract
-
             unzip -q "$ZIP" -d /tmp/elimu_extract
-
-            echo "=== Extracted contents ==="
-            find /tmp/elimu_extract -maxdepth 5 -type f | head -300
 
             PUBSPEC=$(find /tmp/elimu_extract \
               -type f \
@@ -79,23 +62,19 @@ jobs:
             fi
 
             SOURCE_DIR=$(dirname "$PUBSPEC")
-
-            echo "Found Flutter project inside ZIP:"
-            echo "$SOURCE_DIR"
           fi
 
           echo "SOURCE_DIR=$SOURCE_DIR" >> "$GITHUB_ENV"
 
-          echo "=== Project files ==="
+          echo "=== Flutter project ==="
           ls -la "$SOURCE_DIR"
 
-          echo "=== Android directory check ==="
-          if [ -d "$SOURCE_DIR/android" ]; then
-            echo "Android project FOUND."
-          else
-            echo "ERROR: Android project is missing."
+          if [ ! -d "$SOURCE_DIR/android" ]; then
+            echo "ERROR: Original Android project is missing."
             exit 1
           fi
+
+          echo "Original Android project FOUND."
 
       - name: Prepare original Elimu Bora project
         shell: bash
@@ -105,21 +84,18 @@ jobs:
           rm -rf /tmp/elimu_project
           mkdir -p /tmp/elimu_project
 
-          echo "Copying the ORIGINAL Elimu Bora project..."
-
           cp -a "$SOURCE_DIR"/. /tmp/elimu_project/
 
-          echo "=== Prepared project ==="
+          echo "=== Original project copied ==="
           ls -la /tmp/elimu_project
 
-          echo "=== Android project ==="
+          echo "=== Android folder ==="
           ls -la /tmp/elimu_project/android
 
-          echo "=== Firebase configuration check ==="
           if [ -f "/tmp/elimu_project/android/app/google-services.json" ]; then
-            echo "google-services.json FOUND."
+            echo "Firebase google-services.json FOUND."
           else
-            echo "google-services.json not found."
+            echo "Firebase google-services.json not found."
           fi
 
       - name: Get Flutter dependencies
@@ -130,21 +106,32 @@ jobs:
           flutter clean
           flutter pub get
 
-      - name: Check Android application
+      - name: Check Android configuration
         working-directory: /tmp/elimu_project
         shell: bash
         run: |
           set -e
 
-          echo "=== Android Gradle files ==="
+          echo "=== Gradle files ==="
           find android -maxdepth 4 -type f \
             \( -name "*.gradle" -o -name "*.gradle.kts" \) \
             -print
+
+          echo "=== Gradle wrapper ==="
+          if [ -f android/gradle/wrapper/gradle-wrapper.properties ]; then
+            cat android/gradle/wrapper/gradle-wrapper.properties
+          fi
 
           echo "=== Android manifest ==="
           if [ -f android/app/src/main/AndroidManifest.xml ]; then
             sed -n '1,220p' android/app/src/main/AndroidManifest.xml
           fi
+
+      - name: Analyze Android compatibility
+        working-directory: /tmp/elimu_project
+        run: |
+          set -e
+          flutter analyze --suggestions || true
 
       - name: Build release APK
         working-directory: /tmp/elimu_project
