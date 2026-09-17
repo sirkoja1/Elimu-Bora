@@ -20,39 +20,118 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Find Flutter project
+      - name: Find Elimu Bora source
         shell: bash
         run: |
-          PROJECT_DIR=$(find . -name pubspec.yaml -not -path './fresh/*' | head -1 | xargs dirname)
-          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
-          echo "Found Flutter project at: $PROJECT_DIR"
+          set -e
+          echo "=== Repository files ==="
+          find . -maxdepth 4 -type f | head -200
 
-      - name: Create fresh Android project
-        run: |
-          flutter create fresh
-          
-      - name: Copy Elimu Bora source
-        shell: bash
-        run: |
-          cp "$PROJECT_DIR/pubspec.yaml" fresh/pubspec.yaml
-          rm -rf fresh/lib
-          cp -r "$PROJECT_DIR/lib" fresh/lib
+          echo "=== Searching for pubspec.yaml ==="
 
-          if [ -d "$PROJECT_DIR/assets" ]; then
-            rm -rf fresh/assets
-            cp -r "$PROJECT_DIR/assets" fresh/assets
+          PUBSPEC=$(find . \
+            -type f \
+            -name "pubspec.yaml" \
+            -not -path "./.git/*" \
+            -print -quit)
+          if [ -n "$PUBSPEC" ]; then
+            echo "Found pubspec.yaml at: $PUBSPEC"
+            SOURCE_DIR=$(dirname "$PUBSPEC")
+          else
+            echo "No pubspec.yaml found directly."
+            echo "Searching for ZIP files..."
+
+            mkdir -p /tmp/elimu_extract
+
+            ZIP=$(find . \
+              -type f \
+              \( -iname "*.zip" \) \
+              -not -path "./.git/*" \
+              -print -quit)
+            if [ -z "$ZIP" ]; then
+              echo "ERROR: No pubspec.yaml or ZIP file containing the project was found."
+              exit 1
+            fi
+
+            echo "Found ZIP: $ZIP"
+
+            unzip -q "$ZIP" -d /tmp/elimu_extract
+
+            echo "=== Extracted files ==="
+            find /tmp/elimu_extract -maxdepth 5 -type f | head -200
+
+            PUBSPEC=$(find /tmp/elimu_extract \
+              -type f \
+              -name "pubspec.yaml" \
+              -print -quit)
+            if [ -z "$PUBSPEC" ]; then
+              echo "ERROR: ZIP was found, but no pubspec.yaml exists inside it."
+              exit 1
+            fi
+
+            echo "Found pubspec.yaml at: $PUBSPEC"
+            SOURCE_DIR=$(dirname "$PUBSPEC")
           fi
 
-      - name: Get Flutter packages
-        working-directory: fresh
+          echo "SOURCE_DIR=$SOURCE_DIR" >> "$GITHUB_ENV"
+
+          echo "=== Elimu Bora source directory ==="
+          echo "$SOURCE_DIR"
+
+          echo "=== Source contents ==="
+          ls -la "$SOURCE_DIR"
+
+      - name: Create fresh Android Flutter project
+        run: |
+          set -e
+
+          flutter create \
+            --platforms=android \
+            --org=com.elimubora \
+            --project-name=elimu_bora \
+            /tmp/elimu_project
+
+      - name: Copy Elimu Bora application files
+        shell: bash
+        run: |
+          set -e
+
+          echo "Copying application source..."
+
+          cp "$SOURCE_DIR/pubspec.yaml" /tmp/elimu_project/pubspec.yaml
+          if [ -f "$SOURCE_DIR/pubspec.lock" ]; then
+            cp "$SOURCE_DIR/pubspec.lock" /tmp/elimu_project/pubspec.lock
+          fi
+
+          if [ -d "$SOURCE_DIR/lib" ]; then
+            cp -r "$SOURCE_DIR/lib" /tmp/elimu_project/
+          fi
+
+          if [ -d "$SOURCE_DIR/assets" ]; then
+            cp -r "$SOURCE_DIR/assets" /tmp/elimu_project/
+          fi
+
+          if [ -d "$SOURCE_DIR/fonts" ]; then
+            cp -r "$SOURCE_DIR/fonts" /tmp/elimu_project/
+          fi
+          if [ -f "$SOURCE_DIR/analysis_options.yaml" ]; then
+            cp "$SOURCE_DIR/analysis_options.yaml" /tmp/elimu_project/
+          fi
+
+          echo "=== Prepared project ==="
+          ls -la /tmp/elimu_project
+
+      - name: Get dependencies
+        working-directory: /tmp/elimu_project
         run: flutter pub get
 
-      - name: Build APK
-        working-directory: fresh
+      - name: Build release APK
+        working-directory: /tmp/elimu_project
         run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: elimu-bora-apk
-          path: fresh/build/app/outputs/flutter-apk/app-release.apk      
+          path: /tmp/elimu_project/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
