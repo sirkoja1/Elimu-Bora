@@ -442,8 +442,9 @@
         from one place.
       </p>
   </div>
-    <script type="module">
+  <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
   import {
     getAuth,
     createUserWithEmailAndPassword,
@@ -451,6 +452,11 @@
     signOut,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
+  /* ==============================
+     FIREBASE CONFIGURATION
+     ============================== */
 
   const firebaseConfig = {
     apiKey: "AIzaSyC6JBx_7_aZl6zhFAXUMgbi3EBMQaFzYpc",
@@ -462,23 +468,352 @@
     measurementId: "G-SGVQCH2QCY"
   };
 
+
+  /* ==============================
+     START FIREBASE
+     ============================== */
+
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  window.elimuBoraAuth = {
-    auth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut
+
+  /* ==============================
+     MEMBER LOGIN BUTTON
+     ============================== */
+
+  const loginButton = document.createElement("button");
+
+  loginButton.textContent = "🔐 Member Login";
+
+  loginButton.style.position = "fixed";
+  loginButton.style.right = "18px";
+  loginButton.style.bottom = "18px";
+  loginButton.style.zIndex = "9999";
+  loginButton.style.background = "#1769aa";
+  loginButton.style.color = "white";
+  loginButton.style.border = "none";
+  loginButton.style.padding = "14px 20px";
+  loginButton.style.borderRadius = "30px";
+  loginButton.style.fontSize = "16px";
+  loginButton.style.fontWeight = "bold";
+  loginButton.style.boxShadow = "0 4px 12px rgba(0,0,0,0.25)";
+  loginButton.style.cursor = "pointer";
+
+  document.body.appendChild(loginButton);
+
+
+  /* ==============================
+     LOGIN MODAL
+     ============================== */
+
+  const modal = document.createElement("div");
+
+  modal.style.display = "none";
+  modal.style.position = "fixed";
+  modal.style.inset = "0";
+  modal.style.zIndex = "10000";
+  modal.style.background = "rgba(0,0,0,0.65)";
+  modal.style.alignItems = "center";
+  modal.style.justifyContent = "center";
+  modal.style.padding = "20px";
+
+
+  const box = document.createElement("div");
+
+  box.style.background = "white";
+  box.style.width = "100%";
+  box.style.maxWidth = "400px";
+  box.style.borderRadius = "18px";
+  box.style.padding = "25px";
+  box.style.boxSizing = "border-box";
+
+
+  box.innerHTML = `
+    <button id="closeMemberLogin"
+      style="
+        float:right;
+        border:none;
+        background:none;
+        font-size:28px;
+        cursor:pointer;
+      ">×</button>
+
+    <h2 style="
+      text-align:center;
+      color:#1769aa;
+      margin-top:5px;
+    ">
+      Elimu Bora Members
+    </h2>
+
+    <p style="
+      text-align:center;
+      color:#667085;
+    ">
+      Login or create your member account
+    </p>
+
+    <input
+      id="memberEmail"
+      type="email"
+      placeholder="Email address"
+      style="
+        width:100%;
+        padding:13px;
+        margin:8px 0;
+        box-sizing:border-box;
+        border:1px solid #ccc;
+        border-radius:8px;
+        font-size:16px;
+      "
+    >
+
+    <input
+      id="memberPassword"
+      type="password"
+      placeholder="Password"
+      style="
+        width:100%;
+        padding:13px;
+        margin:8px 0;
+        box-sizing:border-box;
+        border:1px solid #ccc;
+        border-radius:8px;
+        font-size:16px;
+      "
+    >
+
+    <button id="loginMember"
+      style="
+        width:100%;
+        padding:13px;
+        margin-top:10px;
+        border:none;
+        border-radius:8px;
+        background:#1769aa;
+        color:white;
+        font-size:16px;
+        font-weight:bold;
+      ">
+      Login
+    </button>
+
+    <button id="createMember"
+      style="
+        width:100%;
+        padding:13px;
+        margin-top:10px;
+        border:none;
+        border-radius:8px;
+        background:#16a05d;
+        color:white;
+        font-size:16px;
+        font-weight:bold;
+      ">
+      Create Account
+    </button>
+
+    <button id="logoutMember"
+      style="
+        display:none;
+        width:100%;
+        padding:13px;
+        margin-top:10px;
+        border:none;
+        border-radius:8px;
+        background:#555;
+        color:white;
+        font-size:16px;
+        font-weight:bold;
+      ">
+      Logout
+    </button>
+
+    <p id="memberMessage"
+      style="
+        text-align:center;
+        margin-top:15px;
+        font-size:14px;
+      ">
+    </p>
+  `;
+
+
+  modal.appendChild(box);
+  document.body.appendChild(modal);
+
+
+  /* ==============================
+     GET ELEMENTS
+     ============================== */
+
+  const emailInput = document.getElementById("memberEmail");
+  const passwordInput = document.getElementById("memberPassword");
+
+  const loginMember = document.getElementById("loginMember");
+  const createMember = document.getElementById("createMember");
+  const logoutMember = document.getElementById("logoutMember");
+
+  const closeMemberLogin =
+    document.getElementById("closeMemberLogin");
+
+  const memberMessage =
+    document.getElementById("memberMessage");
+
+
+  /* ==============================
+     OPEN / CLOSE LOGIN
+     ============================== */
+
+  loginButton.onclick = () => {
+    modal.style.display = "flex";
   };
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("Elimu Bora member signed in:", user.email);
-    } else {
-      console.log("Elimu Bora: no member signed in");
+
+  closeMemberLogin.onclick = () => {
+    modal.style.display = "none";
+  };
+
+
+  modal.onclick = (event) => {
+    if (event.target === modal) {
+      modal.style.display = "none";
     }
+  };
+
+
+  /* ==============================
+     CREATE ACCOUNT
+     ============================== */
+
+  createMember.onclick = async () => {
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+      memberMessage.textContent =
+        "Please enter your email and password.";
+      return;
+    }
+
+    if (password.length < 6) {
+      memberMessage.textContent =
+        "Password must contain at least 6 characters.";
+      return;
+    }
+
+    try {
+
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      memberMessage.textContent =
+        "Account created successfully!";
+
+    } catch (error) {
+
+      memberMessage.textContent =
+        error.message;
+
+    }
+  };
+
+
+  /* ==============================
+     LOGIN
+     ============================== */
+
+  loginMember.onclick = async () => {
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+      memberMessage.textContent =
+        "Please enter your email and password.";
+      return;
+    }
+
+    try {
+
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      memberMessage.textContent =
+        "Login successful!";
+
+    } catch (error) {
+
+      memberMessage.textContent =
+        error.message;
+
+    }
+  };
+
+
+  /* ==============================
+     LOGOUT
+     ============================== */
+
+  logoutMember.onclick = async () => {
+
+    try {
+
+      await signOut(auth);
+
+      memberMessage.textContent =
+        "You have logged out.";
+
+    } catch (error) {
+
+      memberMessage.textContent =
+        error.message;
+
+    }
+  };
+
+
+  /* ==============================
+     AUTHENTICATION STATUS
+     ============================== */
+
+  onAuthStateChanged(auth, (user) => {
+
+    if (user) {
+
+      loginButton.textContent =
+        "👤 " + user.email;
+
+      loginMember.style.display = "none";
+      createMember.style.display = "none";
+      logoutMember.style.display = "block";
+
+      memberMessage.textContent =
+        "Logged in as " + user.email;
+
+    } else {
+
+      loginButton.textContent =
+        "🔐 Member Login";
+
+      loginMember.style.display = "block";
+      createMember.style.display = "block";
+      logoutMember.style.display = "none";
+
+      memberMessage.textContent = "";
+
+    }
+
   });
-    </script>
-    </body>
-  </html>
+
+</script>
+
+</body>
+</html>
