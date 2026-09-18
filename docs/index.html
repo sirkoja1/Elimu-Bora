@@ -1032,6 +1032,28 @@ if(user){
 
 userButton.textContent =
 "👤 " + user.email;
+  const adminSection =
+document.getElementById("adminSection");
+
+if(adminSection){
+
+  if(
+    user.email &&
+    user.email.toLowerCase() ===
+    "kojasalim93@gmail.com"
+  ){
+
+    adminSection.style.display =
+    "block";
+
+  }else{
+
+    adminSection.style.display =
+    "none";
+
+  }
+
+}
 
 document.getElementById(
 "loginMember"
