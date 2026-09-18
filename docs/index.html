@@ -577,6 +577,96 @@ Logout
 </div>
 
 
+  <!-- ELIMU BORA ADMIN PANEL -->
+<section id="adminSection" style="display:none;background:#f8fafc;padding:40px 20px;">
+  <div class="container">
+
+    <div class="section-title">
+      <h2>🛠️ Elimu Bora Admin Panel</h2>
+      <p>Administrator controls</p>
+    </div>
+
+    <div style="display:grid;gap:15px;max-width:600px;margin:auto;">
+
+      <button id="addResourceButton"
+        class="btn btn-dark">
+        ➕ Add New Resource
+      </button>
+
+      <button id="manageResourcesButton"
+        class="btn btn-dark">
+        📚 Manage Resources
+      </button>
+
+      <button id="manageMembersButton"
+        class="btn btn-dark">
+        👥 Manage Members
+      </button>
+
+      <button id="adminLogoutButton"
+        class="btn"
+        style="background:#b42318;color:white;">
+        🚪 Admin Logout
+      </button>
+
+    </div>
+
+    <div id="adminMessage"
+      style="text-align:center;margin-top:20px;">
+    </div>
+
+    <!-- ADD RESOURCE FORM -->
+    <div id="addResourceForm"
+      style="display:none;background:white;padding:25px;border-radius:15px;margin:25px auto;max-width:600px;">
+
+      <h3>➕ Add New Learning Resource</h3>
+
+      <input id="adminTitle"
+        placeholder="Resource title"
+        style="width:100%;padding:12px;margin:8px 0;">
+
+      <input id="adminDescription"
+        placeholder="Description"
+        style="width:100%;padding:12px;margin:8px 0;">
+
+      <input id="adminCategory"
+        placeholder="Category e.g. Exam, Revision, Teaching"
+        style="width:100%;padding:12px;margin:8px 0;">
+
+      <input id="adminSubject"
+        placeholder="Subject e.g. Mathematics"
+        style="width:100%;padding:12px;margin:8px 0;">
+
+      <input id="adminForm"
+        placeholder="Form e.g. Form 1, Form 2"
+        style="width:100%;padding:12px;margin:8px 0;">
+
+      <input id="adminFileUrl"
+        placeholder="PDF/file URL"
+        style="width:100%;padding:12px;margin:8px 0;">
+
+      <button id="saveResourceButton"
+        class="btn btn-dark"
+        style="margin-top:10px;">
+        💾 Save Resource
+      </button>
+
+    </div>
+
+    <!-- RESOURCE MANAGEMENT -->
+    <div id="manageResourcesPanel"
+      style="display:none;background:white;padding:25px;border-radius:15px;margin:25px auto;max-width:700px;">
+
+      <h3>📚 Manage Resources</h3>
+
+      <div id="adminResourceList">
+        Loading resources...
+      </div>
+
+    </div>
+
+  </div>
+</section>
 <script type="module">
 
 import { initializeApp }
@@ -1133,68 +1223,5 @@ card.style.display = "none";
 }); 
 
 </script>
-<!-- ELIMU BORA ADMIN SECTION -->
-<div id="adminSection" style="
-display:none;
-margin:30px 20px;
-padding:25px;
-border-radius:15px;
-background:#f5f8fb;
-border:2px solid #1769aa;
-">
-
-<h2 style="color:#1769aa;margin-top:0;">
-🛠️ Admin Section
-</h2>
-
-<p style="font-size:16px;">
-Welcome, Elimu Bora Administrator.
-</p>
-
-<button
-style="
-padding:14px;
-border:none;
-border-radius:8px;
-background:#1769aa;
-color:white;
-font-size:16px;
-font-weight:600;
-width:100%;
-margin-top:10px;
-">
-📚 Manage Learning Resources
-</button>
-
-<button
-style="
-padding:14px;
-border:none;
-border-radius:8px;
-background:#16a05d;
-color:white;
-font-size:16px;
-font-weight:600;
-width:100%;
-margin-top:12px;
-">
-➕ Add New Resource
-</button>
-
-<button
-style="
-padding:14px;
-border:none;
-border-radius:8px;
-background:#6c4ab6;
-color:white;
-font-size:16px;
-font-weight:600;
-width:100%;
-margin-top:12px;
-">
-👥 Manage Members
-</button>
-</div>
 </body>
 </html>
