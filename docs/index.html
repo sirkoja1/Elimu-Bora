@@ -436,6 +436,14 @@ Your available Elimu Bora learning materials
 </p>
 
 </div>
+  <div class="search-box">
+<input
+id="resourceSearch"
+type="search"
+placeholder="🔎 Search learning resources..."
+autocomplete="off"
+>
+  </div>
 
 <div id="resourceGrid" class="resource-grid">
 
@@ -928,6 +936,63 @@ body.appendChild(description);
 body.appendChild(meta);
 
 body.appendChild(button);
+  const download =
+document.createElement("a");
+
+download.textContent =
+"⬇️ Download PDF";
+
+download.href =
+r.fileUrl || "#";
+
+download.target =
+"_blank";
+
+download.download = "";
+
+download.style.display =
+"inline-block";
+
+download.style.marginTop =
+"10px";
+
+download.style.marginLeft =
+"10px";
+
+download.style.padding =
+"10px 16px";
+
+download.style.borderRadius =
+"7px";
+
+download.style.background =
+"#16a05d";
+
+download.style.color =
+"white";
+
+download.style.fontWeight =
+"600";
+
+download.style.textDecoration =
+"none";
+
+download.onclick =
+function(event){
+
+if(!r.fileUrl){
+
+event.preventDefault();
+
+alert(
+"This resource does not have a file link yet."
+);
+
+}
+
+};
+
+body.appendChild(download);
 
 card.appendChild(top);
 
@@ -1013,6 +1078,37 @@ grid.innerHTML =
 }
 
 });
+ const resourceSearch =
+document.getElementById("resourceSearch");
+
+resourceSearch.addEventListener(
+"input",
+function(){
+
+const searchTerm =
+this.value.toLowerCase().trim();
+
+const cards =
+document.querySelectorAll(".resource-card");
+
+cards.forEach(function(card){
+
+const text =
+card.textContent.toLowerCase();
+
+if(text.includes(searchTerm)){
+
+card.style.display = "";
+
+}else{
+
+card.style.display = "none";
+
+}
+
+});
+
+}); 
 
 </script>
 
