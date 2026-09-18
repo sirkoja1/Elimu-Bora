@@ -1,840 +1,1204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Elimu Bora - Learning Resources</title>
-
-  <meta name="description"
-        content="Elimu Bora - Learning resources for students, teachers and schools.">
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f5f7fb;
-      color: #172033;
-      line-height: 1.6;
-    }
-
-    header {
-      background: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .nav {
-      max-width: 1150px;
-      margin: auto;
-      padding: 15px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: 800;
-      color: #1769aa;
-      text-decoration: none;
-    }
-
-    .logo span {
-      color: #16a05d;
-    }
-
-    nav {
-      display: flex;
-      gap: 18px;
-      align-items: center;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #273244;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    nav a:hover {
-      color: #1769aa;
-    }
-
-    .login-btn {
-      background: #1769aa;
-      color: white !important;
-      padding: 9px 17px;
-      border-radius: 8px;
-    }
-
-    .hero {
-      background: linear-gradient(135deg, #1769aa, #16a05d);
-      color: white;
-      padding: 75px 20px;
-    }
-
-    .hero-inner {
-      max-width: 1150px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 40px;
-      align-items: center;
-    }
-
-    .hero h1 {
-      font-size: 48px;
-      line-height: 1.15;
-      margin-bottom: 18px;
-    }
-
-    .hero p {
-      font-size: 19px;
-      max-width: 650px;
-      margin-bottom: 28px;
-      opacity: 0.95;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      border: none;
-      padding: 13px 21px;
-      border-radius: 9px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .btn-white {
-      background: white;
-      color: #1769aa;
-    }
-
-    .btn-dark {
-      background: #0d4774;
-      color: white;
-    }
-
-    .hero-card {
-      background: rgba(255,255,255,0.15);
-      padding: 30px;
-      border-radius: 18px;
-      backdrop-filter: blur(5px);
-    }
-
-    .hero-card h2 {
-      margin-bottom: 15px;
-    }
-
-    .hero-card p {
-      font-size: 16px;
-      margin: 0;
-    }
-
-    section {
-      padding: 65px 20px;
-    }
-
-    .container {
-      max-width: 1150px;
-      margin: auto;
-    }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .section-title h2 {
-      font-size: 32px;
-      margin-bottom: 8px;
-    }
-
-    .section-title p {
-      color: #667085;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
-    }
-
-    .feature {
-      background: white;
-      padding: 28px;
-      border-radius: 14px;
-      border: 1px solid #e6e9ef;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-    }
-
-    .icon {
-      font-size: 35px;
-      margin-bottom: 12px;
-    }
-
-    .feature h3 {
-      margin-bottom: 8px;
-    }
-
-    .feature p {
-      color: #667085;
-    }
-
-    .resources {
-      background: white;
-    }
-
-    .resource-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
-    }
-
-    .resource {
-      border: 1px solid #e4e7ec;
-      border-radius: 14px;
-      overflow: hidden;
-      background: white;
-    }
-
-    .resource-top {
-      background: #eef6ff;
-      padding: 25px;
-      font-size: 42px;
-      text-align: center;
-    }
-
-    .resource-body {
-      padding: 20px;
-    }
-
-    .resource-body h3 {
-      margin-bottom: 7px;
-    }
-
-    .resource-body p {
-      color: #667085;
-      margin-bottom: 15px;
-    }
-
-    .resource-btn {
-      display: inline-block;
-      padding: 9px 15px;
-      border-radius: 7px;
-      background: #1769aa;
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .membership {
-      background: #f0fdf6;
-    }
-
-    .membership-box {
-      max-width: 750px;
-      margin: auto;
-      background: white;
-      border-radius: 18px;
-      padding: 40px;
-      text-align: center;
-      border: 1px solid #dcefe4;
-    }
-
-    .membership-box h2 {
-      font-size: 32px;
-      margin-bottom: 12px;
-    }
-
-    .price {
-      font-size: 38px;
-      font-weight: 800;
-      color: #16a05d;
-      margin: 18px 0;
-    }
-
-    .membership-box ul {
-      list-style: none;
-      text-align: left;
-      max-width: 400px;
-      margin: 20px auto;
-    }
-
-    .membership-box li {
-      padding: 7px 0;
-    }
-
-    .membership-box li::before {
-      content: "✓ ";
-      color: #16a05d;
-      font-weight: bold;
-    }
-
-    .contact {
-      background: #ffffff;
-    }
-
-    .contact-box {
-      text-align: center;
-    }
-
-    .contact-box p {
-      margin: 8px 0;
-      color: #667085;
-    }
-
-    footer {
-      background: #172033;
-      color: white;
-      padding: 35px 20px;
-      text-align: center;
-    }
-
-    footer p {
-      opacity: 0.8;
-      margin: 5px;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-box {
-      background: white;
-      width: 100%;
-      max-width: 430px;
-      border-radius: 15px;
-      padding: 30px;
-      position: relative;
-    }
-
-    .close {
-      position: absolute;
-      right: 18px;
-      top: 12px;
-      font-size: 27px;
-      cursor: pointer;
-    }
-
-    .modal-box h2 {
-      margin-bottom: 18px;
-    }
-
-    .modal-box input {
-      width: 100%;
-      padding: 12px;
-      margin: 7px 0;
-      border: 1px solid #d0d5dd;
-      border-radius: 8px;
-      font-size: 15px;
-    }
-
-    .modal-box button {
-      width: 100%;
-      margin-top: 12px;
-      background: #1769aa;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .note {
-      font-size: 13px;
-      color: #667085;
-      margin-top: 12px;
-      text-align: center;
-    }
-
-    @media (max-width: 800px) {
-      .hero-inner {
-        grid-template-columns: 1fr;
-      }
-
-      .hero h1 {
-        font-size: 38px;
-      }
-
-      .features,
-      .resource-grid {
-        grid-template-columns: 1fr;
-      }
-
-      nav {
-        display: none;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Elimu Bora - Learning Resources</title>
+
+<meta name="description"
+content="Elimu Bora - Learning resources for students, teachers and schools.">
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f7fb;
+  color:#172033;
+  line-height:1.6;
+}
+
+header{
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.nav{
+  max-width:1150px;
+  margin:auto;
+  padding:15px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  font-size:25px;
+  font-weight:800;
+  color:#1769aa;
+  text-decoration:none;
+}
+
+.logo span{
+  color:#16a05d;
+}
+
+nav{
+  display:flex;
+  gap:18px;
+  align-items:center;
+}
+
+nav a{
+  text-decoration:none;
+  color:#273244;
+  font-weight:600;
+}
+
+.login-btn{
+  background:#1769aa;
+  color:#fff !important;
+  padding:9px 17px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.hero{
+  background:linear-gradient(135deg,#1769aa,#16a05d);
+  color:white;
+  padding:75px 20px;
+}
+
+.hero-inner{
+  max-width:1150px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1.5fr 1fr;
+  gap:40px;
+  align-items:center;
+}
+
+.hero h1{
+  font-size:48px;
+  line-height:1.15;
+  margin-bottom:18px;
+}
+
+.hero p{
+  font-size:19px;
+  max-width:650px;
+  margin-bottom:28px;
+}
+
+.hero-buttons{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  border:none;
+  padding:13px 21px;
+  border-radius:9px;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-block;
+}
+
+.btn-white{
+  background:white;
+  color:#1769aa;
+}
+
+.btn-dark{
+  background:#0d4774;
+  color:white;
+}
+
+.hero-card{
+  background:rgba(255,255,255,.15);
+  padding:30px;
+  border-radius:18px;
+}
+
+.hero-card h2{
+  margin-bottom:15px;
+}
+
+.hero-card p{
+  font-size:16px;
+  margin:0;
+}
+
+section{
+  padding:65px 20px;
+}
+
+.container{
+  max-width:1150px;
+  margin:auto;
+}
+
+.section-title{
+  text-align:center;
+  margin-bottom:40px;
+}
+
+.section-title h2{
+  font-size:32px;
+  margin-bottom:8px;
+}
+
+.section-title p{
+  color:#667085;
+}
+
+.features{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
+
+.feature{
+  background:white;
+  padding:28px;
+  border-radius:14px;
+  border:1px solid #e6e9ef;
+  box-shadow:0 4px 15px rgba(0,0,0,.04);
+}
+
+.icon{
+  font-size:35px;
+  margin-bottom:12px;
+}
+
+.feature h3{
+  margin-bottom:8px;
+}
+
+.feature p{
+  color:#667085;
+}
+
+.resources{
+  background:white;
+}
+
+.resource-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:22px;
+}
+
+.resource-card{
+  border:1px solid #e4e7ec;
+  border-radius:14px;
+  overflow:hidden;
+  background:white;
+}
+
+.resource-top{
+  background:#eef6ff;
+  padding:25px;
+  font-size:42px;
+  text-align:center;
+}
+
+.resource-body{
+  padding:20px;
+}
+
+.resource-body h3{
+  margin-bottom:7px;
+}
+
+.resource-body p{
+  color:#667085;
+  margin-bottom:15px;
+}
+
+.resource-btn{
+  display:inline-block;
+  padding:10px 16px;
+  border-radius:7px;
+  background:#1769aa;
+  color:white;
+  text-decoration:none;
+  font-weight:600;
+  cursor:pointer;
+  border:none;
+}
+
+.membership{
+  background:#f0fdf6;
+}
+
+.membership-box{
+  max-width:750px;
+  margin:auto;
+  background:white;
+  border-radius:18px;
+  padding:40px;
+  text-align:center;
+  border:1px solid #dcefe4;
+}
+
+.membership-box h2{
+  font-size:32px;
+  margin-bottom:12px;
+}
+
+.membership-box ul{
+  list-style:none;
+  text-align:left;
+  max-width:400px;
+  margin:20px auto;
+}
+
+.membership-box li{
+  padding:7px 0;
+}
+
+.membership-box li::before{
+  content:"✓ ";
+  color:#16a05d;
+  font-weight:bold;
+}
+
+.contact{
+  background:#fff;
+}
+
+.contact-box{
+  text-align:center;
+}
+
+.contact-box p{
+  margin:8px 0;
+  color:#667085;
+}
+
+footer{
+  background:#172033;
+  color:white;
+  padding:35px 20px;
+  text-align:center;
+}
+
+footer p{
+  opacity:.8;
+  margin:5px;
+}
+
+@media(max-width:800px){
+  .hero-inner{
+    grid-template-columns:1fr;
+  }
+
+  .hero h1{
+    font-size:38px;
+  }
+
+  .features,
+  .resource-grid{
+    grid-template-columns:1fr;
+  }
+
+  nav{
+    display:none;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <div class="nav">
-    <a href="#" class="logo">Elimu <span>Bora</span></a>
+<div class="nav">
 
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#resources">Resources</a>
-      <a href="#membership">Membership</a>
-      <a href="#contact">Contact</a>
-      <a class="login-btn" onclick="openLogin()">Login</a>
-    </nav>
-  </div>
+<a href="#home" class="logo">
+Elimu <span>Bora</span>
+</a>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#resources">Resources</a>
+<a href="#membership">Membership</a>
+<a href="#contact">Contact</a>
+<a class="login-btn" onclick="openLogin()">Login</a>
+</nav>
+
+</div>
 </header>
 
 <section class="hero" id="home">
-  <div class="hero-inner">
 
-    <div>
-      <h1>Learn. Grow. Succeed.</h1>
+<div class="hero-inner">
 
-      <p>
-        Welcome to Elimu Bora, a learning platform providing
-        quality educational resources for students, teachers
-        and schools.
-      </p>
+<div>
 
-      <div class="hero-buttons">
-        <a href="#resources" class="btn btn-white">
-          Explore Resources
-        </a>
+<h1>Learn. Grow. Succeed.</h1>
 
-        <a href="#membership" class="btn btn-dark">
-          Become a Member
-        </a>
-      </div>
-    </div>
+<p>
+Welcome to Elimu Bora, a learning platform providing
+quality educational resources for students, teachers
+and schools.
+</p>
 
-    <div class="hero-card">
-      <h2>📚 Your Learning Hub</h2>
-      <p>
-        Access notes, revision materials, examinations,
-        teaching resources and other educational materials
-        from one place.
-      </p>
-  </div>
-<section id="resources" class="resources">
-  <div class="container">
+<div class="hero-buttons">
 
-    <div class="section-title">
-      <h2>📚 Learning Resources</h2>
-      <p>Access quality learning materials for study, revision and teaching.</p>
-    </div>
+<a href="#resources" class="btn btn-white">
+Explore Resources
+</a>
 
-    <div class="resource-grid">
+<a href="#membership" class="btn btn-dark">
+Become a Member
+</a>
 
-      <div class="resource-card">
-        <div class="resource-top">📖</div>
-        <div class="resource-body">
-          <h3>Revision Notes</h3>
-          <p>Useful notes and revision materials for students.</p>
-          <a href="#" class="resource-btn member-resource">Open Resource</a>
-        </div>
-      </div>
+</div>
 
-      <div class="resource-card">
-        <div class="resource-top">📝</div>
-        <div class="resource-body">
-          <h3>Examinations</h3>
-          <p>Past papers and examination practice materials.</p>
-          <a href="#" class="resource-btn member-resource">Open Resource</a>
-        </div>
-      </div>
+</div>
 
-      <div class="resource-card">
-        <div class="resource-top">👨‍🏫</div>
-        <div class="resource-body">
-          <h3>Teaching Resources</h3>
-          <p>Educational materials to support teachers and schools.</p>
-          <a href="#" class="resource-btn member-resource">Open Resource</a>
-        </div>
-      </div>
+<div class="hero-card">
 
-      <div class="resource-card">
-        <div class="resource-top">🎓</div>
-        <div class="resource-body">
-          <h3>Study Materials</h3>
-          <p>Learning materials to help students improve their studies.</p>
-          <a href="#" class="resource-btn member-resource">Open Resource</a>
-        </div>
-      </div>
+<h2>📚 Your Learning Hub</h2>
 
-    </div>
+<p>
+Access notes, revision materials, examinations,
+teaching resources and other educational materials
+from one place.
+</p>
 
-    <div style="text-align:center; margin-top:25px;">
-      <p><strong>🔐 Member access</strong></p>
-      <p>Create an account or log in to access learning resources.</p>
-    </div>
+</div>
 
-  </div>
+</div>
+
 </section>
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
-  import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    sendPasswordResetEmail,
-    signOut,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyC6JBx_7_aZl6zhFAXUMgbi3EBMQaFzYpc",
-    authDomain: "elimu-bora-7144f.firebaseapp.com",
-    projectId: "elimu-bora-7144f",
-    storageBucket: "elimu-bora-7144f.firebasestorage.app",
-    messagingSenderId: "993419610752",
-    appId: "1:993419610752:web:b50639b4da658e88a8b465",
-    measurementId: "G-SGVQCH2QCY"
-  };
+<section id="resources" class="resources">
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+<div class="container">
 
-  const loginButton = document.createElement("button");
-  loginButton.textContent = "🔐 Member Login";
-  loginButton.style.position = "fixed";
-  loginButton.style.right = "18px";
-  loginButton.style.bottom = "18px";
-  loginButton.style.zIndex = "9999";
-  loginButton.style.background = "#1769aa";
-  loginButton.style.color = "white";
-  loginButton.style.border = "none";
-  loginButton.style.padding = "14px 20px";
-  loginButton.style.borderRadius = "30px";
-  loginButton.style.fontSize = "16px";
-  loginButton.style.fontWeight = "bold";
-  loginButton.style.boxShadow = "0 4px 12px rgba(0,0,0,0.25)";
-  loginButton.style.cursor = "pointer";
-  document.body.appendChild(loginButton);
+<div class="section-title">
 
-  const modal = document.createElement("div");
-  modal.style.display = "none";
-  modal.style.position = "fixed";
-  modal.style.inset = "0";
-  modal.style.zIndex = "10000";
-  modal.style.background = "rgba(0,0,0,0.65)";
-  modal.style.alignItems = "center";
-  modal.style.justifyContent = "center";
-  modal.style.padding = "20px";
+<h2>📚 Learning Resources</h2>
 
-  const box = document.createElement("div");
-  box.style.background = "white";
-  box.style.width = "100%";
-  box.style.maxWidth = "400px";
-  box.style.borderRadius = "18px";
-  box.style.padding = "25px";
-  box.style.boxSizing = "border-box";
+<p>
+Access quality learning materials for study,
+revision and teaching.
+</p>
 
-  box.innerHTML = `
-    <button id="closeMemberLogin"
-      style="
-        float:right;
-        border:none;
-        background:none;
-        font-size:28px;
-        cursor:pointer;
-      ">×</button>
+</div>
 
-    <h2 style="
-      text-align:center;
-      color:#1769aa;
-      margin-top:5px;
-    ">
-      Elimu Bora Members
-    </h2>
+<div class="resource-grid">
 
-    <p style="
-      text-align:center;
-      color:#667085;
-    ">
-      Login or create your member account
-    </p>
+<div class="resource-card">
 
-    <input
-      id="memberEmail"
-      type="email"
-      placeholder="Email address"
-      style="
-        width:100%;
-        padding:13px;
-        margin:8px 0;
-        box-sizing:border-box;
-        border:1px solid #ccc;
-        border-radius:8px;
-        font-size:16px;
-      "
-    >
+<div class="resource-top">📖</div>
 
-    <input
-      id="memberPassword"
-      type="password"
-      placeholder="Password"
-      style="
-        width:100%;
-        padding:13px;
-        margin:8px 0;
-        box-sizing:border-box;
-        border:1px solid #ccc;
-        border-radius:8px;
-        font-size:16px;
-      "
-    >
+<div class="resource-body">
 
-    <button id="forgotPassword"
-      style="
-        display:block;
-        width:100%;
-        border:none;
-        background:none;
-        color:#1769aa;
-        font-size:15px;
-        margin:8px 0 12px;
-        cursor:pointer;
-      ">
-      Forgot Password?
-    </button>
+<h3>Revision Notes</h3>
 
-    <button id="loginMember"
-      style="
-        width:100%;
-        padding:13px;
-        border:none;
-        border-radius:8px;
-        background:#1769aa;
-        color:white;
-        font-size:16px;
-        font-weight:bold;
-      ">
-      Login
-    </button>
+<p>
+Useful notes and revision materials for students.
+</p>
 
-    <button id="createMember"
-      style="
-        width:100%;
-        padding:13px;
-        margin-top:10px;
-        border:none;
-        border-radius:8px;
-        background:#16a05d;
-        color:white;
-        font-size:16px;
-        font-weight:bold;
-      ">
-      Create Account
-    </button>
+<a href="#"
+class="resource-btn member-resource">
+Open Resource
+</a>
 
-    <button id="logoutMember"
-      style="
-        display:none;
-        width:100%;
-        padding:13px;
-        margin-top:10px;
-        border:none;
-        border-radius:8px;
-        background:#555;
-        color:white;
-        font-size:16px;
-        font-weight:bold;
-      ">
-      Logout
-    </button>
+</div>
+</div>
 
-    <p id="memberMessage"
-      style="
-        text-align:center;
-        margin-top:15px;
-        font-size:14px;
-      ">
-    </p>
-  `;
 
-  modal.appendChild(box);
-  document.body.appendChild(modal);
+<div class="resource-card">
 
-  const emailInput = document.getElementById("memberEmail");
-  const passwordInput = document.getElementById("memberPassword");
-  const loginMember = document.getElementById("loginMember");
-  const createMember = document.getElementById("createMember");
-  const forgotPassword = document.getElementById("forgotPassword");
-  const logoutMember = document.getElementById("logoutMember");
-  const closeMemberLogin = document.getElementById("closeMemberLogin");
-  const memberMessage = document.getElementById("memberMessage");
+<div class="resource-top">📝</div>
 
-  loginButton.onclick = () => {
-    modal.style.display = "flex";
-  };
+<div class="resource-body">
 
-  closeMemberLogin.onclick = () => {
-    modal.style.display = "none";
-  };
+<h3>Examinations</h3>
 
-  modal.onclick = (event) => {
-    if (event.target === modal) {
-      modal.style.display = "none";
-    }
-  };
+<p>
+Past papers and examination practice materials.
+</p>
 
-  createMember.onclick = async () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
+<a href="#"
+class="resource-btn member-resource">
+Open Resource
+</a>
 
-    if (!email || !password) {
-      memberMessage.textContent =
-        "Please enter your email and password.";
-      return;
-    }
+</div>
+</div>
 
-    if (password.length < 6) {
-      memberMessage.textContent =
-        "Password must contain at least 6 characters.";
-      return;
-    }
 
-    try {
-      await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+<div class="resource-card">
 
-      memberMessage.textContent =
-        "Account created successfully!";
-    } catch (error) {
-      memberMessage.textContent = error.message;
-    }
-  };
+<div class="resource-top">👨‍🏫</div>
 
-  loginMember.onclick = async () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
+<div class="resource-body">
 
-    if (!email || !password) {
-      memberMessage.textContent =
-        "Please enter your email and password.";
-      return;
-    }
+<h3>Teaching Resources</h3>
 
-    try {
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+<p>
+Educational materials to support teachers and schools.
+</p>
 
-      memberMessage.textContent =
-        "Login successful!";
-    } catch (error) {
-      memberMessage.textContent = error.message;
-    }
-  };
+<a href="#"
+class="resource-btn member-resource">
+Open Resource
+</a>
 
-  forgotPassword.onclick = async () => {
-    const email = emailInput.value.trim();
+</div>
+</div>
 
-    if (!email) {
-      memberMessage.textContent =
-        "Please enter your email address first.";
-      return;
-    }
 
-    try {
-      await sendPasswordResetEmail(auth, email);
+<div class="resource-card">
 
-      memberMessage.textContent =
-        "Password reset email sent. Check your email.";
-    } catch (error) {
-      if (error.code === "auth/user-not-found") {
-        memberMessage.textContent =
-          "No account was found with this email.";
-      } else if (error.code === "auth/invalid-email") {
-        memberMessage.textContent =
-          "Please enter a valid email address.";
-      } else {
-        memberMessage.textContent = error.message;
-      }
-    }
-  };
+<div class="resource-top">🎓</div>
 
-  logoutMember.onclick = async () => {
-    try {
-      await signOut(auth);
+<div class="resource-body">
 
-      memberMessage.textContent =
-        "You have logged out.";
-    } catch (error) {
-      memberMessage.textContent = error.message;
-    }
-  };
+<h3>Study Materials</h3>
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      loginButton.textContent =
-        "👤 " + user.email;
+<p>
+Learning materials to help students improve their studies.
+</p>
 
-      loginMember.style.display = "none";
-      createMember.style.display = "none";
-      forgotPassword.style.display = "none";
-      logoutMember.style.display = "block";
+<a href="#"
+class="resource-btn member-resource">
+Open Resource
+</a>
 
-      memberMessage.textContent =
-        "Logged in as " + user.email;
-    } else {
-      loginButton.textContent =
-        "🔐 Member Login";
+</div>
+</div>
 
-      loginMember.style.display = "block";
-      createMember.style.display = "block";
-      forgotPassword.style.display = "block";
-      logoutMember.style.display = "none";
+</div>
 
-      memberMessage.textContent = "";
-    }
-  });
-// Member-only resource access
-document.querySelectorAll(".member-resource").forEach((button) => {
-  button.addEventListener("click", (event) => {
-    event.preventDefault();
+</div>
 
-    if (!auth.currentUser) {
-      alert("🔐 Please log in or create a member account to access this resource.");
-      return;
-    }
+</section>
 
-    alert("✅ Member access confirmed. This resource will be available here.");
-  });
-  });</script>
+
+<section class="membership" id="membership">
+
+<div class="membership-box">
+
+<h2>🔐 Elimu Bora Membership</h2>
+
+<p>
+Create a member account to access protected
+learning resources.
+</p>
+
+<ul>
+<li>Revision notes</li>
+<li>Examinations and past papers</li>
+<li>Teaching resources</li>
+<li>Study materials</li>
+</ul>
+
+<button class="btn btn-dark" onclick="openLogin()">
+Login / Create Account
+</button>
+
+</div>
+
+</section>
+
+
+<section class="contact" id="contact">
+
+<div class="container">
+
+<div class="contact-box">
+
+<h2>📞 Contact Elimu Bora</h2>
+
+<p>
+For learning resources and membership support,
+contact Elimu Bora.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<footer>
+
+<p>
+© 2026 Elimu Bora. All rights reserved.
+</p>
+
+<p>
+Learning today. Succeeding tomorrow.
+</p>
+
+</footer>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+sendPasswordResetEmail,
+signOut,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyC6JBx_7_aZl6zhFAXUMgbi3EBMQaFzYpc",
+
+authDomain:
+"elimu-bora-7144f.firebaseapp.com",
+
+projectId:
+"elimu-bora-7144f",
+
+storageBucket:
+"elimu-bora-7144f.firebasestorage.app",
+
+messagingSenderId:
+"993419610752",
+
+appId:
+"1:993419610752:web:b50639b4da658e88a8b465",
+
+measurementId:
+"G-SGVQCH2QCY"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+/* =========================
+   MEMBER LOGIN BUTTON
+========================= */
+
+const loginButton = document.createElement("button");
+
+loginButton.textContent = "🔐 Member Login";
+
+loginButton.style.position = "fixed";
+loginButton.style.right = "18px";
+loginButton.style.bottom = "18px";
+loginButton.style.zIndex = "9999";
+loginButton.style.background = "#1769aa";
+loginButton.style.color = "white";
+loginButton.style.border = "none";
+loginButton.style.padding = "14px 20px";
+loginButton.style.borderRadius = "30px";
+loginButton.style.fontSize = "16px";
+loginButton.style.fontWeight = "bold";
+loginButton.style.boxShadow =
+"0 4px 12px rgba(0,0,0,.25)";
+loginButton.style.cursor = "pointer";
+
+document.body.appendChild(loginButton);
+
+
+/* =========================
+   LOGIN MODAL
+========================= */
+
+const modal = document.createElement("div");
+
+modal.style.display = "none";
+modal.style.position = "fixed";
+modal.style.inset = "0";
+modal.style.zIndex = "10000";
+modal.style.background = "rgba(0,0,0,.65)";
+modal.style.alignItems = "center";
+modal.style.justifyContent = "center";
+modal.style.padding = "20px";
+
+
+const box = document.createElement("div");
+
+box.style.background = "white";
+box.style.width = "100%";
+box.style.maxWidth = "400px";
+box.style.borderRadius = "18px";
+box.style.padding = "25px";
+box.style.boxSizing = "border-box";
+
+
+box.innerHTML = `
+
+<button id="closeMemberLogin"
+style="
+float:right;
+border:none;
+background:none;
+font-size:28px;
+cursor:pointer;
+">×</button>
+
+<h2 style="
+text-align:center;
+color:#1769aa;
+margin-top:5px;
+">
+Elimu Bora Members
+</h2>
+
+<p style="
+text-align:center;
+color:#667085;
+">
+Login or create your member account
+</p>
+
+<input
+id="memberEmail"
+type="email"
+placeholder="Email address"
+style="
+width:100%;
+padding:13px;
+margin:8px 0;
+box-sizing:border-box;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+">
+
+<input
+id="memberPassword"
+type="password"
+placeholder="Password"
+style="
+width:100%;
+padding:13px;
+margin:8px 0;
+box-sizing:border-box;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+">
+
+<button id="forgotPassword"
+style="
+display:block;
+width:100%;
+border:none;
+background:none;
+color:#1769aa;
+font-size:15px;
+margin:8px 0 12px;
+cursor:pointer;
+">
+Forgot Password?
+</button>
+
+<button id="loginMember"
+style="
+width:100%;
+padding:13px;
+border:none;
+border-radius:8px;
+background:#1769aa;
+color:white;
+font-size:16px;
+font-weight:bold;
+">
+Login
+</button>
+
+<button id="createMember"
+style="
+width:100%;
+padding:13px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+background:#16a05d;
+color:white;
+font-size:16px;
+font-weight:bold;
+">
+Create Account
+</button>
+
+<button id="logoutMember"
+style="
+display:none;
+width:100%;
+padding:13px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+background:#555;
+color:white;
+font-size:16px;
+font-weight:bold;
+">
+Logout
+</button>
+
+<p id="memberMessage"
+style="
+text-align:center;
+margin-top:15px;
+font-size:14px;
+">
+</p>
+
+`;
+
+
+modal.appendChild(box);
+
+document.body.appendChild(modal);
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const emailInput =
+document.getElementById("memberEmail");
+
+const passwordInput =
+document.getElementById("memberPassword");
+
+const loginMember =
+document.getElementById("loginMember");
+
+const createMember =
+document.getElementById("createMember");
+
+const forgotPassword =
+document.getElementById("forgotPassword");
+
+const logoutMember =
+document.getElementById("logoutMember");
+
+const closeMemberLogin =
+document.getElementById("closeMemberLogin");
+
+const memberMessage =
+document.getElementById("memberMessage");
+
+
+/* =========================
+   OPEN / CLOSE LOGIN
+========================= */
+
+window.openLogin = function(){
+
+modal.style.display = "flex";
+
+};
+
+
+loginButton.onclick = function(){
+
+modal.style.display = "flex";
+
+};
+
+
+closeMemberLogin.onclick = function(){
+
+modal.style.display = "none";
+
+};
+
+
+modal.onclick = function(event){
+
+if(event.target === modal){
+
+modal.style.display = "none";
+
+}
+
+};
+
+
+/* =========================
+   CREATE ACCOUNT
+========================= */
+
+createMember.onclick = async function(){
+
+const email =
+emailInput.value.trim();
+
+const password =
+passwordInput.value;
+
+
+if(!email || !password){
+
+memberMessage.textContent =
+"Please enter your email and password.";
+
+return;
+
+}
+
+
+if(password.length < 6){
+
+memberMessage.textContent =
+"Password must contain at least 6 characters.";
+
+return;
+
+}
+
+
+try{
+
+await createUserWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+memberMessage.textContent =
+"Account created successfully!";
+
+}
+
+catch(error){
+
+memberMessage.textContent =
+error.message;
+
+}
+
+};
+
+
+/* =========================
+   LOGIN
+========================= */
+
+loginMember.onclick = async function(){
+
+const email =
+emailInput.value.trim();
+
+const password =
+passwordInput.value;
+
+
+if(!email || !password){
+
+memberMessage.textContent =
+"Please enter your email and password.";
+
+return;
+
+}
+
+
+try{
+
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+memberMessage.textContent =
+"Login successful!";
+
+}
+
+catch(error){
+
+memberMessage.textContent =
+error.message;
+
+}
+
+};
+
+
+/* =========================
+   PASSWORD RESET
+========================= */
+
+forgotPassword.onclick = async function(){
+
+const email =
+emailInput.value.trim();
+
+
+if(!email){
+
+memberMessage.textContent =
+"Please enter your email address first.";
+
+return;
+
+}
+
+
+try{
+
+await sendPasswordResetEmail(
+auth,
+email
+);
+
+memberMessage.textContent =
+"Password reset email sent. Check your email.";
+
+}
+
+catch(error){
+
+memberMessage.textContent =
+error.message;
+
+}
+
+};
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+logoutMember.onclick = async function(){
+
+try{
+
+await signOut(auth);
+
+memberMessage.textContent =
+"You have logged out.";
+
+}
+
+catch(error){
+
+memberMessage.textContent =
+error.message;
+
+}
+
+};
+
+
+/* =========================
+   AUTH STATE
+========================= */
+
+onAuthStateChanged(auth,function(user){
+
+if(user){
+
+loginButton.textContent =
+"👤 " + user.email;
+
+loginMember.style.display =
+"none";
+
+createMember.style.display =
+"none";
+
+forgotPassword.style.display =
+"none";
+
+logoutMember.style.display =
+"block";
+
+memberMessage.textContent =
+"Logged in as " + user.email;
+
+}
+
+else{
+
+loginButton.textContent =
+"🔐 Member Login";
+
+loginMember.style.display =
+"block";
+
+createMember.style.display =
+"block";
+
+forgotPassword.style.display =
+"block";
+
+logoutMember.style.display =
+"none";
+
+memberMessage.textContent = "";
+
+}
+
+});
+
+
+/* =========================
+   FIRESTORE RESOURCES
+========================= */
+
+document.querySelectorAll(".member-resource")
+.forEach(function(button){
+
+button.addEventListener("click",async function(event){
+
+event.preventDefault();
+
+
+if(!auth.currentUser){
+
+alert(
+"🔐 Please log in or create a member account to access this resource."
+);
+
+return;
+
+}
+
+
+const card =
+button.closest(".resource-card");
+
+
+const category =
+card
+.querySelector("h3")
+.textContent
+.trim();
+
+
+button.textContent =
+"Loading...";
+
+
+try{
+
+const snapshot =
+await getDocs(
+collection(db,"resources")
+);
+
+
+let found = null;
+
+
+snapshot.forEach(function(docSnap){
+
+const data =
+docSnap.data();
+
+
+if(
+data.category &&
+data.category.toLowerCase() ===
+category.toLowerCase()
+){
+
+found = data;
+
+}
+
+});
+
+
+if(!found){
+
+alert(
+"ℹ️ No " +
+category +
+" resource has been added yet. Please check again later."
+);
+
+return;
+
+}
+
+
+alert(
+
+"📚 " +
+(found.title || category) +
+
+"\n\nCategory: " +
+(found.category || "") +
+
+"\n\n" +
+
+(found.description ||
+"No description available.")
+
+);
+
+}
+
+catch(error){
+
+console.error(
+"Firestore error:",
+error
+);
+
+alert(
+"❌ Unable to load this resource right now. Please check your internet connection and try again."
+);
+
+}
+
+finally{
+
+button.textContent =
+"Open Resource";
+
+}
+
+});
+
+});
+
+</script>
 
 </body>
-</html>
+  </html>
