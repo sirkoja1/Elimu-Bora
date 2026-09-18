@@ -1235,7 +1235,142 @@ card.style.display = "none";
 });
 
 }); 
+/* ELIMU BORA ADMIN BUTTONS */
 
+const adminSection = document.getElementById("adminSection");
+const addResourceButton = document.getElementById("addResourceButton");
+const manageResourcesButton = document.getElementById("manageResourcesButton");
+const manageMembersButton = document.getElementById("manageMembersButton");
+const adminLogoutButton = document.getElementById("adminLogoutButton");
+
+const addResourceForm = document.getElementById("addResourceForm");
+const manageResourcesPanel = document.getElementById("manageResourcesPanel");
+const adminResourceList = document.getElementById("adminResourceList");
+const adminMessage = document.getElementById("adminMessage");
+
+function isAdminUser(){
+
+const user = auth.currentUser;
+
+return !!(
+user &&
+user.email &&
+user.email.toLowerCase() === "kojasalim93@gmail.com"
+);
+
+}
+
+function adminNotice(text){
+
+if(adminMessage){
+
+adminMessage.textContent = text;
+
+}
+
+}
+
+
+addResourceButton.onclick = function(){
+
+if(!isAdminUser()){
+
+adminNotice("Administrator access required.");
+
+return;
+
+}
+
+addResourceForm.style.display = "block";
+
+manageResourcesPanel.style.display = "none";
+
+adminNotice("");
+
+};
+
+
+manageResourcesButton.onclick = async function(){
+
+if(!isAdminUser()){
+
+adminNotice("Administrator access required.");
+
+return;
+
+}
+
+addResourceForm.style.display = "none";
+
+manageResourcesPanel.style.display = "block";
+
+await loadAdminResources();
+
+};
+
+
+manageMembersButton.onclick = async function(){
+
+if(!isAdminUser()){
+
+adminNotice("Administrator access required.");
+
+return;
+
+}
+
+addResourceForm.style.display = "none";
+
+manageResourcesPanel.style.display = "block";
+
+adminResourceList.innerHTML =
+"<h3>👥 Members</h3><p>Loading members...</p>";
+
+try{
+
+const snapshot =
+await getDocs(collection(db,"members"));
+
+if(snapshot.empty){
+
+adminResourceList.innerHTML =
+"<h3>👥 Members</h3><p>No members found.</p>";
+
+return;
+
+}
+
+let html = "<h3>👥 Members</h3>";
+
+snapshot.forEach(function(memberSnap){
+
+const member = memberSnap.data();
+
+html +=
+'<div style="padding:12px;border-bottom:1px solid #ddd;">' +
+"<strong>" +
+(member.email || "Member") +
+"</strong><br>" +
+"<small>UID: " +
+(member.uid || memberSnap.id) +
+"</small></div>";
+
+});
+
+adminResourceList.innerHTML = html;
+
+}catch(error){
+
+console.error(error);
+
+adminResourceList.innerHTML =
+"<p>Unable to load resources. Check Firestore rules.</p>";
+
+}
+
+}
+
+</script>
 </script>
 </body>
 </html>
