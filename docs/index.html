@@ -354,176 +354,6 @@ white-space:nowrap
 .resource-grid{grid-template-columns:1fr}
 nav{display:none}
 }
-  /* ===== ELIMU BORA HOMEPAGE FACELIFT ===== */
-
-body {
-  background: linear-gradient(180deg, #f5fbff 0%, #ffffff 45%, #f1f8f5 100%);
-}
-
-header {
-  box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.hero {
-  border-radius: 0 0 35px 35px;
-  padding: 65px 25px;
-  background: linear-gradient(135deg, #0077b6, #00a896);
-  box-shadow: 0 8px 25px rgba(0,119,182,0.18);
-}
-
-.hero h1 {
-  font-size: 48px;
-  font-weight: 800;
-  letter-spacing: -1px;
-}
-
-.hero p {
-  font-size: 19px;
-  line-height: 1.7;
-  max-width: 650px;
-}
-
-.hero .btn {
-  border-radius: 30px;
-  padding: 14px 25px;
-  font-weight: 700;
-  transition: transform .2s, box-shadow .2s;
-}
-
-.hero .btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0,0,0,.15);
-}
-
-.resource-card {
-  border-radius: 18px;
-  border: 1px solid #e5eef5;
-  box-shadow: 0 6px 20px rgba(0,0,0,.07);
-  transition: transform .2s, box-shadow .2s;
-}
-
-.resource-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 28px rgba(0,0,0,.12);
-}
-
-.membership {
-  padding: 55px 20px;
-}
-
-.membership-box {
-  border-radius: 25px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.10);
-  border: 1px solid #e1edf0;
-}
-
-.membership-box h2 {
-  font-size: 30px;
-}
-
-.membership-box li {
-  margin: 10px 0;
-}
-
-.btn {
-  border-radius: 25px;
-  font-weight: 700;
-}
-
-footer {
-  margin-top: 40px;
-}
-
-/* Mobile facelift */
-@media (max-width: 600px) {
-  .hero {
-    padding: 45px 18px;
-    border-radius: 0 0 25px 25px;
-  }
-
-  .hero h1 {
-    font-size: 36px;
-  }
-
-  .hero p {
-    font-size: 17px;
-  }
-
-  .membership-box {
-    padding: 25px 18px;
-  }
-}
-/* ===== RESOURCE CATEGORY CARDS ===== */
-
-.resource-categories {
-  max-width: 1100px;
-  margin: 0 auto 35px;
-  padding: 0 20px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.category-card {
-  background: #ffffff;
-  border: 1px solid #e3edf2;
-  border-radius: 18px;
-  padding: 25px 20px;
-  text-align: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.category-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-}
-
-.category-icon {
-  font-size: 42px;
-  margin-bottom: 10px;
-}
-
-.category-card h3 {
-  margin: 8px 0;
-  font-size: 20px;
-  color: #123;
-}
-
-.category-card p {
-  color: #667085;
-  font-size: 14px;
-  line-height: 1.5;
-  min-height: 42px;
-}
-
-.category-card button {
-  margin-top: 12px;
-  padding: 11px 22px;
-  border: none;
-  border-radius: 25px;
-  background: #0077b6;
-  color: white;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.category-card button:hover {
-  background: #005f8f;
-}
-
-@media (max-width: 800px) {
-  .resource-categories {
-    grid-template-columns: 1fr;
-    max-width: 500px;
-  }
-}
-
-/* ===== END RESOURCE CATEGORY CARDS ===== */
-/* ===== END HOMEPAGE FACELIFT ===== */
 </style>
 </head>
 
@@ -593,45 +423,7 @@ from one place.
 </section>
 
 
-<section id="resources" class="resources"
-  <div class="search-box">
-<input
-id="resourceSearch"
-type="search"
-placeholder="🔎 Search learning resources..."
-autocomplete="off"
->
-</div>
-  <div class="resource-categories">
-
-  <div class="category-card">
-    <div class="category-icon">📖</div>
-    <h3>Revision & Notes</h3>
-    <p>Notes, revision materials and study guides.</p>
-    <button onclick="showResourceCategory('revision')">
-      Explore
-    </button>
-  </div>
-
-  <div class="category-card">
-    <div class="category-icon">📝</div>
-    <h3>Examinations & Past Papers</h3>
-    <p>Past papers, examinations and revision tests.</p>
-    <button onclick="showResourceCategory('exam')">
-      Explore
-    </button>
-  </div>
-
-  <div class="category-card">
-    <div class="category-icon">👨‍🏫</div>
-    <h3>Teaching Resources</h3>
-    <p>Materials to support teachers and classroom learning.</p>
-    <button onclick="showResourceCategory('teaching')">
-      Explore
-    </button>
-  </div>
-
-  </div>
+<section id="resources" class="resources">
 
 <div class="container">
 
@@ -644,7 +436,13 @@ Your available Elimu Bora learning materials
 </p>
 
 </div>
-
+  <div class="search-box">
+<input
+id="resourceSearch"
+type="search"
+placeholder="🔎 Search learning resources..."
+autocomplete="off"
+>
   </div>
 
 <div id="resourceGrid" class="resource-grid">
@@ -1159,7 +957,6 @@ document.createElement("div");
 
 card.className =
 "resource-card";
- card.dataset.category = (r.category || "").toLowerCase(); 
 
 
 const top =
@@ -1329,56 +1126,6 @@ grid.innerHTML =
 }
 
 }
-  window.showResourceCategory = function(category) {
-
-  const cards = document.querySelectorAll(".resource-card");
-  const search = document.getElementById("resourceSearch");
-
-  if (search) {
-    search.value = "";
-  }
-
-  cards.forEach(function(card) {
-
-    const c = (card.dataset.category || "").toLowerCase();
-
-    let match = false;
-
-    if (category === "all") {
-      match = true;
-
-    } else if (category === "revision") {
-      match =
-        c.includes("revision") ||
-        c.includes("note") ||
-        c.includes("study");
-
-    } else if (category === "exam") {
-      match =
-        c.includes("exam") ||
-        c.includes("past") ||
-        c.includes("paper") ||
-        c.includes("test");
-
-    } else if (category === "teaching") {
-      match =
-        c.includes("teach") ||
-        c.includes("lesson") ||
-        c.includes("teacher");
-    }
-
-    card.style.display = match ? "" : "none";
-  });
-
-  const grid = document.getElementById("resourceGrid");
-
-  if (grid) {
-    grid.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }
-};
 
 
 onAuthStateChanged(
