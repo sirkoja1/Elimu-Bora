@@ -354,6 +354,110 @@ white-space:nowrap
 .resource-grid{grid-template-columns:1fr}
 nav{display:none}
 }
+  /* ===== ELIMU BORA HOMEPAGE FACELIFT ===== */
+
+body {
+  background: linear-gradient(180deg, #f5fbff 0%, #ffffff 45%, #f1f8f5 100%);
+}
+
+header {
+  box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.hero {
+  border-radius: 0 0 35px 35px;
+  padding: 65px 25px;
+  background: linear-gradient(135deg, #0077b6, #00a896);
+  box-shadow: 0 8px 25px rgba(0,119,182,0.18);
+}
+
+.hero h1 {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.hero p {
+  font-size: 19px;
+  line-height: 1.7;
+  max-width: 650px;
+}
+
+.hero .btn {
+  border-radius: 30px;
+  padding: 14px 25px;
+  font-weight: 700;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.hero .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.15);
+}
+
+.resource-card {
+  border-radius: 18px;
+  border: 1px solid #e5eef5;
+  box-shadow: 0 6px 20px rgba(0,0,0,.07);
+  transition: transform .2s, box-shadow .2s;
+}
+
+.resource-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+}
+
+.membership {
+  padding: 55px 20px;
+}
+
+.membership-box {
+  border-radius: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.10);
+  border: 1px solid #e1edf0;
+}
+
+.membership-box h2 {
+  font-size: 30px;
+}
+
+.membership-box li {
+  margin: 10px 0;
+}
+
+.btn {
+  border-radius: 25px;
+  font-weight: 700;
+}
+
+footer {
+  margin-top: 40px;
+}
+
+/* Mobile facelift */
+@media (max-width: 600px) {
+  .hero {
+    padding: 45px 18px;
+    border-radius: 0 0 25px 25px;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .hero p {
+    font-size: 17px;
+  }
+
+  .membership-box {
+    padding: 25px 18px;
+  }
+}
+
+/* ===== END HOMEPAGE FACELIFT ===== */
 </style>
 </head>
 
