@@ -6,530 +6,582 @@
 <title>Elimu Bora - Learning Resources</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
 body{
-font-family:Arial,Helvetica,sans-serif;
-background:#f5f7fb;
-color:#172033;
-line-height:1.6
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f7fb;
+  color:#172033;
+  line-height:1.6;
 }
 
 header{
-background:white;
-border-bottom:1px solid #e5e7eb;
-position:sticky;
-top:0;
-z-index:1000
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  position:sticky;
+  top:0;
+  z-index:1000;
 }
 
 .nav{
-max-width:1150px;
-margin:auto;
-padding:15px 20px;
-display:flex;
-align-items:center;
-justify-content:space-between
+  max-width:1150px;
+  margin:auto;
+  padding:15px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
 
 .logo{
-font-size:25px;
-font-weight:800;
-color:#1769aa;
-text-decoration:none
+  font-size:25px;
+  font-weight:800;
+  color:#1769aa;
+  text-decoration:none;
 }
 
-.logo span{color:#16a05d}
+.logo span{
+  color:#16a05d;
+}
 
 nav{
-display:flex;
-gap:18px;
-align-items:center
+  display:flex;
+  gap:18px;
+  align-items:center;
 }
 
 nav a{
-text-decoration:none;
-color:#273244;
-font-weight:600;
-cursor:pointer
+  text-decoration:none;
+  color:#273244;
+  font-weight:600;
+  cursor:pointer;
 }
 
 .login-btn{
-background:#1769aa;
-color:white!important;
-padding:9px 17px;
-border-radius:8px
+  background:#1769aa;
+  color:white!important;
+  padding:9px 17px;
+  border-radius:8px;
 }
 
 .hero{
-background:linear-gradient(135deg,#1769aa,#16a05d);
-color:white;
-padding:70px 20px
+  background:linear-gradient(135deg,#1769aa,#16a05d);
+  color:white;
+  padding:70px 20px;
 }
 
 .hero-inner{
-max-width:1150px;
-margin:auto;
-display:grid;
-grid-template-columns:1.5fr 1fr;
-gap:40px;
-align-items:center
+  max-width:1150px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1.5fr 1fr;
+  gap:40px;
+  align-items:center;
 }
 
 .hero h1{
-font-size:48px;
-line-height:1.15;
-margin-bottom:18px
+  font-size:48px;
+  line-height:1.15;
+  margin-bottom:18px;
 }
 
 .hero p{
-font-size:19px;
-max-width:650px;
-margin-bottom:28px
+  font-size:19px;
+  max-width:650px;
+  margin-bottom:28px;
 }
 
 .hero-buttons{
-display:flex;
-gap:12px;
-flex-wrap:wrap
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
 }
 
 .btn{
-border:none;
-padding:13px 21px;
-border-radius:9px;
-font-size:16px;
-font-weight:700;
-cursor:pointer;
-text-decoration:none;
-display:inline-block
+  border:none;
+  padding:13px 21px;
+  border-radius:9px;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-block;
 }
 
 .btn-white{
-background:white;
-color:#1769aa
+  background:white;
+  color:#1769aa;
 }
 
 .btn-dark{
-background:#0d4774;
-color:white
+  background:#0d4774;
+  color:white;
 }
 
 .hero-card{
-background:rgba(255,255,255,.15);
-padding:30px;
-border-radius:18px
+  background:rgba(255,255,255,.15);
+  padding:30px;
+  border-radius:18px;
 }
 
-section{padding:60px 20px}
+section{
+  padding:60px 20px;
+}
 
 .container{
-max-width:1150px;
-margin:auto
+  max-width:1150px;
+  margin:auto;
 }
 
 .section-title{
-text-align:center;
-margin-bottom:35px
+  text-align:center;
+  margin-bottom:35px;
 }
 
 .section-title h2{
-font-size:32px;
-margin-bottom:8px
+  font-size:32px;
+  margin-bottom:8px;
 }
 
-.section-title p{color:#667085}
+.section-title p{
+  color:#667085;
+}
 
-.resources{background:white}
+.resources{
+  background:white;
+}
 
 .search-box{
-max-width:650px;
-margin:0 auto 30px
+  max-width:650px;
+  margin:0 auto 30px;
 }
 
 .search-box input{
-width:100%;
-padding:14px 16px;
-border:1px solid #d0d5dd;
-border-radius:10px;
-font-size:16px
+  width:100%;
+  padding:14px 16px;
+  border:1px solid #d0d5dd;
+  border-radius:10px;
+  font-size:16px;
 }
 
 .resource-grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:22px
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:22px;
 }
 
 .resource-card{
-border:1px solid #e4e7ec;
-border-radius:14px;
-overflow:hidden;
-background:white;
-box-shadow:0 4px 15px rgba(0,0,0,.05)
+  border:1px solid #e4e7ec;
+  border-radius:14px;
+  overflow:hidden;
+  background:white;
+  box-shadow:0 4px 15px rgba(0,0,0,.05);
 }
 
 .resource-top{
-background:#eef6ff;
-padding:22px;
-font-size:42px;
-text-align:center
+  background:#eef6ff;
+  padding:22px;
+  font-size:42px;
+  text-align:center;
 }
 
-.resource-body{padding:20px}
+.resource-body{
+  padding:20px;
+}
 
-.resource-body h3{margin-bottom:7px}
+.resource-body h3{
+  margin-bottom:7px;
+}
 
 .resource-body p{
-color:#667085;
-margin-bottom:10px
+  color:#667085;
+  margin-bottom:10px;
 }
 
 .resource-meta{
-font-size:14px;
-color:#667085;
-margin-bottom:15px
+  font-size:14px;
+  color:#667085;
+  margin-bottom:15px;
 }
 
 .file-box{
-border:1px solid #e4e7ec;
-border-radius:10px;
-padding:15px;
-margin-top:15px;
-background:#f8fafc
+  border:1px solid #e4e7ec;
+  border-radius:10px;
+  padding:15px;
+  margin-top:15px;
+  background:#f8fafc;
 }
 
 .file-title{
-font-weight:bold;
-margin-bottom:8px
+  font-weight:bold;
+  margin-bottom:8px;
 }
 
 .resource-btn{
-padding:10px 15px;
-border-radius:7px;
-background:#1769aa;
-color:white;
-font-weight:600;
-cursor:pointer;
-border:none;
-margin:4px 3px 0 0
-}
-
-.download-btn{
-background:#16a05d
+  padding:10px 15px;
+  border-radius:7px;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  border:none;
+  margin:4px 3px 0 0;
+  display:inline-block;
+  text-decoration:none;
 }
 
 .preview-btn{
-background:#1769aa
+  background:#1769aa;
 }
 
-.no-file{
-color:#667085;
-font-size:14px
+.download-btn{
+  background:#16a05d;
 }
 
-.loading,.empty{
-background:#f8fafc;
-border:1px dashed #cbd5e1;
-border-radius:12px;
-padding:25px;
-text-align:center;
-color:#667085;
-grid-column:1/-1
+.empty,
+.loading{
+  background:#f8fafc;
+  border:1px dashed #cbd5e1;
+  border-radius:12px;
+  padding:25px;
+  text-align:center;
+  color:#667085;
+  grid-column:1/-1;
 }
 
 .membership{
-background:#f0fdf6
+  background:#f0fdf6;
 }
 
 .membership-box{
-max-width:750px;
-margin:auto;
-background:white;
-border-radius:18px;
-padding:40px;
-text-align:center;
-border:1px solid #dcefe4
+  max-width:750px;
+  margin:auto;
+  background:white;
+  border-radius:18px;
+  padding:40px;
+  text-align:center;
+  border:1px solid #dcefe4;
 }
 
 .membership-box h2{
-font-size:32px;
-margin-bottom:12px
+  font-size:32px;
+  margin-bottom:12px;
 }
 
 .membership-box ul{
-list-style:none;
-text-align:left;
-max-width:400px;
-margin:20px auto
+  list-style:none;
+  text-align:left;
+  max-width:400px;
+  margin:20px auto;
 }
 
-.membership-box li{padding:7px 0}
+.membership-box li{
+  padding:7px 0;
+}
 
 .membership-box li::before{
-content:"✓ ";
-color:#16a05d;
-font-weight:bold
+  content:"✓ ";
+  color:#16a05d;
+  font-weight:bold;
 }
 
 .status-box{
-margin:20px auto;
-max-width:550px;
-padding:18px;
-border-radius:12px;
-background:#f8fafc;
-border:1px solid #e4e7ec;
-text-align:left
+  margin:20px auto;
+  max-width:550px;
+  padding:18px;
+  border-radius:12px;
+  background:#f8fafc;
+  border:1px solid #e4e7ec;
+  text-align:left;
 }
 
 .status-active{
-border-color:#16a05d;
-background:#f0fdf6
+  border-color:#16a05d;
+  background:#f0fdf6;
 }
 
 .status-expired{
-border-color:#b42318;
-background:#fff5f5
+  border-color:#b42318;
+  background:#fff5f5;
+}
+
+.payment-box{
+  margin:20px auto;
+  max-width:550px;
+  padding:20px;
+  border-radius:12px;
+  background:#fffdf0;
+  border:1px solid #eadf9b;
+  text-align:center;
 }
 
 .contact{
-background:white
+  background:white;
 }
 
-.contact-box{text-align:center}
+.contact-box{
+  text-align:center;
+}
 
 .contact-box p{
-margin:8px 0;
-color:#667085
+  margin:8px 0;
+  color:#667085;
 }
 
 .call-btn{
-display:inline-block;
-margin-top:15px;
-background:#16a05d;
-color:white;
-padding:13px 22px;
-border-radius:9px;
-font-weight:bold;
-text-decoration:none
+  display:inline-block;
+  margin-top:15px;
+  background:#16a05d;
+  color:white;
+  padding:13px 22px;
+  border-radius:9px;
+  font-weight:bold;
+  text-decoration:none;
 }
 
 footer{
-background:#172033;
-color:white;
-padding:35px 20px;
-text-align:center
+  background:#172033;
+  color:white;
+  padding:35px 20px;
+  text-align:center;
 }
 
 footer p{
-opacity:.8;
-margin:5px
+  opacity:.8;
+  margin:5px;
 }
 
 #loginModal,
 #previewModal{
-display:none;
-position:fixed;
-inset:0;
-z-index:10000;
-background:rgba(0,0,0,.75);
-align-items:center;
-justify-content:center;
-padding:15px
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  background:rgba(0,0,0,.75);
+  align-items:center;
+  justify-content:center;
+  padding:15px;
 }
 
 .login-box{
-background:white;
-width:100%;
-max-width:420px;
-border-radius:18px;
-padding:25px
+  background:white;
+  width:100%;
+  max-width:420px;
+  border-radius:18px;
+  padding:25px;
 }
 
 .login-box input,
 .admin-form input,
 .admin-form select{
-width:100%;
-padding:13px;
-margin:7px 0;
-border:1px solid #ccc;
-border-radius:8px;
-font-size:16px
+  width:100%;
+  padding:13px;
+  margin:7px 0;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:16px;
 }
 
 .login-box button{
-width:100%;
-padding:13px;
-border:none;
-border-radius:8px;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-margin-top:10px
+  width:100%;
+  padding:13px;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:10px;
 }
 
 #loginMember{
-background:#1769aa;
-color:white
+  background:#1769aa;
+  color:white;
 }
 
 #createMember{
-background:#16a05d;
-color:white
+  background:#16a05d;
+  color:white;
 }
 
 #logoutMember{
-background:#555;
-color:white;
-display:none
+  background:#555;
+  color:white;
+  display:none;
 }
 
 #forgotPassword{
-background:white;
-color:#1769aa
+  background:white;
+  color:#1769aa;
 }
 
 .close{
-float:right;
-width:auto!important;
-background:white!important;
-font-size:28px!important;
-padding:0!important
+  float:right;
+  width:auto!important;
+  background:white!important;
+  font-size:28px!important;
+  padding:0!important;
 }
 
 #message{
-text-align:center;
-margin-top:14px;
-font-size:14px
+  text-align:center;
+  margin-top:14px;
+  font-size:14px;
 }
 
 #userButton{
-position:fixed;
-right:18px;
-bottom:18px;
-z-index:9999;
-background:#1769aa;
-color:white;
-border:none;
-padding:14px 20px;
-border-radius:30px;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-max-width:75%;
-overflow:hidden;
-text-overflow:ellipsis;
-white-space:nowrap
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:9999;
+  background:#1769aa;
+  color:white;
+  border:none;
+  padding:14px 20px;
+  border-radius:30px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  max-width:75%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 #previewModal .preview-box{
-width:100%;
-height:95vh;
-background:white;
-border-radius:12px;
-overflow:hidden;
-position:relative
+  width:100%;
+  height:95vh;
+  background:white;
+  border-radius:12px;
+  overflow:hidden;
+  position:relative;
 }
 
 #previewModal iframe{
-width:100%;
-height:100%;
-border:none
+  width:100%;
+  height:100%;
+  border:none;
 }
 
-#previewModal .preview-close{
-position:absolute;
-right:10px;
-top:8px;
-z-index:5;
-background:#b42318;
-color:white;
-border:none;
-border-radius:50%;
-width:38px;
-height:38px;
-font-size:22px;
-cursor:pointer
+.preview-close{
+  position:absolute;
+  right:10px;
+  top:8px;
+  z-index:5;
+  background:#b42318;
+  color:white;
+  border:none;
+  border-radius:50%;
+  width:38px;
+  height:38px;
+  font-size:22px;
+  cursor:pointer;
 }
 
 #adminSection{
-display:none;
-background:#f8fafc;
-padding:40px 20px
+  display:none;
+  background:#f8fafc;
+  padding:40px 20px;
 }
 
 .admin-buttons{
-display:grid;
-gap:12px;
-max-width:650px;
-margin:auto
+  display:grid;
+  gap:12px;
+  max-width:650px;
+  margin:auto;
 }
 
 .admin-panel{
-background:white;
-padding:25px;
-border-radius:15px;
-margin:25px auto;
-max-width:750px
+  background:white;
+  padding:25px;
+  border-radius:15px;
+  margin:25px auto;
+  max-width:750px;
 }
 
 .admin-form{
-display:grid;
-gap:5px
+  display:grid;
+  gap:5px;
 }
 
 .admin-file{
-padding:12px;
-border:1px dashed #98a2b3;
-border-radius:8px;
-background:#f8fafc;
-margin:7px 0
+  padding:12px;
+  border:1px dashed #98a2b3;
+  border-radius:8px;
+  background:#f8fafc;
+  margin:7px 0;
 }
 
 .admin-resource{
-padding:15px;
-border-bottom:1px solid #ddd
+  padding:15px;
+  border-bottom:1px solid #ddd;
 }
 
 .member-card{
-padding:15px;
-border:1px solid #e4e7ec;
-border-radius:10px;
-margin:10px 0
+  padding:15px;
+  border:1px solid #e4e7ec;
+  border-radius:10px;
+  margin:10px 0;
 }
 
 .member-actions{
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-gap:7px;
-margin-top:10px
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:7px;
+  margin-top:10px;
 }
 
 .small-btn{
-border:none;
-padding:9px;
-border-radius:7px;
-cursor:pointer;
-font-weight:bold
+  border:none;
+  padding:9px;
+  border-radius:7px;
+  cursor:pointer;
+  font-weight:bold;
 }
 
-.activate-btn{background:#16a05d;color:white}
-.extend-btn{background:#1769aa;color:white}
-.expire-btn{background:#b42318;color:white}
+.activate-btn{
+  background:#16a05d;
+  color:white;
+}
+
+.extend-btn{
+  background:#1769aa;
+  color:white;
+}
+
+.expire-btn{
+  background:#b42318;
+  color:white;
+}
 
 .notice{
-padding:12px;
-border-radius:8px;
-margin-top:12px;
-background:#f8fafc
+  padding:12px;
+  border-radius:8px;
+  margin-top:12px;
+  background:#f8fafc;
 }
 
 @media(max-width:800px){
-.hero-inner{grid-template-columns:1fr}
-.hero h1{font-size:38px}
-.resource-grid{grid-template-columns:1fr}
-nav{display:none}
-.member-actions{grid-template-columns:1fr}
+  .hero-inner{
+    grid-template-columns:1fr;
+  }
+
+  .hero h1{
+    font-size:38px;
+  }
+
+  .resource-grid{
+    grid-template-columns:1fr;
+  }
+
+  nav{
+    display:none;
+  }
+
+  .member-actions{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
@@ -658,9 +710,40 @@ learning resources.
 
 </ul>
 
+
+<div class="payment-box">
+
+<strong>💳 M-Pesa Buy Goods</strong>
+
+<br><br>
+
+Pay to Till Number:
+
+<strong style="font-size:22px">
+9511521
+</strong>
+
+<br><br>
+
+After making payment, contact Customer Care:
+
+<strong>
+0716710082
+</strong>
+
+<br>
+
+<span style="font-size:14px;color:#667085">
+Membership activation is currently done manually by the administrator.
+</span>
+
+</div>
+
+
 <div id="subscriptionStatus">
 Please log in to see your membership status.
 </div>
+
 
 <button class="btn btn-dark" onclick="openLogin()">
 Login / Create Account
@@ -765,8 +848,6 @@ Logout
 </div>
 
 
-<!-- DOCUMENT PREVIEW -->
-
 <div id="previewModal">
 
 <div class="preview-box">
@@ -785,8 +866,6 @@ title="Document Preview">
 </div>
 
 
-<!-- ADMIN PANEL -->
-
 <section id="adminSection">
 
 <div class="container">
@@ -795,7 +874,9 @@ title="Document Preview">
 
 <h2>🛠️ Elimu Bora Admin Panel</h2>
 
-<p>Administrator controls</p>
+<p>
+Administrator controls — no membership payment required
+</p>
 
 </div>
 
@@ -837,8 +918,6 @@ style="text-align:center">
 </div>
 
 
-<!-- RESOURCE UPLOAD -->
-
 <div
 id="addResourceForm"
 class="admin-panel"
@@ -847,7 +926,7 @@ style="display:none">
 <h3>➕ Add Learning Resource</h3>
 
 <p style="color:#667085;margin:8px 0 15px">
-Upload a question paper and, if available,
+Upload a question paper/document and, if available,
 its marking scheme.
 </p>
 
@@ -902,8 +981,6 @@ class="btn btn-dark">
 </div>
 
 
-<!-- RESOURCE MANAGEMENT -->
-
 <div
 id="manageResourcesPanel"
 class="admin-panel"
@@ -917,8 +994,6 @@ Loading...
 
 </div>
 
-
-<!-- MEMBER MANAGEMENT -->
 
 <div
 id="manageMembersPanel"
@@ -965,7 +1040,6 @@ import {
 getFirestore,
 collection,
 getDocs,
-addDoc,
 setDoc,
 doc,
 deleteDoc,
@@ -1045,7 +1119,6 @@ document.getElementById("userButton");
 
 const subscriptionStatus =
 document.getElementById("subscriptionStatus");
-
 
 const adminSection =
 document.getElementById("adminSection");
@@ -1150,9 +1223,7 @@ return false;
 
 let expiry;
 
-if(
-member.subscriptionExpiry.seconds
-){
+if(member.subscriptionExpiry.seconds){
 
 expiry =
 new Date(
@@ -1184,7 +1255,8 @@ new Date(value.seconds * 1000);
 
 }else{
 
-date = new Date(value);
+date =
+new Date(value);
 
 }
 
@@ -1213,7 +1285,8 @@ new Date(value.seconds * 1000);
 
 }else{
 
-expiry = new Date(value);
+expiry =
+new Date(value);
 
 }
 
@@ -1244,10 +1317,29 @@ return;
 
 }
 
+
 try{
 
 const member =
 await getMemberData();
+
+
+/*
+ADMIN DOES NOT PAY
+*/
+
+if(isAdmin()){
+
+subscriptionStatus.innerHTML =
+'<div class="status-box status-active">' +
+'<strong>🛠️ Administrator Access</strong><br>' +
+'Full learning-resource access is available without a subscription.' +
+'</div>';
+
+return;
+
+}
+
 
 if(!member){
 
@@ -1260,16 +1352,21 @@ return;
 
 }
 
+
 if(isSubscriptionActive(member)){
 
 const days =
-remainingDays(member.subscriptionExpiry);
+remainingDays(
+member.subscriptionExpiry
+);
 
 subscriptionStatus.innerHTML =
 '<div class="status-box status-active">' +
 '<strong>✅ Membership Active</strong><br>' +
 'Expiry date: ' +
-formatDate(member.subscriptionExpiry) +
+formatDate(
+member.subscriptionExpiry
+) +
 '<br>' +
 '<strong>' +
 days +
@@ -1282,9 +1379,8 @@ days +
 subscriptionStatus.innerHTML =
 '<div class="status-box status-expired">' +
 '<strong>❌ Membership Expired / Inactive</strong><br>' +
-'Please contact Elimu Bora customer care on ' +
-'<strong>0716710082</strong> ' +
-'for activation or renewal.' +
+'Pay M-Pesa Till <strong>9511521</strong> and contact Customer Care on ' +
+'<strong>0716710082</strong> for activation or renewal.' +
 '</div>';
 
 }
@@ -1331,7 +1427,9 @@ try{
 
 const credential =
 await createUserWithEmailAndPassword(
-auth,e,p
+auth,
+e,
+p
 );
 
 await setDoc(
@@ -1386,7 +1484,9 @@ return;
 try{
 
 await signInWithEmailAndPassword(
-auth,e,p
+auth,
+e,
+p
 );
 
 showMessage(
@@ -1426,7 +1526,8 @@ return;
 try{
 
 await sendPasswordResetEmail(
-auth,e
+auth,
+e
 );
 
 showMessage(
@@ -1487,17 +1588,9 @@ return "pdf";
 
 if(
 value.endsWith(".doc") ||
-value.endsWith(".docx")
-)
-return "office";
-
-if(
+value.endsWith(".docx") ||
 value.endsWith(".ppt") ||
-value.endsWith(".pptx")
-)
-return "office";
-
-if(
+value.endsWith(".pptx") ||
 value.endsWith(".xls") ||
 value.endsWith(".xlsx")
 )
@@ -1524,7 +1617,9 @@ function openDocumentPreview(url,name){
 
 if(!url){
 
-alert("No document is available.");
+alert(
+"No document is available."
+);
 
 return;
 
@@ -1537,6 +1632,7 @@ const frame =
 document.getElementById(
 "previewFrame"
 );
+
 
 if(
 type === "pdf" ||
@@ -1555,12 +1651,13 @@ encodeURIComponent(url);
 }else{
 
 alert(
-"This file type cannot be previewed directly in the browser. You can download it instead."
+"This file type cannot be previewed directly. You can download it instead."
 );
 
 return;
 
 }
+
 
 document.getElementById(
 "previewModal"
@@ -1598,9 +1695,6 @@ if(!url){
 
 const noFile =
 document.createElement("div");
-
-noFile.className =
-"no-file";
 
 noFile.textContent =
 "No file uploaded.";
@@ -1655,9 +1749,6 @@ download.rel =
 download.download =
 name || "";
 
-download.style.textDecoration =
-"none";
-
 box.appendChild(download);
 
 return box;
@@ -1678,12 +1769,21 @@ try{
 const member =
 await getMemberData();
 
-if(!member ||
-!isSubscriptionActive(member)){
+
+/*
+ADMIN BYPASS
+*/
+
+if(
+!isAdmin() &&
+(!member ||
+!isSubscriptionActive(member))
+){
 
 grid.innerHTML =
 '<div class="empty">' +
 '🔒 An active subscription is required to access learning resources.<br><br>' +
+'Pay M-Pesa Till <strong>9511521</strong><br>' +
 'Customer Care: <strong>0716710082</strong>' +
 "</div>";
 
@@ -1802,7 +1902,7 @@ r.fileName
 
 
 /*
-MARKING SCHEME BELOW PAPER
+MARKING SCHEME BELOW
 */
 
 if(r.markingSchemeUrl){
@@ -1842,7 +1942,8 @@ console.error(error);
 
 grid.innerHTML =
 '<div class="empty">' +
-"Unable to load resources." +
+"Unable to load resources: " +
+error.message +
 "</div>";
 
 }
@@ -1893,6 +1994,7 @@ await updateSubscriptionDisplay();
 
 await loadResources();
 
+
 }else{
 
 userButton.textContent =
@@ -1932,10 +2034,6 @@ grid.innerHTML =
 });
 
 
-/*
-SEARCH
-*/
-
 document.getElementById(
 "resourceSearch"
 ).addEventListener(
@@ -1965,10 +2063,6 @@ text.includes(searchTerm)
 
 });
 
-
-/*
-ADMIN BUTTONS
-*/
 
 document.getElementById(
 "addResourceButton"
@@ -2037,10 +2131,6 @@ await loadAdminMembers();
 
 };
 
-
-/*
-UPLOAD RESOURCE
-*/
 
 document.getElementById(
 "saveResourceButton"
@@ -2130,7 +2220,7 @@ Date.now().toString();
 
 
 /*
-UPLOAD PAPER
+QUESTION PAPER UPLOAD
 */
 
 const paperPath =
@@ -2140,7 +2230,10 @@ resourceId +
 paper.name;
 
 const paperRef =
-ref(storage,paperPath);
+ref(
+storage,
+paperPath
+);
 
 await uploadBytes(
 paperRef,
@@ -2154,7 +2247,7 @@ paperRef
 
 
 /*
-UPLOAD MARKING SCHEME
+MARKING SCHEME UPLOAD
 */
 
 let markingUrl = "";
@@ -2170,7 +2263,10 @@ resourceId +
 marking.name;
 
 const markingRef =
-ref(storage,markingPath);
+ref(
+storage,
+markingPath
+);
 
 await uploadBytes(
 markingRef,
@@ -2186,7 +2282,7 @@ markingRef
 
 
 /*
-SAVE FIRESTORE RECORD
+FIRESTORE RECORD
 */
 
 await setDoc(
@@ -2288,10 +2384,6 @@ button.textContent =
 };
 
 
-/*
-ADMIN RESOURCE LIST
-*/
-
 async function loadAdminResources(){
 
 adminResourceList.innerHTML =
@@ -2304,6 +2396,7 @@ const snapshot =
 await getDocs(
 collection(db,"resources")
 );
+
 
 if(snapshot.empty){
 
@@ -2330,11 +2423,9 @@ document.createElement("div");
 div.className =
 "admin-resource";
 
-
 div.innerHTML =
 "<strong>" +
-(r.title ||
-"Untitled") +
+(r.title || "Untitled") +
 "</strong><br>" +
 
 "<small>" +
@@ -2416,6 +2507,7 @@ await loadAdminResources();
 
 await loadResources();
 
+
 }catch(error){
 
 adminMessage.textContent =
@@ -2451,10 +2543,6 @@ error.message;
 }
 
 
-/*
-ADMIN MEMBERS
-*/
-
 async function loadAdminMembers(){
 
 adminMemberList.innerHTML =
@@ -2468,6 +2556,7 @@ await getDocs(
 collection(db,"members")
 );
 
+
 if(snapshot.empty){
 
 adminMemberList.innerHTML =
@@ -2476,6 +2565,7 @@ adminMemberList.innerHTML =
 return;
 
 }
+
 
 adminMemberList.innerHTML = "";
 
@@ -2516,8 +2606,7 @@ div.innerHTML =
 
 "<small>" +
 "Status: " +
-(m.subscriptionStatus ||
-"inactive") +
+(m.subscriptionStatus || "inactive") +
 "<br>" +
 
 "Expiry: " +
@@ -2614,6 +2703,7 @@ adminMemberList.appendChild(div);
 
 });
 
+
 }catch(error){
 
 adminMemberList.innerHTML =
@@ -2624,10 +2714,6 @@ error.message;
 
 }
 
-
-/*
-ACTIVATE MEMBER
-*/
 
 window.activateMember =
 async function(
@@ -2645,6 +2731,7 @@ new Date();
 expiry.setDate(
 expiry.getDate() + days
 );
+
 
 await setDoc(
 doc(
@@ -2672,12 +2759,14 @@ merge:true
 }
 );
 
+
 adminMessage.textContent =
 "✅ Membership activated for " +
 days +
 " days.";
 
 await loadAdminMembers();
+
 
 }catch(error){
 
@@ -2689,10 +2778,6 @@ error.message;
 
 };
 
-
-/*
-EXTEND MEMBER
-*/
 
 window.extendMember =
 async function(
@@ -2719,12 +2804,14 @@ memberSnap.data();
 let expiry =
 new Date();
 
+
 if(
 member &&
 member.subscriptionExpiry
 ){
 
 let oldExpiry;
+
 
 if(
 member.subscriptionExpiry.seconds
@@ -2745,16 +2832,19 @@ member.subscriptionExpiry
 
 }
 
+
 if(
 oldExpiry.getTime() >
 Date.now()
 ){
 
-expiry = oldExpiry;
+expiry =
+oldExpiry;
 
 }
 
 }
+
 
 expiry.setDate(
 expiry.getDate() + days
@@ -2784,10 +2874,12 @@ merge:true
 }
 );
 
+
 adminMessage.textContent =
 "✅ Membership extended.";
 
 await loadAdminMembers();
+
 
 }catch(error){
 
@@ -2800,10 +2892,6 @@ error.message;
 };
 
 
-/*
-EXPIRE MEMBER
-*/
-
 window.expireMember =
 async function(
 memberId
@@ -2815,6 +2903,7 @@ if(!confirm(
 "Expire this member's subscription?"
 ))
 return;
+
 
 try{
 
@@ -2840,10 +2929,12 @@ merge:true
 }
 );
 
+
 adminMessage.textContent =
 "✅ Membership expired.";
 
 await loadAdminMembers();
+
 
 }catch(error){
 
@@ -2855,10 +2946,6 @@ error.message;
 
 };
 
-
-/*
-ADMIN LOGOUT
-*/
 
 document.getElementById(
 "adminLogoutButton"
