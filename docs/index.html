@@ -142,6 +142,19 @@ margin-bottom:8px
 
 .resources{background:white}
 
+.search-box{
+max-width:650px;
+margin:0 auto 30px
+}
+
+.search-box input{
+width:100%;
+padding:14px 16px;
+border:1px solid #d0d5dd;
+border-radius:10px;
+font-size:16px
+}
+
 .resource-grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
@@ -153,7 +166,7 @@ border:1px solid #e4e7ec;
 border-radius:14px;
 overflow:hidden;
 background:white;
-box-shadow:0 4px 15px rgba(0,0,0,.04)
+box-shadow:0 4px 15px rgba(0,0,0,.05)
 }
 
 .resource-top{
@@ -178,14 +191,41 @@ color:#667085;
 margin-bottom:15px
 }
 
+.file-box{
+border:1px solid #e4e7ec;
+border-radius:10px;
+padding:15px;
+margin-top:15px;
+background:#f8fafc
+}
+
+.file-title{
+font-weight:bold;
+margin-bottom:8px
+}
+
 .resource-btn{
-padding:10px 16px;
+padding:10px 15px;
 border-radius:7px;
 background:#1769aa;
 color:white;
 font-weight:600;
 cursor:pointer;
-border:none
+border:none;
+margin:4px 3px 0 0
+}
+
+.download-btn{
+background:#16a05d
+}
+
+.preview-btn{
+background:#1769aa
+}
+
+.no-file{
+color:#667085;
+font-size:14px
 }
 
 .loading,.empty{
@@ -232,6 +272,26 @@ color:#16a05d;
 font-weight:bold
 }
 
+.status-box{
+margin:20px auto;
+max-width:550px;
+padding:18px;
+border-radius:12px;
+background:#f8fafc;
+border:1px solid #e4e7ec;
+text-align:left
+}
+
+.status-active{
+border-color:#16a05d;
+background:#f0fdf6
+}
+
+.status-expired{
+border-color:#b42318;
+background:#fff5f5
+}
+
 .contact{
 background:white
 }
@@ -241,6 +301,17 @@ background:white
 .contact-box p{
 margin:8px 0;
 color:#667085
+}
+
+.call-btn{
+display:inline-block;
+margin-top:15px;
+background:#16a05d;
+color:white;
+padding:13px 22px;
+border-radius:9px;
+font-weight:bold;
+text-decoration:none
 }
 
 footer{
@@ -255,29 +326,32 @@ opacity:.8;
 margin:5px
 }
 
-#loginModal{
+#loginModal,
+#previewModal{
 display:none;
 position:fixed;
 inset:0;
 z-index:10000;
-background:rgba(0,0,0,.65);
+background:rgba(0,0,0,.75);
 align-items:center;
 justify-content:center;
-padding:20px
+padding:15px
 }
 
 .login-box{
 background:white;
 width:100%;
-max-width:400px;
+max-width:420px;
 border-radius:18px;
 padding:25px
 }
 
-.login-box input{
+.login-box input,
+.admin-form input,
+.admin-form select{
 width:100%;
 padding:13px;
-margin:8px 0;
+margin:7px 0;
 border:1px solid #ccc;
 border-radius:8px;
 font-size:16px
@@ -348,11 +422,114 @@ text-overflow:ellipsis;
 white-space:nowrap
 }
 
+#previewModal .preview-box{
+width:100%;
+height:95vh;
+background:white;
+border-radius:12px;
+overflow:hidden;
+position:relative
+}
+
+#previewModal iframe{
+width:100%;
+height:100%;
+border:none
+}
+
+#previewModal .preview-close{
+position:absolute;
+right:10px;
+top:8px;
+z-index:5;
+background:#b42318;
+color:white;
+border:none;
+border-radius:50%;
+width:38px;
+height:38px;
+font-size:22px;
+cursor:pointer
+}
+
+#adminSection{
+display:none;
+background:#f8fafc;
+padding:40px 20px
+}
+
+.admin-buttons{
+display:grid;
+gap:12px;
+max-width:650px;
+margin:auto
+}
+
+.admin-panel{
+background:white;
+padding:25px;
+border-radius:15px;
+margin:25px auto;
+max-width:750px
+}
+
+.admin-form{
+display:grid;
+gap:5px
+}
+
+.admin-file{
+padding:12px;
+border:1px dashed #98a2b3;
+border-radius:8px;
+background:#f8fafc;
+margin:7px 0
+}
+
+.admin-resource{
+padding:15px;
+border-bottom:1px solid #ddd
+}
+
+.member-card{
+padding:15px;
+border:1px solid #e4e7ec;
+border-radius:10px;
+margin:10px 0
+}
+
+.member-actions{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:7px;
+margin-top:10px
+}
+
+.small-btn{
+border:none;
+padding:9px;
+border-radius:7px;
+cursor:pointer;
+font-weight:bold
+}
+
+.activate-btn{background:#16a05d;color:white}
+.extend-btn{background:#1769aa;color:white}
+.expire-btn{background:#b42318;color:white}
+
+.notice{
+padding:12px;
+border-radius:8px;
+margin-top:12px;
+background:#f8fafc
+}
+
 @media(max-width:800px){
 .hero-inner{grid-template-columns:1fr}
 .hero h1{font-size:38px}
 .resource-grid{grid-template-columns:1fr}
 nav{display:none}
+.member-actions{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -432,23 +609,25 @@ from one place.
 <h2>📚 Learning Resources</h2>
 
 <p>
-Your available Elimu Bora learning materials
+Preview your learning materials before downloading.
 </p>
 
 </div>
-  <div class="search-box">
+
+<div class="search-box">
+
 <input
 id="resourceSearch"
 type="search"
 placeholder="🔎 Search learning resources..."
-autocomplete="off"
->
-  </div>
+autocomplete="off">
+
+</div>
 
 <div id="resourceGrid" class="resource-grid">
 
 <div class="loading">
-Please log in to view member resources.
+🔐 Please log in to view member resources.
 </div>
 
 </div>
@@ -465,21 +644,23 @@ Please log in to view member resources.
 <h2>🔐 Elimu Bora Membership</h2>
 
 <p>
-Create a member account or log in to access
-protected learning resources.
+Membership gives you access to protected
+learning resources.
 </p>
 
 <ul>
 
 <li>Revision notes</li>
-
 <li>Examinations and past papers</li>
-
 <li>Teaching resources</li>
-
 <li>Study materials</li>
+<li>Preview documents before downloading</li>
 
 </ul>
+
+<div id="subscriptionStatus">
+Please log in to see your membership status.
+</div>
 
 <button class="btn btn-dark" onclick="openLogin()">
 Login / Create Account
@@ -499,9 +680,18 @@ Login / Create Account
 <h2>📞 Contact Elimu Bora</h2>
 
 <p>
-For learning resources and membership support,
-contact Elimu Bora.
+For learning resources, membership and customer support:
 </p>
+
+<p>
+<strong>Customer Care: 0716710082</strong>
+</p>
+
+<a
+class="call-btn"
+href="tel:0716710082">
+📞 Call Customer Care
+</a>
 
 </div>
 
@@ -545,14 +735,12 @@ Login or create your member account
 <input
 id="email"
 type="email"
-placeholder="Email address"
->
+placeholder="Email address">
 
 <input
 id="password"
 type="password"
-placeholder="Password"
->
+placeholder="Password">
 
 <button id="forgotPassword">
 Forgot Password?
@@ -577,100 +765,190 @@ Logout
 </div>
 
 
-  <!-- ELIMU BORA ADMIN PANEL -->
-<section id="adminSection" style="display:none;background:#f8fafc;padding:40px 20px;">
-  <div class="container">
+<!-- DOCUMENT PREVIEW -->
 
-    <div class="section-title">
-      <h2>🛠️ Elimu Bora Admin Panel</h2>
-      <p>Administrator controls</p>
-    </div>
+<div id="previewModal">
 
-    <div style="display:grid;gap:15px;max-width:600px;margin:auto;">
+<div class="preview-box">
 
-      <button id="addResourceButton"
-        class="btn btn-dark">
-        ➕ Add New Resource
-      </button>
+<button
+class="preview-close"
+onclick="closePreview()">×</button>
 
-      <button id="manageResourcesButton"
-        class="btn btn-dark">
-        📚 Manage Resources
-      </button>
+<iframe
+id="previewFrame"
+title="Document Preview">
+</iframe>
 
-      <button id="manageMembersButton"
-        class="btn btn-dark">
-        👥 Manage Members
-      </button>
+</div>
 
-      <button id="adminLogoutButton"
-        class="btn"
-        style="background:#b42318;color:white;">
-        🚪 Admin Logout
-      </button>
+</div>
 
-    </div>
 
-    <div id="adminMessage"
-      style="text-align:center;margin-top:20px;">
-    </div>
+<!-- ADMIN PANEL -->
 
-    <!-- ADD RESOURCE FORM -->
-    <div id="addResourceForm"
-      style="display:none;background:white;padding:25px;border-radius:15px;margin:25px auto;max-width:600px;">
+<section id="adminSection">
 
-      <h3>➕ Add New Learning Resource</h3>
+<div class="container">
 
-      <input id="adminTitle"
-        placeholder="Resource title"
-        style="width:100%;padding:12px;margin:8px 0;">
+<div class="section-title">
 
-      <input id="adminDescription"
-        placeholder="Description"
-        style="width:100%;padding:12px;margin:8px 0;">
+<h2>🛠️ Elimu Bora Admin Panel</h2>
 
-      <input id="adminCategory"
-        placeholder="Category e.g. Exam, Revision, Teaching"
-        style="width:100%;padding:12px;margin:8px 0;">
+<p>Administrator controls</p>
 
-      <input id="adminSubject"
-        placeholder="Subject e.g. Mathematics"
-        style="width:100%;padding:12px;margin:8px 0;">
+</div>
 
-      <input id="adminForm"
-        placeholder="Form e.g. Form 1, Form 2"
-        style="width:100%;padding:12px;margin:8px 0;">
 
-      <input id="adminFileUrl"
-        placeholder="PDF/file URL"
-        style="width:100%;padding:12px;margin:8px 0;">
+<div class="admin-buttons">
 
-      <button id="saveResourceButton"
-        class="btn btn-dark"
-        style="margin-top:10px;">
-        💾 Save Resource
-      </button>
+<button
+id="addResourceButton"
+class="btn btn-dark">
+➕ Add New Resource
+</button>
 
-    </div>
+<button
+id="manageResourcesButton"
+class="btn btn-dark">
+📚 Manage Resources
+</button>
 
-    <!-- RESOURCE MANAGEMENT -->
-    <div id="manageResourcesPanel"
-      style="display:none;background:white;padding:25px;border-radius:15px;margin:25px auto;max-width:700px;">
+<button
+id="manageMembersButton"
+class="btn btn-dark">
+👥 Manage Members
+</button>
 
-      <h3>📚 Manage Resources</h3>
+<button
+id="adminLogoutButton"
+class="btn"
+style="background:#b42318;color:white">
+🚪 Admin Logout
+</button>
 
-      <div id="adminResourceList">
-        Loading resources...
-      </div>
+</div>
 
-    </div>
 
-  </div>
+<div
+id="adminMessage"
+class="notice"
+style="text-align:center">
+</div>
+
+
+<!-- RESOURCE UPLOAD -->
+
+<div
+id="addResourceForm"
+class="admin-panel"
+style="display:none">
+
+<h3>➕ Add Learning Resource</h3>
+
+<p style="color:#667085;margin:8px 0 15px">
+Upload a question paper and, if available,
+its marking scheme.
+</p>
+
+<div class="admin-form">
+
+<input
+id="adminTitle"
+placeholder="Resource title">
+
+<input
+id="adminDescription"
+placeholder="Description">
+
+<input
+id="adminCategory"
+placeholder="Category e.g. Exam, Revision, Notes">
+
+<input
+id="adminSubject"
+placeholder="Subject e.g. Mathematics">
+
+<input
+id="adminForm"
+placeholder="Form e.g. Form 1, Form 2">
+
+<label>
+<strong>📄 Question Paper / Main Document</strong>
+</label>
+
+<input
+id="paperFile"
+class="admin-file"
+type="file">
+
+<label>
+<strong>📝 Marking Scheme (optional)</strong>
+</label>
+
+<input
+id="markingFile"
+class="admin-file"
+type="file">
+
+<button
+id="saveResourceButton"
+class="btn btn-dark">
+💾 Upload Resource
+</button>
+
+</div>
+
+</div>
+
+
+<!-- RESOURCE MANAGEMENT -->
+
+<div
+id="manageResourcesPanel"
+class="admin-panel"
+style="display:none">
+
+<h3>📚 Manage Resources</h3>
+
+<div id="adminResourceList">
+Loading...
+</div>
+
+</div>
+
+
+<!-- MEMBER MANAGEMENT -->
+
+<div
+id="manageMembersPanel"
+class="admin-panel"
+style="display:none">
+
+<h3>👥 Manage Members</h3>
+
+<p style="color:#667085">
+Manually activate, renew or expire memberships.
+</p>
+
+<div id="adminMemberList">
+Loading members...
+</div>
+
+</div>
+
+</div>
+
 </section>
+
+
 <script type="module">
 
-import { initializeApp }
+import {
+initializeApp
+}
 from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
 
 import {
 getAuth,
@@ -682,6 +960,7 @@ onAuthStateChanged
 }
 from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
+
 import {
 getFirestore,
 collection,
@@ -690,9 +969,21 @@ addDoc,
 setDoc,
 doc,
 deleteDoc,
-serverTimestamp
+getDoc,
+serverTimestamp,
+Timestamp
 }
 from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+import {
+getStorage,
+ref,
+uploadBytes,
+getDownloadURL,
+deleteObject
+}
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
 
 
 const firebaseConfig = {
@@ -727,6 +1018,12 @@ const auth = getAuth(app);
 
 const db = getFirestore(app);
 
+const storage = getStorage(app);
+
+
+const ADMIN_EMAIL =
+"kojasalim93@gmail.com";
+
 
 const modal =
 document.getElementById("loginModal");
@@ -746,6 +1043,31 @@ document.getElementById("resourceGrid");
 const userButton =
 document.getElementById("userButton");
 
+const subscriptionStatus =
+document.getElementById("subscriptionStatus");
+
+
+const adminSection =
+document.getElementById("adminSection");
+
+const addResourceForm =
+document.getElementById("addResourceForm");
+
+const manageResourcesPanel =
+document.getElementById("manageResourcesPanel");
+
+const manageMembersPanel =
+document.getElementById("manageMembersPanel");
+
+const adminMessage =
+document.getElementById("adminMessage");
+
+const adminResourceList =
+document.getElementById("adminResourceList");
+
+const adminMemberList =
+document.getElementById("adminMemberList");
+
 
 window.openLogin = function(){
 
@@ -761,6 +1083,17 @@ modal.style.display = "none";
 };
 
 
+window.closePreview = function(){
+
+document.getElementById("previewModal")
+.style.display = "none";
+
+document.getElementById("previewFrame")
+.src = "";
+
+};
+
+
 function showMessage(text){
 
 message.textContent = text;
@@ -768,12 +1101,211 @@ message.textContent = text;
 }
 
 
+function isAdmin(){
+
+const user = auth.currentUser;
+
+return !!(
+user &&
+user.email &&
+user.email.toLowerCase() ===
+ADMIN_EMAIL.toLowerCase()
+);
+
+}
+
+
+async function getMemberData(){
+
+const user = auth.currentUser;
+
+if(!user) return null;
+
+const memberRef =
+doc(db,"members",user.uid);
+
+const snap =
+await getDoc(memberRef);
+
+if(!snap.exists()){
+
+return null;
+
+}
+
+return snap.data();
+
+}
+
+
+function isSubscriptionActive(member){
+
+if(!member) return false;
+
+if(member.subscriptionStatus !== "active")
+return false;
+
+if(!member.subscriptionExpiry)
+return false;
+
+let expiry;
+
+if(
+member.subscriptionExpiry.seconds
+){
+
+expiry =
+new Date(
+member.subscriptionExpiry.seconds * 1000
+);
+
+}else{
+
+expiry =
+new Date(member.subscriptionExpiry);
+
+}
+
+return expiry.getTime() > Date.now();
+
+}
+
+
+function formatDate(value){
+
+if(!value) return "Not set";
+
+let date;
+
+if(value.seconds){
+
+date =
+new Date(value.seconds * 1000);
+
+}else{
+
+date = new Date(value);
+
+}
+
+return date.toLocaleDateString(
+"en-KE",
+{
+year:"numeric",
+month:"long",
+day:"numeric"
+}
+);
+
+}
+
+
+function remainingDays(value){
+
+if(!value) return 0;
+
+let expiry;
+
+if(value.seconds){
+
+expiry =
+new Date(value.seconds * 1000);
+
+}else{
+
+expiry = new Date(value);
+
+}
+
+const difference =
+expiry.getTime() - Date.now();
+
+if(difference <= 0)
+return 0;
+
+return Math.ceil(
+difference /
+(1000*60*60*24)
+);
+
+}
+
+
+async function updateSubscriptionDisplay(){
+
+if(!auth.currentUser){
+
+subscriptionStatus.innerHTML =
+'<div class="status-box">' +
+'🔐 Please log in to see your subscription status.' +
+'</div>';
+
+return;
+
+}
+
+try{
+
+const member =
+await getMemberData();
+
+if(!member){
+
+subscriptionStatus.innerHTML =
+'<div class="status-box">' +
+'Your member profile has not been created yet.' +
+'</div>';
+
+return;
+
+}
+
+if(isSubscriptionActive(member)){
+
+const days =
+remainingDays(member.subscriptionExpiry);
+
+subscriptionStatus.innerHTML =
+'<div class="status-box status-active">' +
+'<strong>✅ Membership Active</strong><br>' +
+'Expiry date: ' +
+formatDate(member.subscriptionExpiry) +
+'<br>' +
+'<strong>' +
+days +
+' day(s) remaining' +
+'</strong>' +
+'</div>';
+
+}else{
+
+subscriptionStatus.innerHTML =
+'<div class="status-box status-expired">' +
+'<strong>❌ Membership Expired / Inactive</strong><br>' +
+'Please contact Elimu Bora customer care on ' +
+'<strong>0716710082</strong> ' +
+'for activation or renewal.' +
+'</div>';
+
+}
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+
 document.getElementById("createMember")
 .onclick = async function(){
 
-const e = email.value.trim();
+const e =
+email.value.trim();
 
-const p = password.value;
+const p =
+password.value;
 
 if(!e || !p){
 
@@ -797,26 +1329,33 @@ return;
 
 try{
 
-const credential = await createUserWithEmailAndPassword(
+const credential =
+await createUserWithEmailAndPassword(
 auth,e,p
 );
 
 await setDoc(
-doc(db,"members",credential.user.uid),
+doc(
+db,
+"members",
+credential.user.uid
+),
 {
 email:e,
 uid:credential.user.uid,
-createdAt:serverTimestamp()
+createdAt:serverTimestamp(),
+subscriptionStatus:"inactive",
+subscriptionExpiry:null,
+subscriptionStart:null,
+plan:"none"
 }
 );
 
 showMessage(
-"Account created successfully!"
+"Account created successfully."
 );
 
-}
-
-catch(error){
+}catch(error){
 
 showMessage(error.message);
 
@@ -828,9 +1367,11 @@ showMessage(error.message);
 document.getElementById("loginMember")
 .onclick = async function(){
 
-const e = email.value.trim();
+const e =
+email.value.trim();
 
-const p = password.value;
+const p =
+password.value;
 
 if(!e || !p){
 
@@ -852,9 +1393,12 @@ showMessage(
 "Login successful!"
 );
 
-}
+setTimeout(
+closeLogin,
+700
+);
 
-catch(error){
+}catch(error){
 
 showMessage(error.message);
 
@@ -866,7 +1410,8 @@ showMessage(error.message);
 document.getElementById("forgotPassword")
 .onclick = async function(){
 
-const e = email.value.trim();
+const e =
+email.value.trim();
 
 if(!e){
 
@@ -880,15 +1425,15 @@ return;
 
 try{
 
-await sendPasswordResetEmail(auth,e);
+await sendPasswordResetEmail(
+auth,e
+);
 
 showMessage(
 "Password reset email sent."
 );
 
-}
-
-catch(error){
+}catch(error){
 
 showMessage(error.message);
 
@@ -898,11 +1443,14 @@ showMessage(error.message);
 
 
 document.getElementById("logoutMember")
-.onclick = async function(){
+.onclick =
+async function(){
 
 await signOut(auth);
 
-showMessage("You have logged out.");
+showMessage(
+"You have logged out."
+);
 
 };
 
@@ -921,7 +1469,198 @@ return "👨‍🏫";
 if(c.includes("revision"))
 return "📖";
 
+if(c.includes("note"))
+return "📚";
+
 return "🎓";
+
+}
+
+
+function fileType(url,name){
+
+const value =
+(name || url || "").toLowerCase();
+
+if(value.endsWith(".pdf"))
+return "pdf";
+
+if(
+value.endsWith(".doc") ||
+value.endsWith(".docx")
+)
+return "office";
+
+if(
+value.endsWith(".ppt") ||
+value.endsWith(".pptx")
+)
+return "office";
+
+if(
+value.endsWith(".xls") ||
+value.endsWith(".xlsx")
+)
+return "office";
+
+if(
+value.endsWith(".jpg") ||
+value.endsWith(".jpeg") ||
+value.endsWith(".png") ||
+value.endsWith(".gif") ||
+value.endsWith(".webp")
+)
+return "image";
+
+if(value.endsWith(".txt"))
+return "text";
+
+return "other";
+
+}
+
+
+function openDocumentPreview(url,name){
+
+if(!url){
+
+alert("No document is available.");
+
+return;
+
+}
+
+const type =
+fileType(url,name);
+
+const frame =
+document.getElementById(
+"previewFrame"
+);
+
+if(
+type === "pdf" ||
+type === "image" ||
+type === "text"
+){
+
+frame.src = url;
+
+}else if(type === "office"){
+
+frame.src =
+"https://docs.google.com/gview?embedded=1&url=" +
+encodeURIComponent(url);
+
+}else{
+
+alert(
+"This file type cannot be previewed directly in the browser. You can download it instead."
+);
+
+return;
+
+}
+
+document.getElementById(
+"previewModal"
+).style.display = "flex";
+
+}
+
+
+function makeFileBox(
+label,
+url,
+name
+){
+
+const box =
+document.createElement("div");
+
+box.className =
+"file-box";
+
+const title =
+document.createElement("div");
+
+title.className =
+"file-title";
+
+title.textContent =
+label +
+(name ? " — " + name : "");
+
+box.appendChild(title);
+
+
+if(!url){
+
+const noFile =
+document.createElement("div");
+
+noFile.className =
+"no-file";
+
+noFile.textContent =
+"No file uploaded.";
+
+box.appendChild(noFile);
+
+return box;
+
+}
+
+
+const preview =
+document.createElement("button");
+
+preview.className =
+"resource-btn preview-btn";
+
+preview.textContent =
+"👁️ Preview";
+
+preview.onclick =
+function(){
+
+openDocumentPreview(
+url,
+name
+);
+
+};
+
+box.appendChild(preview);
+
+
+const download =
+document.createElement("a");
+
+download.className =
+"resource-btn download-btn";
+
+download.textContent =
+"📥 Download";
+
+download.href =
+url;
+
+download.target =
+"_blank";
+
+download.rel =
+"noopener";
+
+download.download =
+name || "";
+
+download.style.textDecoration =
+"none";
+
+box.appendChild(download);
+
+return box;
 
 }
 
@@ -929,9 +1668,29 @@ return "🎓";
 async function loadResources(){
 
 grid.innerHTML =
-'<div class="loading">Loading resources...</div>';
+'<div class="loading">' +
+"Loading resources..." +
+"</div>";
+
 
 try{
+
+const member =
+await getMemberData();
+
+if(!member ||
+!isSubscriptionActive(member)){
+
+grid.innerHTML =
+'<div class="empty">' +
+'🔒 An active subscription is required to access learning resources.<br><br>' +
+'Customer Care: <strong>0716710082</strong>' +
+"</div>";
+
+return;
+
+}
+
 
 const snapshot =
 await getDocs(
@@ -943,9 +1702,11 @@ grid.innerHTML = "";
 let count = 0;
 
 
-snapshot.forEach(function(docSnap){
+snapshot.forEach(
+function(docSnap){
 
-const r = docSnap.data();
+const r =
+docSnap.data();
 
 if(r.isActive === false)
 return;
@@ -980,7 +1741,8 @@ const title =
 document.createElement("h3");
 
 title.textContent =
-r.title || "Learning Resource";
+r.title ||
+"Learning Resource";
 
 
 const description =
@@ -999,38 +1761,10 @@ meta.className =
 
 meta.textContent =
 (r.category || "Resource") +
-(r.subject ? " • " + r.subject : "") +
-(r.form ? " • " + r.form : "");
-
-
-const button =
-document.createElement("button");
-
-button.className =
-"resource-btn";
-
-button.textContent =
-"Open Resource";
-
-
-button.onclick = function(){
-
-if(!r.fileUrl){
-
-alert(
-"This resource does not have a file link yet."
-);
-
-return;
-
-}
-
-window.open(
-r.fileUrl,
-"_blank"
-);
-
-};
+(r.subject ?
+" • " + r.subject : "") +
+(r.form ?
+" • " + r.form : "");
 
 
 body.appendChild(title);
@@ -1039,64 +1773,50 @@ body.appendChild(description);
 
 body.appendChild(meta);
 
-body.appendChild(button);
-  const download =
-document.createElement("a");
 
-download.textContent =
-"⬇️ Download PDF";
+/*
+QUESTION PAPER FIRST
+*/
 
-download.href =
-r.fileUrl || "#";
+if(r.paperUrl){
 
-download.target =
-"_blank";
+body.appendChild(
+makeFileBox(
+"📄 QUESTION PAPER",
+r.paperUrl,
+r.paperName
+)
+);
 
-download.download = "";
+}else if(r.fileUrl){
 
-download.style.display =
-"inline-block";
-
-download.style.marginTop =
-"10px";
-
-download.style.marginLeft =
-"10px";
-
-download.style.padding =
-"10px 16px";
-
-download.style.borderRadius =
-"7px";
-
-download.style.background =
-"#16a05d";
-
-download.style.color =
-"white";
-
-download.style.fontWeight =
-"600";
-
-download.style.textDecoration =
-"none";
-
-download.onclick =
-function(event){
-
-if(!r.fileUrl){
-
-event.preventDefault();
-
-alert(
-"This resource does not have a file link yet."
+body.appendChild(
+makeFileBox(
+"📄 DOCUMENT",
+r.fileUrl,
+r.fileName
+)
 );
 
 }
 
-};
 
-body.appendChild(download);
+/*
+MARKING SCHEME BELOW PAPER
+*/
+
+if(r.markingSchemeUrl){
+
+body.appendChild(
+makeFileBox(
+"📝 MARKING SCHEME",
+r.markingSchemeUrl,
+r.markingSchemeName
+)
+);
+
+}
+
 
 card.appendChild(top);
 
@@ -1110,18 +1830,20 @@ grid.appendChild(card);
 if(count === 0){
 
 grid.innerHTML =
-'<div class="empty">No resources are available yet.</div>';
+'<div class="empty">' +
+"No resources are available yet." +
+"</div>";
 
 }
 
-}
-
-catch(error){
+}catch(error){
 
 console.error(error);
 
 grid.innerHTML =
-'<div class="empty">Unable to load resources. Please check your Firestore settings.</div>';
+'<div class="empty">' +
+"Unable to load resources." +
+"</div>";
 
 }
 
@@ -1130,34 +1852,12 @@ grid.innerHTML =
 
 onAuthStateChanged(
 auth,
-function(user){
+async function(user){
 
 if(user){
 
 userButton.textContent =
 "👤 " + user.email;
-  const adminSection =
-document.getElementById("adminSection");
-
-if(adminSection){
-
-  if(
-    user.email &&
-    user.email.toLowerCase() ===
-    "kojasalim93@gmail.com"
-  ){
-
-    adminSection.style.display =
-    "block";
-
-  }else{
-
-    adminSection.style.display =
-    "none";
-
-  }
-
-}
 
 document.getElementById(
 "loginMember"
@@ -1175,7 +1875,23 @@ document.getElementById(
 "logoutMember"
 ).style.display = "block";
 
-loadResources();
+
+if(isAdmin()){
+
+adminSection.style.display =
+"block";
+
+}else{
+
+adminSection.style.display =
+"none";
+
+}
+
+
+await updateSubscriptionDisplay();
+
+await loadResources();
 
 }else{
 
@@ -1198,16 +1914,31 @@ document.getElementById(
 "logoutMember"
 ).style.display = "none";
 
+adminSection.style.display =
+"none";
+
+subscriptionStatus.innerHTML =
+'<div class="status-box">' +
+'Please log in to see your membership status.' +
+"</div>";
+
 grid.innerHTML =
-'<div class="empty">🔐 Please log in to view member resources.</div>';
+'<div class="empty">' +
+"🔐 Please log in to view member resources." +
+"</div>";
 
 }
 
 });
- const resourceSearch =
-document.getElementById("resourceSearch");
 
-resourceSearch.addEventListener(
+
+/*
+SEARCH
+*/
+
+document.getElementById(
+"resourceSearch"
+).addEventListener(
 "input",
 function(){
 
@@ -1215,111 +1946,36 @@ const searchTerm =
 this.value.toLowerCase().trim();
 
 const cards =
-document.querySelectorAll(".resource-card");
+document.querySelectorAll(
+".resource-card"
+);
 
-cards.forEach(function(card){
+cards.forEach(
+function(card){
 
 const text =
 card.textContent.toLowerCase();
 
-if(text.includes(searchTerm)){
-
-card.style.display = "";
-
-}else{
-
-card.style.display = "none";
-
-}
+card.style.display =
+text.includes(searchTerm)
+? ""
+: "none";
 
 });
 
-}); 
-/* ELIMU BORA ADMIN BUTTONS */
-
-const adminSection =
-document.getElementById("adminSection");
-
-const addResourceButton =
-document.getElementById("addResourceButton");
-
-const manageResourcesButton =
-document.getElementById("manageResourcesButton");
-
-const manageMembersButton =
-document.getElementById("manageMembersButton");
-
-const adminLogoutButton =
-document.getElementById("adminLogoutButton");
-
-const addResourceForm =
-document.getElementById("addResourceForm");
-
-const manageResourcesPanel =
-document.getElementById("manageResourcesPanel");
-
-const adminResourceList =
-document.getElementById("adminResourceList");
-
-const adminMessage =
-document.getElementById("adminMessage");
+});
 
 
-/* CHECK ADMIN */
+/*
+ADMIN BUTTONS
+*/
 
-function isAdminUser(){
-
-const user = auth.currentUser;
-
-return !!(
-user &&
-user.email &&
-user.email.toLowerCase() ===
-"kojasalim93@gmail.com"
-);
-
-}
-
-
-/* SHOW ADMIN PANEL */
-
-onAuthStateChanged(
-auth,
-function(user){
-
-if(
-user &&
-user.email &&
-user.email.toLowerCase() ===
-"kojasalim93@gmail.com"
-){
-
-adminSection.style.display =
-"block";
-
-}else{
-
-adminSection.style.display =
-"none";
-
-addResourceForm.style.display =
-"none";
-
-manageResourcesPanel.style.display =
-"none";
-
-}
-
-}
-);
-
-
-/* ADD RESOURCE */
-
-addResourceButton.onclick =
+document.getElementById(
+"addResourceButton"
+).onclick =
 function(){
 
-if(!isAdminUser()){
+if(!isAdmin()){
 
 adminMessage.textContent =
 "Administrator access required.";
@@ -1334,20 +1990,64 @@ addResourceForm.style.display =
 manageResourcesPanel.style.display =
 "none";
 
-adminMessage.textContent =
-"";
+manageMembersPanel.style.display =
+"none";
 
 };
 
 
-/* SAVE RESOURCE */
+document.getElementById(
+"manageResourcesButton"
+).onclick =
+async function(){
+
+if(!isAdmin()) return;
+
+addResourceForm.style.display =
+"none";
+
+manageResourcesPanel.style.display =
+"block";
+
+manageMembersPanel.style.display =
+"none";
+
+await loadAdminResources();
+
+};
+
+
+document.getElementById(
+"manageMembersButton"
+).onclick =
+async function(){
+
+if(!isAdmin()) return;
+
+addResourceForm.style.display =
+"none";
+
+manageResourcesPanel.style.display =
+"none";
+
+manageMembersPanel.style.display =
+"block";
+
+await loadAdminMembers();
+
+};
+
+
+/*
+UPLOAD RESOURCE
+*/
 
 document.getElementById(
 "saveResourceButton"
 ).onclick =
 async function(){
 
-if(!isAdminUser()){
+if(!isAdmin()){
 
 adminMessage.textContent =
 "Administrator access required.";
@@ -1382,10 +2082,15 @@ document.getElementById(
 "adminForm"
 ).value.trim();
 
-const fileUrl =
+const paper =
 document.getElementById(
-"adminFileUrl"
-).value.trim();
+"paperFile"
+).files[0];
+
+const marking =
+document.getElementById(
+"markingFile"
+).files[0];
 
 
 if(!title){
@@ -1397,47 +2102,129 @@ return;
 
 }
 
-
-if(!fileUrl){
+if(!paper){
 
 adminMessage.textContent =
-"Please enter the PDF/file URL.";
+"Please select the question paper/document.";
 
 return;
 
 }
 
 
-const saveButton =
+const button =
 document.getElementById(
 "saveResourceButton"
 );
 
-saveButton.disabled = true;
+button.disabled = true;
 
-saveButton.textContent =
-"Saving...";
+button.textContent =
+"Uploading...";
 
 
 try{
 
-await addDoc(
-collection(db,"resources"),
+const resourceId =
+Date.now().toString();
+
+
+/*
+UPLOAD PAPER
+*/
+
+const paperPath =
+"resources/" +
+resourceId +
+"/paper/" +
+paper.name;
+
+const paperRef =
+ref(storage,paperPath);
+
+await uploadBytes(
+paperRef,
+paper
+);
+
+const paperUrl =
+await getDownloadURL(
+paperRef
+);
+
+
+/*
+UPLOAD MARKING SCHEME
+*/
+
+let markingUrl = "";
+
+let markingPath = "";
+
+if(marking){
+
+markingPath =
+"resources/" +
+resourceId +
+"/marking-scheme/" +
+marking.name;
+
+const markingRef =
+ref(storage,markingPath);
+
+await uploadBytes(
+markingRef,
+marking
+);
+
+markingUrl =
+await getDownloadURL(
+markingRef
+);
+
+}
+
+
+/*
+SAVE FIRESTORE RECORD
+*/
+
+await setDoc(
+doc(
+db,
+"resources",
+resourceId
+),
 {
 
-title: title,
+title:title,
 
-description: description,
+description:description,
 
-category: category,
+category:category,
 
-subject: subject,
+subject:subject,
 
-form: form,
+form:form,
 
-fileUrl: fileUrl,
+paperUrl:paperUrl,
 
-isActive: true,
+paperName:paper.name,
+
+paperPath:paperPath,
+
+markingSchemeUrl:
+markingUrl || null,
+
+markingSchemeName:
+marking
+? marking.name
+: null,
+
+markingSchemePath:
+markingPath || null,
+
+isActive:true,
 
 createdAt:
 serverTimestamp()
@@ -1447,7 +2234,7 @@ serverTimestamp()
 
 
 adminMessage.textContent =
-"✅ Resource saved successfully!";
+"✅ Resource uploaded successfully.";
 
 
 document.getElementById(
@@ -1471,7 +2258,11 @@ document.getElementById(
 ).value = "";
 
 document.getElementById(
-"adminFileUrl"
+"paperFile"
+).value = "";
+
+document.getElementById(
+"markingFile"
 ).value = "";
 
 
@@ -1483,54 +2274,28 @@ await loadResources();
 console.error(error);
 
 adminMessage.textContent =
-"❌ Save failed: " +
+"❌ Upload failed: " +
 error.message;
 
 }
 
 
-saveButton.disabled = false;
+button.disabled = false;
 
-saveButton.textContent =
-"💾 Save Resource";
-
-};
-
-
-/* MANAGE RESOURCES */
-
-manageResourcesButton.onclick =
-async function(){
-
-if(!isAdminUser()){
-
-adminMessage.textContent =
-"Administrator access required.";
-
-return;
-
-}
-
-addResourceForm.style.display =
-"none";
-
-manageResourcesPanel.style.display =
-"block";
-
-adminMessage.textContent =
-"";
-
-await loadAdminResources();
+button.textContent =
+"💾 Upload Resource";
 
 };
 
 
-/* LOAD ADMIN RESOURCES */
+/*
+ADMIN RESOURCE LIST
+*/
 
 async function loadAdminResources(){
 
 adminResourceList.innerHTML =
-"<p>Loading resources...</p>";
+"Loading resources...";
 
 
 try{
@@ -1540,18 +2305,17 @@ await getDocs(
 collection(db,"resources")
 );
 
-
 if(snapshot.empty){
 
 adminResourceList.innerHTML =
-"<p>No resources found.</p>";
+"No resources found.";
 
 return;
 
 }
 
 
-let html = "";
+adminResourceList.innerHTML = "";
 
 
 snapshot.forEach(
@@ -1560,141 +2324,99 @@ function(docSnap){
 const r =
 docSnap.data();
 
+const div =
+document.createElement("div");
 
-html +=
-'<div style="' +
-"padding:15px;" +
-"border-bottom:1px solid #ddd;" +
-"margin-bottom:5px;" +
-'">';
+div.className =
+"admin-resource";
 
 
-html +=
+div.innerHTML =
 "<strong>" +
 (r.title ||
-"Untitled Resource") +
-"</strong><br>";
+"Untitled") +
+"</strong><br>" +
 
-
-html +=
 "<small>" +
-(r.category ||
-"Resource");
+(r.category || "Resource") +
+(r.subject ?
+" • " + r.subject : "") +
+(r.form ?
+" • " + r.form : "") +
+"</small>";
 
 
-if(r.subject){
+const deleteButton =
+document.createElement("button");
 
-html +=
-" • " + r.subject;
+deleteButton.className =
+"small-btn expire-btn";
 
-}
+deleteButton.style.marginTop =
+"8px";
 
+deleteButton.textContent =
+"🗑️ Delete";
 
-if(r.form){
-
-html +=
-" • " + r.form;
-
-}
-
-
-html +=
-"</small><br>";
-
-
-if(r.fileUrl){
-
-html +=
-'<a href="' +
-r.fileUrl +
-'" target="_blank">' +
-"📄 Open PDF" +
-"</a> ";
-
-}
-
-
-html +=
-'<button onclick="deleteElimuResource(\'' +
-docSnap.id +
-'\')" ' +
-'style="margin-left:10px;' +
-'padding:7px 12px;' +
-'background:#b42318;' +
-'color:white;' +
-'border:none;' +
-'border-radius:6px;">' +
-"🗑️ Delete" +
-"</button>";
-
-
-html +=
-"</div>";
-
-});
-
-
-adminResourceList.innerHTML =
-html;
-
-
-}catch(error){
-
-console.error(error);
-
-adminResourceList.innerHTML =
-"<p>Unable to load resources. " +
-error.message +
-"</p>";
-
-}
-
-}
-
-
-/* DELETE RESOURCE */
-
-window.deleteElimuResource =
-async function(resourceId){
-
-if(!isAdminUser()){
-
-adminMessage.textContent =
-"Administrator access required.";
-
-return;
-
-}
-
+deleteButton.onclick =
+async function(){
 
 if(!confirm(
-"Are you sure you want to delete this resource?"
-)){
-
+"Delete this resource?"
+))
 return;
-
-}
 
 
 try{
 
-await deleteDoc(
-doc(db,"resources",resourceId)
+if(r.paperPath){
+
+try{
+
+await deleteObject(
+ref(
+storage,
+r.paperPath
+)
 );
 
+}catch(e){}
+
+}
+
+
+if(r.markingSchemePath){
+
+try{
+
+await deleteObject(
+ref(
+storage,
+r.markingSchemePath
+)
+);
+
+}catch(e){}
+
+}
+
+
+await deleteDoc(
+doc(
+db,
+"resources",
+docSnap.id
+)
+);
 
 adminMessage.textContent =
 "✅ Resource deleted.";
-
 
 await loadAdminResources();
 
 await loadResources();
 
-
 }catch(error){
-
-console.error(error);
 
 adminMessage.textContent =
 "❌ Delete failed: " +
@@ -1705,30 +2427,38 @@ error.message;
 };
 
 
-/* MANAGE MEMBERS */
+div.appendChild(
+document.createElement("br")
+);
 
-manageMembersButton.onclick =
-async function(){
+div.appendChild(
+deleteButton
+);
 
-if(!isAdminUser()){
+adminResourceList.appendChild(div);
 
-adminMessage.textContent =
-"Administrator access required.";
+});
 
-return;
+
+}catch(error){
+
+adminResourceList.innerHTML =
+"Unable to load resources: " +
+error.message;
 
 }
 
-addResourceForm.style.display =
-"none";
-
-manageResourcesPanel.style.display =
-"block";
+}
 
 
-adminResourceList.innerHTML =
-"<h3>👥 Members</h3>" +
-"<p>Loading members...</p>";
+/*
+ADMIN MEMBERS
+*/
+
+async function loadAdminMembers(){
+
+adminMemberList.innerHTML =
+"Loading members...";
 
 
 try{
@@ -1738,111 +2468,411 @@ await getDocs(
 collection(db,"members")
 );
 
-
 if(snapshot.empty){
 
-adminResourceList.innerHTML =
-"<h3>👥 Members</h3>" +
-"<p>No members found.</p>";
+adminMemberList.innerHTML =
+"No members found.";
 
 return;
 
 }
 
-
-let html =
-"<h3>👥 Members</h3>";
+adminMemberList.innerHTML = "";
 
 
 snapshot.forEach(
 function(memberSnap){
 
-const member =
+const m =
 memberSnap.data();
 
+const div =
+document.createElement("div");
 
-html +=
-'<div style="' +
-"padding:12px;" +
-"border-bottom:1px solid #ddd;" +
-'">';
+div.className =
+"member-card";
 
 
-html +=
+const expiryText =
+m.subscriptionExpiry
+? formatDate(
+m.subscriptionExpiry
+)
+: "Not active";
+
+
+const days =
+m.subscriptionExpiry
+? remainingDays(
+m.subscriptionExpiry
+)
+: 0;
+
+
+div.innerHTML =
 "<strong>" +
-(member.email ||
-"Member") +
-"</strong><br>";
+(m.email || "Member") +
+"</strong><br>" +
 
+"<small>" +
+"Status: " +
+(m.subscriptionStatus ||
+"inactive") +
+"<br>" +
 
-html +=
-"<small>UID: " +
-(member.uid ||
-memberSnap.id) +
+"Expiry: " +
+expiryText +
+"<br>" +
+
+"Remaining: " +
+days +
+" day(s)" +
 "</small>";
 
 
-html +=
-"</div>";
+const actions =
+document.createElement("div");
 
-});
-
-
-adminResourceList.innerHTML =
-html;
+actions.className =
+"member-actions";
 
 
-}catch(error){
+const activate =
+document.createElement("button");
 
-console.error(error);
+activate.className =
+"small-btn activate-btn";
 
-adminResourceList.innerHTML =
-"<p>Unable to load members. " +
-error.message +
-"</p>";
+activate.textContent =
+"Activate 30 Days";
 
-}
+activate.onclick =
+function(){
+
+activateMember(
+memberSnap.id,
+30
+);
 
 };
 
 
-/* ADMIN LOGOUT */
+const extend =
+document.createElement("button");
 
-adminLogoutButton.onclick =
-async function(){
+extend.className =
+"small-btn extend-btn";
 
-try{
+extend.textContent =
+"Extend 30 Days";
 
-await signOut(auth);
+extend.onclick =
+function(){
 
-adminSection.style.display =
-"none";
-
-addResourceForm.style.display =
-"none";
-
-manageResourcesPanel.style.display =
-"none";
-
-adminMessage.textContent =
-"";
-
-showMessage(
-"You have logged out."
+extendMember(
+memberSnap.id,
+30
 );
+
+};
+
+
+const expire =
+document.createElement("button");
+
+expire.className =
+"small-btn expire-btn";
+
+expire.textContent =
+"Expire";
+
+expire.onclick =
+function(){
+
+expireMember(
+memberSnap.id
+);
+
+};
+
+
+actions.appendChild(
+activate
+);
+
+actions.appendChild(
+extend
+);
+
+actions.appendChild(
+expire
+);
+
+div.appendChild(actions);
+
+adminMemberList.appendChild(div);
+
+});
 
 }catch(error){
 
-console.error(error);
+adminMemberList.innerHTML =
+"Unable to load members: " +
+error.message;
+
+}
+
+}
+
+
+/*
+ACTIVATE MEMBER
+*/
+
+window.activateMember =
+async function(
+memberId,
+days
+){
+
+if(!isAdmin()) return;
+
+try{
+
+const expiry =
+new Date();
+
+expiry.setDate(
+expiry.getDate() + days
+);
+
+await setDoc(
+doc(
+db,
+"members",
+memberId
+),
+{
+
+subscriptionStatus:
+"active",
+
+subscriptionStart:
+serverTimestamp(),
+
+subscriptionExpiry:
+Timestamp.fromDate(expiry),
+
+plan:
+days + " days"
+
+},
+{
+merge:true
+}
+);
 
 adminMessage.textContent =
-"Logout failed: " +
+"✅ Membership activated for " +
+days +
+" days.";
+
+await loadAdminMembers();
+
+}catch(error){
+
+adminMessage.textContent =
+"❌ Activation failed: " +
 error.message;
 
 }
 
 };
 
+
+/*
+EXTEND MEMBER
+*/
+
+window.extendMember =
+async function(
+memberId,
+days
+){
+
+if(!isAdmin()) return;
+
+try{
+
+const memberSnap =
+await getDoc(
+doc(
+db,
+"members",
+memberId
+)
+);
+
+const member =
+memberSnap.data();
+
+let expiry =
+new Date();
+
+if(
+member &&
+member.subscriptionExpiry
+){
+
+let oldExpiry;
+
+if(
+member.subscriptionExpiry.seconds
+){
+
+oldExpiry =
+new Date(
+member.subscriptionExpiry.seconds *
+1000
+);
+
+}else{
+
+oldExpiry =
+new Date(
+member.subscriptionExpiry
+);
+
+}
+
+if(
+oldExpiry.getTime() >
+Date.now()
+){
+
+expiry = oldExpiry;
+
+}
+
+}
+
+expiry.setDate(
+expiry.getDate() + days
+);
+
+
+await setDoc(
+doc(
+db,
+"members",
+memberId
+),
+{
+
+subscriptionStatus:
+"active",
+
+subscriptionExpiry:
+Timestamp.fromDate(expiry),
+
+plan:
+"Extended"
+
+},
+{
+merge:true
+}
+);
+
+adminMessage.textContent =
+"✅ Membership extended.";
+
+await loadAdminMembers();
+
+}catch(error){
+
+adminMessage.textContent =
+"❌ Extension failed: " +
+error.message;
+
+}
+
+};
+
+
+/*
+EXPIRE MEMBER
+*/
+
+window.expireMember =
+async function(
+memberId
+){
+
+if(!isAdmin()) return;
+
+if(!confirm(
+"Expire this member's subscription?"
+))
+return;
+
+try{
+
+await setDoc(
+doc(
+db,
+"members",
+memberId
+),
+{
+
+subscriptionStatus:
+"expired",
+
+subscriptionExpiry:
+Timestamp.fromDate(
+new Date()
+)
+
+},
+{
+merge:true
+}
+);
+
+adminMessage.textContent =
+"✅ Membership expired.";
+
+await loadAdminMembers();
+
+}catch(error){
+
+adminMessage.textContent =
+"❌ Could not expire member: " +
+error.message;
+
+}
+
+};
+
+
+/*
+ADMIN LOGOUT
+*/
+
+document.getElementById(
+"adminLogoutButton"
+).onclick =
+async function(){
+
+await signOut(auth);
+
+adminSection.style.display =
+"none";
+
+};
+
 </script>
+
 </body>
-</html>  
+</html>
