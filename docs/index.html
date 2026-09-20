@@ -4,49 +4,83 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Elimu Bora</title>
+  <title>Elimu Bora | Learning Resources</title>
 
   <style>
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f7fb;
-      color: #222;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f3f7fb;
+      color: #172033;
     }
 
     header {
-      background: #0b5ed7;
+      background:
+        linear-gradient(135deg, #073b7a, #0b5ed7 55%, #087f5b);
       color: white;
-      padding: 22px 18px;
+      padding: 34px 18px;
       text-align: center;
     }
 
     header h1 {
       margin: 0;
-      font-size: 30px;
+      font-size: 34px;
+      font-weight: 800;
     }
 
     header p {
-      margin: 7px 0 0;
-      font-size: 15px;
+      max-width: 720px;
+      margin: 10px auto 0;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .header-badge {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 7px 14px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.15);
+      font-size: 13px;
+      font-weight: bold;
     }
 
     .container {
       width: 94%;
-      max-width: 1000px;
-      margin: 20px auto;
+      max-width: 1050px;
+      margin: 22px auto 45px;
     }
 
     .card {
       background: white;
-      padding: 20px;
-      margin-bottom: 18px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 22px;
+      margin-bottom: 20px;
+      border-radius: 16px;
+      box-shadow: 0 5px 18px rgba(20, 55, 90, 0.08);
+      border: 1px solid #e7edf4;
+    }
+
+    .hero-card {
+      text-align: center;
+      border-top: 5px solid #0b5ed7;
+    }
+
+    .hero-card h2 {
+      font-size: 28px;
+      margin: 4px 0 10px;
+    }
+
+    .hero-card p {
+      color: #5b6777;
+      line-height: 1.7;
     }
 
     h2,
@@ -54,16 +88,29 @@
       color: #0b5ed7;
     }
 
+    h2 {
+      margin-top: 0;
+    }
+
     input,
     select,
     textarea,
     button {
       width: 100%;
-      padding: 12px;
+      padding: 13px;
       margin: 7px 0;
-      border-radius: 7px;
-      border: 1px solid #ccc;
+      border-radius: 9px;
+      border: 1px solid #ccd5df;
       font-size: 16px;
+      font-family: inherit;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #0b5ed7;
+      box-shadow: 0 0 0 3px rgba(11,94,215,0.1);
     }
 
     textarea {
@@ -77,10 +124,15 @@
       border: none;
       cursor: pointer;
       font-weight: bold;
+      transition: transform 0.15s, opacity 0.15s;
     }
 
     button:hover {
-      opacity: 0.9;
+      opacity: 0.92;
+    }
+
+    button:active {
+      transform: scale(0.99);
     }
 
     .danger {
@@ -92,12 +144,12 @@
     }
 
     .warning {
-      background: #ffc107;
+      background: #f59f00;
       color: #111;
     }
 
     .secondary {
-      background: #6c757d;
+      background: #64748b;
     }
 
     .hidden {
@@ -105,42 +157,147 @@
     }
 
     .status {
-      padding: 12px;
-      border-radius: 8px;
+      padding: 13px;
+      border-radius: 9px;
       margin: 10px 0;
-      background: #eef3f8;
+      background: #eef4fa;
+      line-height: 1.5;
     }
 
     .locked {
-      background: #fff3cd;
-      border: 1px solid #ffe69c;
-      padding: 15px;
-      border-radius: 8px;
+      background: #fff8df;
+      border: 1px solid #f1d37a;
+      padding: 18px;
+      border-radius: 12px;
+      line-height: 1.7;
     }
 
+    .topbar {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+    }
+
+    .topbar button {
+      width: auto;
+      flex: 1;
+      min-width: 130px;
+    }
+
+    .welcome-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .welcome-actions button {
+      margin: 0;
+    }
+
+    /* CATEGORY CARDS */
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .category-card {
+      border: 1px solid #dce5ee;
+      border-radius: 13px;
+      padding: 18px;
+      background: #f9fbfd;
+      text-align: center;
+    }
+
+    .category-icon {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .category-card h3 {
+      margin: 5px 0;
+      font-size: 17px;
+    }
+
+    .category-card p {
+      margin: 5px 0 0;
+      color: #667085;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* RESOURCES */
+
     .resource {
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 15px;
-      margin: 12px 0;
+      border: 1px solid #dce5ee;
+      border-radius: 13px;
+      padding: 17px;
+      margin: 13px 0;
       background: #fff;
+    }
+
+    .resource:hover {
+      border-color: #9dbce2;
+    }
+
+    .resource-title {
+      margin: 0 0 8px;
+      color: #073b7a;
+    }
+
+    .resource-description {
+      color: #596579;
+      line-height: 1.6;
+    }
+
+    .resource-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 10px 0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      background: #eaf2ff;
+      color: #0753ad;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .badge.exam {
+      background: #e8f7f0;
+      color: #087f5b;
     }
 
     .resource-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-top: 12px;
+      margin-top: 13px;
     }
 
-    .resource-actions a {
+    .resource-actions a,
+    .resource-actions button {
       display: inline-block;
-      padding: 10px 14px;
+      width: auto;
+      flex: 1;
+      min-width: 170px;
+      padding: 11px 14px;
       color: white;
       text-decoration: none;
-      border-radius: 6px;
+      text-align: center;
+      border-radius: 8px;
       font-weight: bold;
       background: #0b5ed7;
+      border: none;
+      margin: 0;
     }
 
     .resource-actions a.download {
@@ -151,11 +308,68 @@
       opacity: 0.9;
     }
 
+    .paper-box {
+      background: #f7fafc;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 12px;
+      border-left: 4px solid #0b5ed7;
+    }
+
+    .marking-box {
+      background: #f3fbf7;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 10px;
+      border-left: 4px solid #198754;
+    }
+
+    /* MEMBERSHIP */
+
+    .plans-card {
+      border: 2px solid #0b5ed7;
+      border-radius: 15px;
+      padding: 18px;
+      margin-top: 15px;
+      background: #f7fbff;
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 13px;
+    }
+
+    .plan {
+      border: 1px solid #d8e2ec;
+      padding: 17px;
+      border-radius: 12px;
+      background: white;
+      text-align: center;
+    }
+
+    .plan:hover {
+      border-color: #0b5ed7;
+    }
+
+    .plan h3 {
+      margin-top: 0;
+    }
+
+    .plan-price {
+      font-size: 23px;
+      font-weight: 800;
+      color: #073b7a;
+    }
+
+    /* PAYMENT */
+
     .payment {
-      border: 1px solid #ddd;
+      border: 1px solid #dce5ee;
       padding: 14px;
       margin: 10px 0;
-      border-radius: 8px;
+      border-radius: 10px;
+      background: #fff;
     }
 
     .pending {
@@ -173,64 +387,28 @@
       font-weight: bold;
     }
 
-    /*
-     * ONE SUBSCRIPTION CARD
-     */
-
-    .plans-card {
-      border: 2px solid #0b5ed7;
-      border-radius: 12px;
-      padding: 15px;
-      margin-top: 15px;
-      background: #f8fbff;
-    }
-
-    .plans-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .plan {
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 10px;
-      background: white;
-    }
-
-    .plan:hover {
-      border-color: #0b5ed7;
-    }
-
-    .plan h3 {
-      margin-top: 0;
-    }
-
-    .small {
-      font-size: 13px;
-      color: #666;
-    }
-
-    .topbar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .topbar button {
-      width: auto;
-      flex: 1;
-      min-width: 120px;
-    }
+    /* CUSTOMER CARE */
 
     .customer-care {
-      line-height: 1.8;
+      line-height: 1.9;
     }
 
     .customer-care a {
       color: #0b5ed7;
       font-weight: bold;
+      text-decoration: none;
     }
+
+    .care-item {
+      padding: 11px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .care-item:last-child {
+      border-bottom: none;
+    }
+
+    /* UPLOAD */
 
     .upload-progress {
       width: 100%;
@@ -243,13 +421,91 @@
     .upload-progress-bar {
       width: 0%;
       height: 10px;
-      background: #0b5ed7;
+      background: #198754;
       transition: width 0.2s;
     }
 
-    @media (max-width: 700px) {
-      .plans-grid {
+    .small {
+      font-size: 13px;
+      color: #667085;
+      line-height: 1.5;
+    }
+
+    .section-intro {
+      color: #667085;
+      line-height: 1.6;
+    }
+
+    /* PREVIEW MODAL */
+
+    #previewModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      z-index: 9999;
+      padding: 15px;
+    }
+
+    .preview-box {
+      width: 100%;
+      max-width: 1100px;
+      height: 94vh;
+      margin: auto;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-header {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      background: #073b7a;
+      color: white;
+    }
+
+    .preview-header strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .preview-header button {
+      width: auto;
+      margin: 0;
+      padding: 9px 14px;
+      background: #dc3545;
+    }
+
+    #previewFrame {
+      width: 100%;
+      flex: 1;
+      border: none;
+      background: #eef2f6;
+    }
+
+    footer {
+      text-align: center;
+      color: #667085;
+      font-size: 13px;
+      padding: 15px;
+    }
+
+    @media (max-width: 800px) {
+      .plans-grid,
+      .category-grid {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      header h1 {
+        font-size: 28px;
       }
 
       .container {
@@ -257,16 +513,21 @@
       }
 
       .card {
-        padding: 15px;
+        padding: 16px;
       }
 
       .resource-actions {
         flex-direction: column;
       }
 
-      .resource-actions a {
-        text-align: center;
+      .resource-actions a,
+      .resource-actions button {
         width: 100%;
+        min-width: 0;
+      }
+
+      .welcome-actions {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -275,8 +536,13 @@
 <body>
 
 <header>
+  <div class="header-badge">📚 LEARNING • EXAMINATIONS • RESOURCES</div>
+
   <h1>Welcome to Elimu Bora</h1>
-  <p>Your trusted platform for accessing and managing quality learning resources.</p>
+
+  <p>
+    Your trusted platform for accessing and managing quality learning resources.
+  </p>
 </header>
 
 <div class="container">
@@ -288,6 +554,10 @@
   <div id="authSection" class="card">
 
     <h2>Member Login</h2>
+
+    <p class="section-intro">
+      Log in to access your approved learning resources.
+    </p>
 
     <input
       id="emailInput"
@@ -303,12 +573,10 @@
       autocomplete="current-password"
     >
 
-    <!-- LOGIN FIRST -->
     <button onclick="loginUser()">
       Login
     </button>
 
-    <!-- CREATE ACCOUNT SECOND -->
     <button class="secondary" onclick="showRegistration()">
       Create Account
     </button>
@@ -363,9 +631,37 @@
 
   <div id="userSection" class="hidden">
 
-    <div class="card">
+    <!-- WELCOME -->
+
+    <div class="card hero-card">
 
       <h2>Welcome to Elimu Bora</h2>
+
+      <p>
+        Find quality learning materials, examinations,
+        question papers and marking schemes in one place.
+      </p>
+
+      <div class="welcome-actions">
+
+        <button onclick="loadResources()">
+          📚 Explore Resources
+        </button>
+
+        <button onclick="showMembership()">
+          💳 Membership
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- MEMBER INFORMATION -->
+
+    <div class="card">
+
+      <h2>My Account</h2>
 
       <p>
         <strong>Name:</strong>
@@ -387,19 +683,102 @@
         <span id="subscriptionExpiry"></span>
       </p>
 
-      <div class="topbar">
+    </div>
 
-        <button onclick="showMembership()">
-          Membership
-        </button>
 
-        <button onclick="loadResources()">
-          Learning Resources
-        </button>
+    <!-- =====================================================
+         RESOURCE CATEGORIES
+         ===================================================== -->
 
-        <button class="danger" onclick="logoutUser()">
-          Logout
-        </button>
+    <div class="card">
+
+      <h2>Explore Elimu Bora</h2>
+
+      <p class="section-intro">
+        Access organized educational materials after your
+        subscription has been approved.
+      </p>
+
+      <div class="category-grid">
+
+        <div class="category-card">
+          <span class="category-icon">📚</span>
+          <h3>Learning Resources</h3>
+          <p>Notes and other educational materials.</p>
+        </div>
+
+        <div class="category-card">
+          <span class="category-icon">📝</span>
+          <h3>Examinations</h3>
+          <p>Question papers and matching marking schemes.</p>
+        </div>
+
+        <div class="category-card">
+          <span class="category-icon">📄</span>
+          <h3>Question Papers</h3>
+          <p>Practice papers organized by subject and class.</p>
+        </div>
+
+        <div class="category-card">
+          <span class="category-icon">✅</span>
+          <h3>Marking Schemes</h3>
+          <p>Matching marking schemes for examinations.</p>
+        </div>
+
+        <div class="category-card">
+          <span class="category-icon">🎓</span>
+          <h3>Study Materials</h3>
+          <p>Useful resources for learning and revision.</p>
+        </div>
+
+        <div class="category-card">
+          <span class="category-icon">🔎</span>
+          <h3>Search</h3>
+          <p>Find resources by title, subject, class or year.</p>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RESOURCES
+         ===================================================== -->
+
+    <div id="resourcesSection" class="card">
+
+      <h2>Learning Resources & Examinations</h2>
+
+      <div id="resourceLock" class="locked">
+
+        🔒 <strong>Your subscription is not active.</strong>
+
+        <br><br>
+
+        You can create an account and log in without subscribing,
+        but learning documents are available only after your
+        payment has been approved by the administrator.
+
+        <br><br>
+
+        Please use the Membership section below to submit your payment.
+
+      </div>
+
+
+      <div id="resourceArea" class="hidden">
+
+        <input
+          id="resourceSearch"
+          type="text"
+          placeholder="🔎 Search examinations, papers, subjects, classes..."
+          oninput="filterResources()"
+        >
+
+        <div id="resourcesList">
+          Loading resources...
+        </div>
 
       </div>
 
@@ -414,7 +793,7 @@
 
       <h2>Membership</h2>
 
-      <p>
+      <p class="section-intro">
         Choose a subscription plan and submit your M-Pesa
         transaction code for administrator approval.
       </p>
@@ -424,16 +803,20 @@
         <h3>Subscription Plans</h3>
 
         <p>
-          Pay through M-Pesa Buy Goods and Services.
+          Pay through <strong>M-Pesa Buy Goods and Services</strong>.
         </p>
 
-        <h3>Till Number: 9511521</h3>
+        <div class="status">
+          <strong>💰 Till Number: 9511521</strong>
+        </div>
 
         <div class="plans-grid">
 
           <div class="plan">
 
-            <h3>KSh 50 — 7 Days</h3>
+            <h3>7 Days</h3>
+
+            <div class="plan-price">KSh 50</div>
 
             <p>
               Access learning resources for 7 days.
@@ -448,7 +831,9 @@
 
           <div class="plan">
 
-            <h3>KSh 200 — 30 Days</h3>
+            <h3>30 Days</h3>
+
+            <div class="plan-price">KSh 200</div>
 
             <p>
               Access learning resources for 30 days.
@@ -463,7 +848,9 @@
 
           <div class="plan">
 
-            <h3>KSh 1,000 — 365 Days</h3>
+            <h3>365 Days</h3>
+
+            <div class="plan-price">KSh 1,000</div>
 
             <p>
               Access learning resources for 365 days.
@@ -530,41 +917,41 @@
 
 
     <!-- =====================================================
-         RESOURCES
+         CUSTOMER CARE
          ===================================================== -->
 
-    <div id="resourcesSection" class="card">
+    <div class="card">
 
-      <h2>Learning Resources</h2>
+      <h2>Customer Care</h2>
 
-      <div id="resourceLock" class="locked">
+      <p class="section-intro">
+        Need help with your account, payment or resources?
+        Contact Elimu Bora.
+      </p>
 
-        🔒 Your subscription is not active.
+      <div class="customer-care">
 
-        <br><br>
+        <div class="care-item">
+          📞 <strong>Call:</strong>
+          <a href="tel:0716710082">0716710082</a>
+        </div>
 
-        You can create your account and log in without subscribing,
-        but learning documents are available only after your
-        payment has been approved by the administrator.
+        <div class="care-item">
+          💬 <strong>WhatsApp:</strong>
+          <a
+            href="https://wa.me/254716710082"
+            target="_blank"
+            rel="noopener"
+          >
+            0716710082
+          </a>
+        </div>
 
-        <br><br>
-
-        Please use the Membership section to submit your payment.
-
-      </div>
-
-
-      <div id="resourceArea" class="hidden">
-
-        <input
-          id="resourceSearch"
-          type="text"
-          placeholder="Search resources..."
-          oninput="filterResources()"
-        >
-
-        <div id="resourcesList">
-          Loading resources...
+        <div class="care-item">
+          ✉️ <strong>Email:</strong>
+          <a href="mailto:kojasalim2015@gmail.com">
+            kojasalim2015@gmail.com
+          </a>
         </div>
 
       </div>
@@ -573,39 +960,20 @@
 
 
     <!-- =====================================================
-         CUSTOMER CARE
+         LOGIN / LOGOUT CARD AT BOTTOM
          ===================================================== -->
 
     <div class="card">
 
-      <h2>Customer Care</h2>
+      <h2>Account</h2>
 
-      <div class="customer-care">
+      <p class="section-intro">
+        You are currently logged in to Elimu Bora.
+      </p>
 
-        <p>
-          <strong>Call:</strong>
-          <a href="tel:0716710082">0716710082</a>
-        </p>
-
-        <p>
-          <strong>WhatsApp:</strong>
-          <a
-            href="https://wa.me/254716710082"
-            target="_blank"
-            rel="noopener"
-          >
-            0716710082
-          </a>
-        </p>
-
-        <p>
-          <strong>Email:</strong>
-          <a href="mailto:kojasalim2015@gmail.com">
-            kojasalim2015@gmail.com
-          </a>
-        </p>
-
-      </div>
+      <button class="danger" onclick="logoutUser()">
+        🚪 Logout
+      </button>
 
     </div>
 
@@ -647,11 +1015,35 @@
         placeholder="Description"
       ></textarea>
 
-      <input
-        id="resourceCategory"
-        type="text"
-        placeholder="Category e.g. Exams, Notes"
-      >
+
+      <label>
+        <strong>Resource Type</strong>
+      </label>
+
+      <select id="resourceCategory" onchange="toggleExamFields()">
+
+        <option value="Learning Resources">
+          Learning Resources
+        </option>
+
+        <option value="Examinations">
+          Examinations
+        </option>
+
+        <option value="Notes">
+          Notes
+        </option>
+
+        <option value="Revision Materials">
+          Revision Materials
+        </option>
+
+        <option value="Other">
+          Other
+        </option>
+
+      </select>
+
 
       <input
         id="resourceSubject"
@@ -665,6 +1057,60 @@
         placeholder="Class/Form e.g. Form 4"
       >
 
+
+      <!-- EXAMINATION DETAILS -->
+
+      <div id="examFields" class="hidden">
+
+        <h3>Examination Details</h3>
+
+        <input
+          id="examYear"
+          type="number"
+          placeholder="Examination Year e.g. 2026"
+          min="1900"
+          max="2100"
+        >
+
+        <select id="examType">
+
+          <option value="">
+            Select Examination Type
+          </option>
+
+          <option value="CAT">
+            CAT / Continuous Assessment
+          </option>
+
+          <option value="Mid Term">
+            Mid Term Examination
+          </option>
+
+          <option value="End Term">
+            End Term Examination
+          </option>
+
+          <option value="Mock">
+            Mock Examination
+          </option>
+
+          <option value="Revision">
+            Revision Examination
+          </option>
+
+          <option value="KCSE">
+            KCSE
+          </option>
+
+          <option value="Other">
+            Other
+          </option>
+
+        </select>
+
+      </div>
+
+
       <label>
         <strong>Question Paper / Main Document</strong>
       </label>
@@ -674,8 +1120,9 @@
         type="file"
       >
 
+
       <label>
-        <strong>Marking Scheme (Optional)</strong>
+        <strong>Marking Scheme</strong>
       </label>
 
       <input
@@ -686,13 +1133,18 @@
       <p class="small">
         Common document types can be uploaded, including PDF,
         DOC, DOCX, PPT, PPTX, XLS, XLSX and images.
+        For examinations, the question paper and marking scheme
+        are stored together as one resource.
       </p>
 
       <button class="success" onclick="uploadResource()">
-        Upload Resource
+        ☁️ Upload Resource
       </button>
 
-      <div class="upload-progress hidden" id="uploadProgressContainer">
+      <div
+        class="upload-progress hidden"
+        id="uploadProgressContainer"
+      >
         <div
           id="uploadProgressBar"
           class="upload-progress-bar"
@@ -726,6 +1178,41 @@
 </div>
 
 
+<!-- =====================================================
+     DOCUMENT PREVIEW MODAL
+     ===================================================== -->
+
+<div id="previewModal" class="hidden">
+
+  <div class="preview-box">
+
+    <div class="preview-header">
+
+      <strong id="previewTitle">
+        Document Preview
+      </strong>
+
+      <button onclick="closePreview()">
+        ✕ Close
+      </button>
+
+    </div>
+
+    <iframe
+      id="previewFrame"
+      title="Document Preview"
+    ></iframe>
+
+  </div>
+
+</div>
+
+
+<footer>
+  © 2026 Elimu Bora — Quality Learning Resources
+</footer>
+
+
 <script type="module">
 
   /*
@@ -748,17 +1235,6 @@
   /*
    * ==========================================================
    * CLOUDINARY
-   * ==========================================================
-   *
-   * Cloud name:
-   * elhbi1xs
-   *
-   * Upload preset:
-   * elimu_bora_documents
-   *
-   * The upload preset is UNSIGNED.
-   *
-   * Never place the Cloudinary API Secret in this file.
    * ==========================================================
    */
 
@@ -867,7 +1343,7 @@
 
   /*
    * ==========================================================
-   * AUTH REGISTRATION UI
+   * REGISTRATION UI
    * ==========================================================
    */
 
@@ -989,6 +1465,35 @@
       .replaceAll("'", "&#039;");
 
   }
+
+
+  /*
+   * ==========================================================
+   * EXAMINATION ADMIN FIELDS
+   * ==========================================================
+   */
+
+  window.toggleExamFields = function () {
+
+    const category =
+      document
+        .getElementById("resourceCategory")
+        .value;
+
+    const examFields =
+      document.getElementById("examFields");
+
+    if (category === "Examinations") {
+
+      examFields.classList.remove("hidden");
+
+    } else {
+
+      examFields.classList.add("hidden");
+
+    }
+
+  };
 
 
   /*
@@ -1312,16 +1817,6 @@
 
         document
           .getElementById("adminSection")
-          .classList.remove("hidden");
-
-
-        document
-          .getElementById("membershipSection")
-          .classList.remove("hidden");
-
-
-        document
-          .getElementById("resourcesSection")
           .classList.remove("hidden");
 
 
@@ -1881,6 +2376,133 @@
 
   /*
    * ==========================================================
+   * DOCUMENT PREVIEW
+   * ==========================================================
+   */
+
+  function getFileExtension(url) {
+
+    try {
+
+      const clean =
+        url.split("?")[0].toLowerCase();
+
+      const parts =
+        clean.split(".");
+
+      return parts.length > 1
+        ? parts.pop()
+        : "";
+
+    } catch {
+
+      return "";
+
+    }
+
+  }
+
+
+  function getPreviewUrl(url) {
+
+    const extension =
+      getFileExtension(url);
+
+
+    /*
+     * Office documents are sent through Google Docs Viewer.
+     */
+
+    const officeExtensions = [
+      "doc",
+      "docx",
+      "ppt",
+      "pptx",
+      "xls",
+      "xlsx"
+    ];
+
+
+    if (officeExtensions.includes(extension)) {
+
+      return (
+        "https://docs.google.com/gview?embedded=true&url=" +
+        encodeURIComponent(url)
+      );
+
+    }
+
+
+    /*
+     * PDFs and images can normally be displayed directly.
+     */
+
+    return url;
+
+  }
+
+
+  window.openPreview = function (
+    url,
+    title
+  ) {
+
+    if (!url) return;
+
+
+    const modal =
+      document.getElementById("previewModal");
+
+
+    const frame =
+      document.getElementById("previewFrame");
+
+
+    const previewTitle =
+      document.getElementById("previewTitle");
+
+
+    previewTitle.textContent =
+      title || "Document Preview";
+
+
+    frame.src =
+      getPreviewUrl(url);
+
+
+    modal.classList.remove("hidden");
+
+
+    document.body.style.overflow =
+      "hidden";
+
+  };
+
+
+  window.closePreview = function () {
+
+    const modal =
+      document.getElementById("previewModal");
+
+
+    const frame =
+      document.getElementById("previewFrame");
+
+
+    frame.src = "";
+
+
+    modal.classList.add("hidden");
+
+
+    document.body.style.overflow =
+      "";
+
+  };
+
+
+  /*
+   * ==========================================================
    * RESOURCE LINK
    * ==========================================================
    */
@@ -1919,11 +2541,26 @@
     }
 
 
+    /*
+     * Encode URL before putting it inside onclick.
+     * This allows Preview to open the document viewer.
+     */
+
+    const encodedUrl =
+      encodeURIComponent(url);
+
+
+    const encodedLabel =
+      encodeURIComponent(label);
+
+
     return `
       <a
-        href="${safeUrl}"
-        target="_blank"
-        rel="noopener"
+        href="#"
+        onclick="openPreview(
+          decodeURIComponent('${encodedUrl}'),
+          decodeURIComponent('${encodedLabel}')
+        ); return false;"
       >
         👁️ ${safeLabel}
       </a>
@@ -1966,70 +2603,123 @@
       div.className = "resource";
 
 
+      const isExam =
+        String(resource.category || "")
+          .toLowerCase()
+          .includes("examination");
+
+
       let html = `
-        <h3>
+
+        <h3 class="resource-title">
+          ${isExam ? "📝 " : "📚 "}
           ${escapeHtml(resource.title || "Untitled")}
         </h3>
 
-        <p>
+        <p class="resource-description">
           ${escapeHtml(resource.description || "")}
         </p>
 
-        <p>
-          <strong>Category:</strong>
-          ${escapeHtml(resource.category || "")}
-        </p>
+        <div class="resource-meta">
 
-        <p>
-          <strong>Subject:</strong>
-          ${escapeHtml(resource.subject || "")}
-        </p>
+          <span class="badge ${isExam ? "exam" : ""}">
+            ${escapeHtml(resource.category || "Learning Resources")}
+          </span>
 
-        <p>
-          <strong>Class/Form:</strong>
-          ${escapeHtml(resource.className || "")}
-        </p>
+          ${
+            resource.subject
+              ? `<span class="badge">
+                  📖 ${escapeHtml(resource.subject)}
+                </span>`
+              : ""
+          }
 
-        <div class="resource-actions">
+          ${
+            resource.className
+              ? `<span class="badge">
+                  🎓 ${escapeHtml(resource.className)}
+                </span>`
+              : ""
+          }
+
+          ${
+            resource.examYear
+              ? `<span class="badge">
+                  📅 ${escapeHtml(resource.examYear)}
+                </span>`
+              : ""
+          }
+
+          ${
+            resource.examType
+              ? `<span class="badge exam">
+                  ${escapeHtml(resource.examType)}
+                </span>`
+              : ""
+          }
+
+        </div>
       `;
 
 
       if (resource.paperUrl) {
 
-        html +=
-          createResourceLink(
-            resource.paperUrl,
-            "Question Paper - Preview",
-            false
-          );
+        html += `
 
+          <div class="paper-box">
 
-        html +=
-          createResourceLink(
-            resource.paperUrl,
-            "Question Paper - Download",
-            true
-          );
+            <strong>📄 Question Paper / Main Document</strong>
+
+            <div class="resource-actions">
+
+              ${createResourceLink(
+                resource.paperUrl,
+                "Question Paper - Preview",
+                false
+              )}
+
+              ${createResourceLink(
+                resource.paperUrl,
+                "Question Paper - Download",
+                true
+              )}
+
+            </div>
+
+          </div>
+
+        `;
 
       }
 
 
       if (resource.markingUrl) {
 
-        html +=
-          createResourceLink(
-            resource.markingUrl,
-            "Marking Scheme - Preview",
-            false
-          );
+        html += `
 
+          <div class="marking-box">
 
-        html +=
-          createResourceLink(
-            resource.markingUrl,
-            "Marking Scheme - Download",
-            true
-          );
+            <strong>✅ Matching Marking Scheme</strong>
+
+            <div class="resource-actions">
+
+              ${createResourceLink(
+                resource.markingUrl,
+                "Marking Scheme - Preview",
+                false
+              )}
+
+              ${createResourceLink(
+                resource.markingUrl,
+                "Marking Scheme - Download",
+                true
+              )}
+
+            </div>
+
+          </div>
+
+        `;
 
       }
 
@@ -2061,7 +2751,8 @@
       document
         .getElementById("resourceSearch")
         .value
-        .toLowerCase();
+        .toLowerCase()
+        .trim();
 
 
     const filtered =
@@ -2073,6 +2764,8 @@
           ${resource.category || ""}
           ${resource.subject || ""}
           ${resource.className || ""}
+          ${resource.examYear || ""}
+          ${resource.examType || ""}
         `.toLowerCase();
 
 
@@ -2473,11 +3166,6 @@
     );
 
 
-    /*
-     * Put the resource ID into the context.
-     * This helps identify paired files.
-     */
-
     formData.append(
       "context",
       `resource_id=${resourceId}|document_type=${type}`
@@ -2645,6 +3333,20 @@
         .trim();
 
 
+    const examYear =
+      document
+        .getElementById("examYear")
+        .value
+        .trim();
+
+
+    const examType =
+      document
+        .getElementById("examType")
+        .value
+        .trim();
+
+
     const paper =
       document
         .getElementById("paperFile")
@@ -2662,6 +3364,36 @@
       showMessage(
         "uploadMessage",
         "Title and Question Paper are required."
+      );
+
+      return;
+
+    }
+
+
+    if (
+      category === "Examinations" &&
+      !marking
+    ) {
+
+      showMessage(
+        "uploadMessage",
+        "For an Examination, please upload both the Question Paper and Marking Scheme."
+      );
+
+      return;
+
+    }
+
+
+    if (
+      category === "Examinations" &&
+      !examYear
+    ) {
+
+      showMessage(
+        "uploadMessage",
+        "Please enter the examination year."
       );
 
       return;
@@ -2708,12 +3440,6 @@
       );
 
 
-      /*
-       * Create Firestore resource first.
-       * The question paper and marking scheme
-       * are then attached to this same resource.
-       */
-
       const resourceRef =
         await addDoc(
           collection(db, "resources"),
@@ -2723,6 +3449,18 @@
             category,
             subject,
             className,
+            resourceType:
+              category === "Examinations"
+                ? "examination"
+                : "learning_resource",
+            examYear:
+              category === "Examinations"
+                ? examYear
+                : "",
+            examType:
+              category === "Examinations"
+                ? examType
+                : "",
             createdAt: serverTimestamp(),
             createdBy: ADMIN_EMAIL,
             storageProvider: "cloudinary"
@@ -2830,7 +3568,7 @@
 
 
       /*
-       * SAVE CLOUDINARY URLS IN FIRESTORE
+       * SAVE URLS
        */
 
       await updateDoc(
@@ -2876,7 +3614,8 @@
 
       document
         .getElementById("resourceCategory")
-        .value = "";
+        .value =
+        "Learning Resources";
 
 
       document
@@ -2890,6 +3629,16 @@
 
 
       document
+        .getElementById("examYear")
+        .value = "";
+
+
+      document
+        .getElementById("examType")
+        .value = "";
+
+
+      document
         .getElementById("paperFile")
         .value = "";
 
@@ -2897,6 +3646,12 @@
       document
         .getElementById("markingFile")
         .value = "";
+
+
+      document
+        .getElementById("examFields")
+        .classList
+        .add("hidden");
 
 
       setTimeout(
@@ -3000,11 +3755,29 @@
           <strong>
             ${escapeHtml(resource.title || "")}
           </strong>
+
+          <br>
+
+          Category:
+          ${escapeHtml(resource.category || "")}
+
           <br>
 
           ${escapeHtml(resource.subject || "")}
           -
           ${escapeHtml(resource.className || "")}
+
+          ${
+            resource.examYear
+              ? `<br>Year: ${escapeHtml(resource.examYear)}`
+              : ""
+          }
+
+          ${
+            resource.examType
+              ? `<br>Exam Type: ${escapeHtml(resource.examType)}`
+              : ""
+          }
 
           <br>
 
@@ -3061,17 +3834,6 @@
   /*
    * ==========================================================
    * DELETE RESOURCE
-   * ==========================================================
-   *
-   * IMPORTANT:
-   * The website can safely remove the Firestore record.
-   *
-   * Cloudinary deletion requires an authenticated server-side
-   * operation using the API Secret, so the API Secret is NOT
-   * placed in this public website.
-   *
-   * Later, the Cloudflare Worker can be used to perform
-   * secure Cloudinary deletion.
    * ==========================================================
    */
 
@@ -3481,6 +4243,15 @@
     }
 
   }
+
+
+  /*
+   * ==========================================================
+   * INITIAL EXAM FIELD STATE
+   * ==========================================================
+   */
+
+  toggleExamFields();
 
 </script>
 
