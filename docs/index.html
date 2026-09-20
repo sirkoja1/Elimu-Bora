@@ -1,4207 +1,2688 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Elimu Bora - Learning Resources</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f5f7fb;
-  color:#172033;
-  line-height:1.6;
-}
-
-header{
-  background:#fff;
-  border-bottom:1px solid #e5e7eb;
-  position:sticky;
-  top:0;
-  z-index:1000;
-}
-
-.nav{
-  max-width:1150px;
-  margin:auto;
-  padding:15px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.logo{
-  font-size:25px;
-  font-weight:800;
-  color:#1769aa;
-  text-decoration:none;
-}
-
-.logo span{
-  color:#16a05d;
-}
-
-nav{
-  display:flex;
-  gap:18px;
-  align-items:center;
-}
-
-nav a{
-  text-decoration:none;
-  color:#273244;
-  font-weight:600;
-  cursor:pointer;
-}
-
-.login-btn{
-  background:#1769aa;
-  color:white!important;
-  padding:9px 17px;
-  border-radius:8px;
-}
-
-.hero{
-  background:linear-gradient(135deg,#1769aa,#16a05d);
-  color:white;
-  padding:70px 20px;
-}
-
-.hero-inner{
-  max-width:1150px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:1.5fr 1fr;
-  gap:40px;
-  align-items:center;
-}
-
-.hero h1{
-  font-size:48px;
-  line-height:1.15;
-  margin-bottom:18px;
-}
-
-.hero p{
-  font-size:19px;
-  max-width:650px;
-  margin-bottom:28px;
-}
-
-.hero-buttons{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.btn{
-  border:none;
-  padding:13px 21px;
-  border-radius:9px;
-  font-size:16px;
-  font-weight:700;
-  cursor:pointer;
-  text-decoration:none;
-  display:inline-block;
-}
-
-.btn-white{
-  background:white;
-  color:#1769aa;
-}
-
-.btn-dark{
-  background:#0d4774;
-  color:white;
-}
-
-.btn-green{
-  background:#16a05d;
-  color:white;
-}
-
-.btn-red{
-  background:#b42318;
-  color:white;
-}
-
-.hero-card{
-  background:rgba(255,255,255,.15);
-  padding:30px;
-  border-radius:18px;
-}
-
-section{
-  padding:60px 20px;
-}
-
-.container{
-  max-width:1150px;
-  margin:auto;
-}
-
-.section-title{
-  text-align:center;
-  margin-bottom:35px;
-}
-
-.section-title h2{
-  font-size:32px;
-  margin-bottom:8px;
-}
-
-.section-title p{
-  color:#667085;
-}
-
-.resources{
-  background:white;
-}
-
-.search-box{
-  max-width:650px;
-  margin:0 auto 30px;
-}
-
-.search-box input{
-  width:100%;
-  padding:14px 16px;
-  border:1px solid #d0d5dd;
-  border-radius:10px;
-  font-size:16px;
-}
-
-.resource-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:22px;
-}
-
-.resource-card{
-  border:1px solid #e4e7ec;
-  border-radius:14px;
-  overflow:hidden;
-  background:white;
-  box-shadow:0 4px 15px rgba(0,0,0,.05);
-}
-
-.resource-top{
-  background:#eef6ff;
-  padding:22px;
-  font-size:42px;
-  text-align:center;
-}
-
-.resource-body{
-  padding:20px;
-}
-
-.resource-body h3{
-  margin-bottom:7px;
-}
-
-.resource-body p{
-  color:#667085;
-  margin-bottom:10px;
-}
-
-.resource-meta{
-  font-size:14px;
-  color:#667085;
-  margin-bottom:15px;
-}
-
-.file-box{
-  border:1px solid #e4e7ec;
-  border-radius:10px;
-  padding:15px;
-  margin-top:15px;
-  background:#f8fafc;
-}
-
-.file-title{
-  font-weight:bold;
-  margin-bottom:8px;
-}
-
-.resource-btn{
-  padding:10px 15px;
-  border-radius:7px;
-  color:white;
-  font-weight:600;
-  cursor:pointer;
-  border:none;
-  margin:4px 3px 0 0;
-  display:inline-block;
-  text-decoration:none;
-}
-
-.preview-btn{
-  background:#1769aa;
-}
-
-.download-btn{
-  background:#16a05d;
-}
-
-.empty,
-.loading{
-  background:#f8fafc;
-  border:1px dashed #cbd5e1;
-  border-radius:12px;
-  padding:25px;
-  text-align:center;
-  color:#667085;
-  grid-column:1/-1;
-}
-
-.membership{
-  background:#f0fdf6;
-}
-
-.membership-box{
-  max-width:850px;
-  margin:auto;
-  background:white;
-  border-radius:18px;
-  padding:40px;
-  border:1px solid #dcefe4;
-}
-
-.membership-box h2{
-  font-size:32px;
-  margin-bottom:12px;
-  text-align:center;
-}
-
-.membership-box > p{
-  text-align:center;
-}
-
-.plan-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:15px;
-  margin:25px 0;
-}
-
-.plan-card{
-  border:2px solid #e4e7ec;
-  border-radius:14px;
-  padding:22px;
-  text-align:center;
-  background:#fff;
-}
-
-.plan-card h3{
-  color:#1769aa;
-  margin-bottom:8px;
-}
-
-.plan-price{
-  font-size:28px;
-  font-weight:800;
-  margin:8px 0;
-}
-
-.plan-days{
-  color:#667085;
-  margin-bottom:15px;
-}
-
-.plan-card button{
-  width:100%;
-}
-
-.payment-box{
-  margin:25px auto;
-  max-width:650px;
-  padding:22px;
-  border-radius:12px;
-  background:#fffdf0;
-  border:1px solid #eadf9b;
-  text-align:center;
-}
-
-.till-number{
-  font-size:27px;
-  font-weight:800;
-  color:#1769aa;
-  margin:8px 0;
-}
-
-.payment-form{
-  display:none;
-  max-width:600px;
-  margin:25px auto;
-  padding:25px;
-  border:1px solid #d0d5dd;
-  border-radius:14px;
-  background:#f8fafc;
-}
-
-.payment-form input,
-.payment-form select{
-  width:100%;
-  padding:13px;
-  margin:7px 0 14px;
-  border:1px solid #ccc;
-  border-radius:8px;
-  font-size:16px;
-}
-
-.status-box{
-  margin:20px auto;
-  max-width:650px;
-  padding:18px;
-  border-radius:12px;
-  background:#f8fafc;
-  border:1px solid #e4e7ec;
-  text-align:center;
-}
-
-.status-active{
-  border-color:#16a05d;
-  background:#f0fdf6;
-}
-
-.status-pending{
-  border-color:#d6a700;
-  background:#fffdf0;
-}
-
-.status-expired{
-  border-color:#b42318;
-  background:#fff5f5;
-}
-
-.contact{
-  background:white;
-}
-
-.contact-box{
-  text-align:center;
-}
-
-.contact-box p{
-  margin:8px 0;
-  color:#667085;
-}
-
-.call-btn{
-  display:inline-block;
-  margin-top:15px;
-  background:#16a05d;
-  color:white;
-  padding:13px 22px;
-  border-radius:9px;
-  font-weight:bold;
-  text-decoration:none;
-}
-
-footer{
-  background:#172033;
-  color:white;
-  padding:35px 20px;
-  text-align:center;
-}
-
-footer p{
-  opacity:.8;
-  margin:5px;
-}
-
-#loginModal,
-#previewModal{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:10000;
-  background:rgba(0,0,0,.75);
-  align-items:center;
-  justify-content:center;
-  padding:15px;
-}
-
-.login-box{
-  background:white;
-  width:100%;
-  max-width:430px;
-  border-radius:18px;
-  padding:25px;
-}
-
-.login-box input,
-.admin-form input,
-.admin-form select{
-  width:100%;
-  padding:13px;
-  margin:7px 0;
-  border:1px solid #ccc;
-  border-radius:8px;
-  font-size:16px;
-}
-
-.login-box button{
-  width:100%;
-  padding:13px;
-  border:none;
-  border-radius:8px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-  margin-top:10px;
-}
-
-#loginMember{
-  background:#1769aa;
-  color:white;
-}
-
-#createMember{
-  background:#16a05d;
-  color:white;
-}
-
-#logoutMember{
-  background:#555;
-  color:white;
-  display:none;
-}
-
-#forgotPassword{
-  background:white;
-  color:#1769aa;
-}
-
-.close{
-  float:right;
-  width:auto!important;
-  background:white!important;
-  font-size:28px!important;
-  padding:0!important;
-}
-
-#message{
-  text-align:center;
-  margin-top:14px;
-  font-size:14px;
-}
-
-#userButton{
-  position:fixed;
-  right:18px;
-  bottom:18px;
-  z-index:9999;
-  background:#1769aa;
-  color:white;
-  border:none;
-  padding:14px 20px;
-  border-radius:30px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-  max-width:75%;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-#previewModal .preview-box{
-  width:100%;
-  height:95vh;
-  background:white;
-  border-radius:12px;
-  overflow:hidden;
-  position:relative;
-}
-
-#previewModal iframe{
-  width:100%;
-  height:100%;
-  border:none;
-}
-
-.preview-close{
-  position:absolute;
-  right:10px;
-  top:8px;
-  z-index:5;
-  background:#b42318;
-  color:white;
-  border:none;
-  border-radius:50%;
-  width:38px;
-  height:38px;
-  font-size:22px;
-  cursor:pointer;
-}
-
-#adminSection{
-  display:none;
-  background:#f8fafc;
-  padding:40px 20px;
-}
-
-.admin-buttons{
-  display:grid;
-  gap:12px;
-  max-width:650px;
-  margin:auto;
-}
-
-.admin-panel{
-  background:white;
-  padding:25px;
-  border-radius:15px;
-  margin:25px auto;
-  max-width:850px;
-}
-
-.admin-form{
-  display:grid;
-  gap:5px;
-}
-
-.admin-file{
-  padding:12px;
-  border:1px dashed #98a2b3;
-  border-radius:8px;
-  background:#f8fafc;
-  margin:7px 0;
-}
-
-.admin-resource{
-  padding:15px;
-  border-bottom:1px solid #ddd;
-}
-
-.member-card,
-.payment-card{
-  padding:17px;
-  border:1px solid #e4e7ec;
-  border-radius:10px;
-  margin:10px 0;
-  background:#fff;
-}
-
-.member-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:7px;
-  margin-top:10px;
-}
-
-.payment-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:12px;
-}
-
-.small-btn{
-  border:none;
-  padding:9px;
-  border-radius:7px;
-  cursor:pointer;
-  font-weight:bold;
-}
-
-.activate-btn{
-  background:#16a05d;
-  color:white;
-}
-
-.extend-btn{
-  background:#1769aa;
-  color:white;
-}
-
-.expire-btn{
-  background:#b42318;
-  color:white;
-}
-
-.approve-btn{
-  background:#16a05d;
-  color:white;
-}
-
-.reject-btn{
-  background:#b42318;
-  color:white;
-}
-
-.notice{
-  padding:12px;
-  border-radius:8px;
-  margin-top:12px;
-  background:#f8fafc;
-}
-
-.pending-label{
-  display:inline-block;
-  padding:4px 9px;
-  border-radius:20px;
-  background:#fff3cd;
-  color:#856404;
-  font-size:12px;
-  font-weight:bold;
-}
-
-.approved-label{
-  display:inline-block;
-  padding:4px 9px;
-  border-radius:20px;
-  background:#d1fae5;
-  color:#065f46;
-  font-size:12px;
-  font-weight:bold;
-}
-
-.rejected-label{
-  display:inline-block;
-  padding:4px 9px;
-  border-radius:20px;
-  background:#fee2e2;
-  color:#991b1b;
-  font-size:12px;
-  font-weight:bold;
-}
-
-@media(max-width:800px){
-
-.hero-inner{
-  grid-template-columns:1fr;
-}
-
-.hero h1{
-  font-size:38px;
-}
-
-.resource-grid{
-  grid-template-columns:1fr;
-}
-
-.plan-grid{
-  grid-template-columns:1fr;
-}
-
-nav{
-  display:none;
-}
-
-.member-actions,
-.payment-actions{
-  grid-template-columns:1fr;
-}
-
-.membership-box{
-  padding:22px;
-}
-
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Elimu Bora</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #222;
+    }
+
+    header {
+      background: #0b5ed7;
+      color: white;
+      padding: 18px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    header p {
+      margin: 6px 0 0;
+    }
+
+    .container {
+      width: 94%;
+      max-width: 1000px;
+      margin: 20px auto;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 18px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    h2, h3 {
+      color: #0b5ed7;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0;
+      border-radius: 7px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    button {
+      background: #0b5ed7;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .danger {
+      background: #dc3545;
+    }
+
+    .success {
+      background: #198754;
+    }
+
+    .warning {
+      background: #ffc107;
+      color: #111;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+      background: #eef3f8;
+    }
+
+    .locked {
+      background: #fff3cd;
+      border: 1px solid #ffe69c;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .resource {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 12px 0;
+    }
+
+    .resource a {
+      display: inline-block;
+      margin: 5px 5px 5px 0;
+      padding: 10px 14px;
+      background: #0b5ed7;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+
+    .payment {
+      border: 1px solid #ddd;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+
+    .pending {
+      color: #856404;
+      font-weight: bold;
+    }
+
+    .approved {
+      color: #198754;
+      font-weight: bold;
+    }
+
+    .rejected {
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    .plan {
+      border: 2px solid #ddd;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+
+    .plan:hover {
+      border-color: #0b5ed7;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .topbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .topbar button {
+      width: auto;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: 96%;
+      }
+
+      .card {
+        padding: 15px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
-<div class="nav">
-
-<a href="#home" class="logo">
-Elimu <span>Bora</span>
-</a>
-
-<nav>
-<a href="#home">Home</a>
-<a href="#resources">Resources</a>
-<a href="#membership">Membership</a>
-<a href="#contact">Contact</a>
-<a class="login-btn" onclick="openLogin()">Login</a>
-</nav>
-
-</div>
+  <h1>Elimu Bora</h1>
+  <p>Learning Resources for Students</p>
 </header>
 
-
-<section class="hero" id="home">
-
-<div class="hero-inner">
-
-<div>
-
-<h1>Learn. Grow. Succeed.</h1>
-
-<p>
-Welcome to Elimu Bora, a learning platform providing
-quality educational resources for students, teachers
-and schools.
-</p>
-
-<div class="hero-buttons">
-
-<a href="#resources" class="btn btn-white">
-Explore Resources
-</a>
-
-<a href="#membership" class="btn btn-dark">
-Become a Member
-</a>
-
-</div>
-
-</div>
-
-<div class="hero-card">
-
-<h2>📚 Your Learning Hub</h2>
-
-<p>
-Access notes, revision materials, examinations,
-question papers, marking schemes and other
-educational materials from one place.
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="resources" class="resources">
-
 <div class="container">
 
-<div class="section-title">
+  <!-- AUTH -->
+  <div id="authSection" class="card">
+    <h2>Member Login</h2>
 
-<h2>📚 Learning Resources</h2>
+    <input id="nameInput" type="text" placeholder="Full Name">
 
-<p>
-Members with an active subscription can preview and download resources.
-</p>
+    <input id="emailInput" type="email" placeholder="Email Address">
+
+    <input id="passwordInput" type="password" placeholder="Password">
+
+    <button onclick="registerUser()">Create Account</button>
+
+    <button onclick="loginUser()">Login</button>
+
+    <button class="warning" onclick="resetPassword()">
+      Forgot Password
+    </button>
+
+    <div id="authMessage" class="status"></div>
+  </div>
+
+
+  <!-- USER AREA -->
+  <div id="userSection" class="hidden">
+
+    <div class="card">
+      <h2>Welcome to Elimu Bora</h2>
+
+      <p>
+        <strong>Name:</strong>
+        <span id="displayName"></span>
+      </p>
+
+      <p>
+        <strong>Email:</strong>
+        <span id="displayEmail"></span>
+      </p>
+
+      <p>
+        <strong>Subscription:</strong>
+        <span id="subscriptionStatus"></span>
+      </p>
+
+      <p>
+        <strong>Expiry:</strong>
+        <span id="subscriptionExpiry"></span>
+      </p>
+
+      <div class="topbar">
+        <button onclick="showMembership()">
+          Membership
+        </button>
+
+        <button onclick="loadResources()">
+          Learning Resources
+        </button>
+
+        <button class="danger" onclick="logoutUser()">
+          Logout
+        </button>
+      </div>
+    </div>
+
+
+    <!-- MEMBERSHIP -->
+    <div id="membershipSection" class="card">
+
+      <h2>Membership</h2>
+
+      <p>
+        Pay through M-Pesa Buy Goods and Services.
+      </p>
+
+      <h3>Till Number: 9511521</h3>
+
+      <div class="plan">
+        <h3>KSh 50 — 7 Days</h3>
+        <p>Access learning resources for 7 days.</p>
+        <button onclick="selectPlan(50, 7, '7 Days')">
+          Select Plan
+        </button>
+      </div>
+
+      <div class="plan">
+        <h3>KSh 200 — 30 Days</h3>
+        <p>Access learning resources for 30 days.</p>
+        <button onclick="selectPlan(200, 30, '30 Days')">
+          Select Plan
+        </button>
+      </div>
+
+      <div class="plan">
+        <h3>KSh 1,000 — 365 Days</h3>
+        <p>Access learning resources for 365 days.</p>
+        <button onclick="selectPlan(1000, 365, '365 Days')">
+          Select Plan
+        </button>
+      </div>
+
+      <div id="paymentForm" class="hidden">
+
+        <h3>Submit Payment</h3>
+
+        <div class="status">
+          <p>
+            <strong>Selected Plan:</strong>
+            <span id="selectedPlan"></span>
+          </p>
+
+          <p>
+            <strong>Amount:</strong>
+            KSh <span id="selectedAmount"></span>
+          </p>
+
+          <p>
+            <strong>Till Number:</strong>
+            9511521
+          </p>
+        </div>
+
+        <input
+          id="transactionCode"
+          type="text"
+          placeholder="Enter M-Pesa Transaction Code"
+        >
+
+        <button class="success" onclick="submitPayment()">
+          Submit Payment
+        </button>
+
+        <div id="paymentMessage" class="status"></div>
+
+      </div>
+
+      <h3>My Payment Requests</h3>
+
+      <div id="myPayments">
+        No payment requests yet.
+      </div>
+
+    </div>
+
+
+    <!-- RESOURCES -->
+    <div id="resourcesSection" class="card">
+
+      <h2>Learning Resources</h2>
+
+      <div id="resourceLock" class="locked">
+        🔒 Your subscription is not active.
+
+        <br><br>
+
+        You can log in and create your account without subscribing,
+        but learning documents are available only after your payment
+        has been approved by the administrator.
+
+        <br><br>
+
+        Please use the Membership section to submit your payment.
+      </div>
+
+      <div id="resourceArea" class="hidden">
+
+        <input
+          id="resourceSearch"
+          type="text"
+          placeholder="Search resources..."
+          oninput="filterResources()"
+        >
+
+        <div id="resourcesList">
+          Loading resources...
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ADMIN -->
+    <div id="adminSection" class="card hidden">
+
+      <h2>Admin Panel</h2>
+
+      <div class="status">
+        <strong>Administrator access is free.</strong>
+      </div>
+
+
+      <!-- ADMIN PAYMENTS -->
+      <h3>Payment Requests</h3>
+
+      <div id="adminPayments">
+        Loading payment requests...
+      </div>
+
+
+      <!-- ADMIN RESOURCE UPLOAD -->
+      <h3>Upload Learning Resource</h3>
+
+      <input
+        id="resourceTitle"
+        type="text"
+        placeholder="Resource Title"
+      >
+
+      <textarea
+        id="resourceDescription"
+        placeholder="Description"
+      ></textarea>
+
+      <input
+        id="resourceCategory"
+        type="text"
+        placeholder="Category e.g. Exams, Notes"
+      >
+
+      <input
+        id="resourceSubject"
+        type="text"
+        placeholder="Subject e.g. Mathematics"
+      >
+
+      <input
+        id="resourceClass"
+        type="text"
+        placeholder="Class/Form e.g. Form 4"
+      >
+
+      <label>
+        <strong>Question Paper / Main Document</strong>
+      </label>
+
+      <input
+        id="paperFile"
+        type="file"
+      >
+
+      <label>
+        <strong>Marking Scheme (Optional)</strong>
+      </label>
+
+      <input
+        id="markingFile"
+        type="file"
+      >
+
+      <button class="success" onclick="uploadResource()">
+        Upload Resource
+      </button>
+
+      <div id="uploadMessage" class="status"></div>
+
+
+      <!-- ADMIN RESOURCES -->
+      <h3>Manage Resources</h3>
+
+      <div id="adminResources">
+        Loading resources...
+      </div>
+
+
+      <!-- ADMIN MEMBERS -->
+      <h3>Manage Members</h3>
+
+      <div id="adminMembers">
+        Loading members...
+      </div>
+
+    </div>
+
+  </div>
 
 </div>
-
-<div class="search-box">
-
-<input
-id="resourceSearch"
-type="search"
-placeholder="🔎 Search learning resources..."
-autocomplete="off">
-
-</div>
-
-<div id="resourceGrid" class="resource-grid">
-
-<div class="loading">
-🔐 Please log in to view member resources.
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section class="membership" id="membership">
-
-<div class="membership-box">
-
-<h2>🔐 Elimu Bora Membership</h2>
-
-<p>
-Create your account first. You only need to pay when you want access
-to the protected learning resources.
-</p>
-
-
-<div class="payment-box">
-
-<strong>💳 M-Pesa Buy Goods</strong>
-
-<div>Pay to Till Number:</div>
-
-<div class="till-number">
-9511521
-</div>
-
-<div>
-After payment, enter your <strong>M-Pesa transaction code</strong>
-below.
-</div>
-
-</div>
-
-
-<div class="plan-grid">
-
-<div class="plan-card">
-
-<h3>7 Days</h3>
-
-<div class="plan-price">
-KSh 50
-</div>
-
-<div class="plan-days">
-7 days access
-</div>
-
-<button
-class="btn btn-dark"
-onclick="choosePlan(7)">
-Choose Plan
-</button>
-
-</div>
-
-
-<div class="plan-card">
-
-<h3>30 Days</h3>
-
-<div class="plan-price">
-KSh 200
-</div>
-
-<div class="plan-days">
-30 days access
-</div>
-
-<button
-class="btn btn-dark"
-onclick="choosePlan(30)">
-Choose Plan
-</button>
-
-</div>
-
-
-<div class="plan-card">
-
-<h3>365 Days</h3>
-
-<div class="plan-price">
-KSh 1,000
-</div>
-
-<div class="plan-days">
-365 days access
-</div>
-
-<button
-class="btn btn-dark"
-onclick="choosePlan(365)">
-Choose Plan
-</button>
-
-</div>
-
-</div>
-
-
-<div id="paymentForm" class="payment-form">
-
-<h3>💳 Submit M-Pesa Payment</h3>
-
-<p style="color:#667085;margin-bottom:12px">
-Pay first to Till <strong>9511521</strong>, then enter
-the transaction code from your M-Pesa confirmation message.
-</p>
-
-<label>
-<strong>Selected Plan</strong>
-</label>
-
-<select id="paymentPlan">
-
-<option value="7">
-KSh 50 — 7 Days
-</option>
-
-<option value="30">
-KSh 200 — 30 Days
-</option>
-
-<option value="365">
-KSh 1,000 — 365 Days
-</option>
-
-</select>
-
-
-<label>
-<strong>M-Pesa Transaction Code</strong>
-</label>
-
-<input
-id="transactionCode"
-type="text"
-placeholder="e.g. QWE123ABC4"
-maxlength="20"
-autocomplete="off">
-
-
-<button
-id="submitPayment"
-class="btn btn-dark"
-style="width:100%">
-Submit Payment
-</button>
-
-<div
-id="paymentMessage"
-style="text-align:center;margin-top:12px">
-</div>
-
-</div>
-
-
-<div id="subscriptionStatus">
-
-Please log in to see your membership status.
-
-</div>
-
-
-<button
-class="btn btn-dark"
-onclick="openLogin()">
-Login / Create Account
-</button>
-
-</div>
-
-</section>
-
-
-<section class="contact" id="contact">
-
-<div class="container">
-
-<div class="contact-box">
-
-<h2>📞 Contact Elimu Bora</h2>
-
-<p>
-For general learning resources, membership and customer support:
-</p>
-
-<p>
-<strong>Customer Care: 0716710082</strong>
-</p>
-
-<a
-class="call-btn"
-href="tel:0716710082">
-📞 Call Customer Care
-</a>
-
-</div>
-
-</div>
-
-</section>
-
-
-<footer>
-
-<p>
-© 2026 Elimu Bora. All rights reserved.
-</p>
-
-<p>
-Learning today. Succeeding tomorrow.
-</p>
-
-</footer>
-
-
-<button id="userButton" onclick="openLogin()">
-🔐 Member Login
-</button>
-
-
-<div id="loginModal">
-
-<div class="login-box">
-
-<button class="close" onclick="closeLogin()">×</button>
-
-<h2 style="text-align:center;color:#1769aa">
-Elimu Bora Members
-</h2>
-
-<p style="text-align:center;color:#667085">
-Login or create your member account
-</p>
-
-
-<input
-id="memberName"
-type="text"
-placeholder="Full name (for new account)">
-
-
-<input
-id="email"
-type="email"
-placeholder="Email address">
-
-
-<input
-id="password"
-type="password"
-placeholder="Password">
-
-
-<button id="forgotPassword">
-Forgot Password?
-</button>
-
-<button id="loginMember">
-Login
-</button>
-
-<button id="createMember">
-Create Account
-</button>
-
-<button id="logoutMember">
-Logout
-</button>
-
-<p id="message"></p>
-
-</div>
-
-</div>
-
-
-<div id="previewModal">
-
-<div class="preview-box">
-
-<button
-class="preview-close"
-onclick="closePreview()">×</button>
-
-<iframe
-id="previewFrame"
-title="Document Preview">
-</iframe>
-
-</div>
-
-</div>
-
-
-<section id="adminSection">
-
-<div class="container">
-
-<div class="section-title">
-
-<h2>🛠️ Elimu Bora Admin Panel</h2>
-
-<p>
-Administrator access — no membership payment required
-</p>
-
-</div>
-
-
-<div class="admin-buttons">
-
-<button
-id="addResourceButton"
-class="btn btn-dark">
-➕ Add New Resource
-</button>
-
-<button
-id="manageResourcesButton"
-class="btn btn-dark">
-📚 Manage Resources
-</button>
-
-<button
-id="managePaymentsButton"
-class="btn btn-dark">
-💳 Payment Requests
-</button>
-
-<button
-id="manageMembersButton"
-class="btn btn-dark">
-👥 Manage Members
-</button>
-
-<button
-id="adminLogoutButton"
-class="btn btn-red">
-🚪 Admin Logout
-</button>
-
-</div>
-
-
-<div
-id="adminMessage"
-class="notice"
-style="text-align:center">
-</div>
-
-
-<div
-id="addResourceForm"
-class="admin-panel"
-style="display:none">
-
-<h3>➕ Add Learning Resource</h3>
-
-<p style="color:#667085;margin:8px 0 15px">
-Upload a question paper/document and, if available,
-its marking scheme. The system automatically creates
-the Storage folders.
-</p>
-
-<div class="admin-form">
-
-<input
-id="adminTitle"
-placeholder="Resource title">
-
-<input
-id="adminDescription"
-placeholder="Description">
-
-<input
-id="adminCategory"
-placeholder="Category e.g. Exam, Revision, Notes">
-
-<input
-id="adminSubject"
-placeholder="Subject e.g. Mathematics">
-
-<input
-id="adminForm"
-placeholder="Class/Form e.g. Form 1">
-
-<label>
-<strong>📄 Question Paper / Main Document</strong>
-</label>
-
-<input
-id="paperFile"
-class="admin-file"
-type="file"
-accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.gif,.webp">
-
-
-<label>
-<strong>📝 Marking Scheme (optional)</strong>
-</label>
-
-<input
-id="markingFile"
-class="admin-file"
-type="file"
-accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.gif,.webp">
-
-
-<button
-id="saveResourceButton"
-class="btn btn-dark">
-💾 Upload Resource
-</button>
-
-</div>
-
-</div>
-
-
-<div
-id="manageResourcesPanel"
-class="admin-panel"
-style="display:none">
-
-<h3>📚 Manage Resources</h3>
-
-<div id="adminResourceList">
-Loading...
-</div>
-
-</div>
-
-
-<div
-id="managePaymentsPanel"
-class="admin-panel"
-style="display:none">
-
-<h3>💳 M-Pesa Payment Requests</h3>
-
-<p style="color:#667085;margin:8px 0 15px">
-Review submitted transaction codes before activating a member.
-</p>
-
-<div id="adminPaymentList">
-Loading payment requests...
-</div>
-
-</div>
-
-
-<div
-id="manageMembersPanel"
-class="admin-panel"
-style="display:none">
-
-<h3>👥 Manage Members</h3>
-
-<p style="color:#667085">
-Members can register without paying. Their access remains inactive
-until a payment is approved.
-</p>
-
-<div id="adminMemberList">
-Loading members...
-</div>
-
-</div>
-
-</div>
-
-</section>
 
 
 <script type="module">
 
-import {
-initializeApp
-}
-from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+  /*
+   * ==========================================================
+   * FIREBASE CONFIGURATION
+   * ==========================================================
+   */
+
+  const firebaseConfig = {
+    apiKey: "AIzaC6JBx_7_aZl6zhFAXUMgbi3EBMQaFzYpc",
+    authDomain: "elimu-bora-7144f.firebaseapp.com",
+    projectId: "elimu-bora-7144f",
+    storageBucket: "elimu-bora-7144f.firebasestorage.app",
+    messagingSenderId: "993419610752",
+    appId: "1:993419610752:web:b50639b4da658e88a8b465",
+    measurementId: "G-SGVQCH2QCY"
+  };
+
+
+  /*
+   * ==========================================================
+   * FIREBASE IMPORTS
+   * ==========================================================
+   */
+
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail,
+    signOut,
+    onAuthStateChanged,
+    updateProfile
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  import {
+    getFirestore,
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    addDoc,
+    setDoc,
+    updateDoc,
+    deleteDoc,
+    query,
+    where,
+    orderBy,
+    serverTimestamp,
+    runTransaction
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  import {
+    getStorage,
+    ref,
+    uploadBytes,
+    getDownloadURL,
+    deleteObject
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 
-import {
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
-sendPasswordResetEmail,
-signOut,
-onAuthStateChanged
-}
-from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+  /*
+   * ==========================================================
+   * INITIALIZE FIREBASE
+   * ==========================================================
+   */
 
+  const app = initializeApp(firebaseConfig);
 
-import {
-getFirestore,
-collection,
-getDocs,
-setDoc,
-addDoc,
-doc,
-deleteDoc,
-getDoc,
-serverTimestamp,
-Timestamp,
-query,
-where,
-runTransaction
-}
-from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+  const auth = getAuth(app);
 
+  const db = getFirestore(app);
 
-import {
-getStorage,
-ref,
-uploadBytes,
-getDownloadURL,
-deleteObject
-}
-from "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
+  const storage = getStorage(app);
 
 
-const firebaseConfig = {
+  /*
+   * ==========================================================
+   * ADMIN
+   * ==========================================================
+   */
 
-apiKey:
-"AIzaC6JBx_7_aZl6zhFAXUMgbi3EBMQaFzYpc",
+  const ADMIN_EMAIL = "kojasalim93@gmail.com";
 
-authDomain:
-"elimu-bora-7144f.firebaseapp.com",
 
-projectId:
-"elimu-bora-7144f",
+  /*
+   * ==========================================================
+   * PAYMENT PLANS
+   * ==========================================================
+   */
 
-storageBucket:
-"elimu-bora-7144f.firebasestorage.app",
+  const PAYMENT_PLANS = {
+    7: {
+      name: "7 Days",
+      amount: 50,
+      days: 7
+    },
 
-messagingSenderId:
-"993419610752",
+    30: {
+      name: "30 Days",
+      amount: 200,
+      days: 30
+    },
 
-appId:
-"1:993419610752:web:b50639b4da658e88a8b465",
+    365: {
+      name: "365 Days",
+      amount: 1000,
+      days: 365
+    }
+  };
 
-measurementId:
-"G-SGVQCH2QCY"
 
-};
+  let currentUser = null;
 
+  let selectedPayment = null;
 
-const app = initializeApp(firebaseConfig);
+  let allResources = [];
 
-const auth = getAuth(app);
 
-const db = getFirestore(app);
+  /*
+   * ==========================================================
+   * HELPERS
+   * ==========================================================
+   */
 
-const storage = getStorage(app);
+  function isAdmin() {
 
+    return currentUser &&
+      currentUser.email &&
+      currentUser.email.toLowerCase() ===
+      ADMIN_EMAIL.toLowerCase();
 
-const ADMIN_EMAIL =
-"kojasalim93@gmail.com";
+  }
 
-const MAX_FILE_SIZE =
-25 * 1024 * 1024;
 
+  function showMessage(id, message) {
 
-const PAYMENT_PLANS = {
+    const element = document.getElementById(id);
 
-7:{
-name:"7 Days",
-amount:50,
-days:7
-},
+    if (element) {
+      element.textContent = message;
+    }
 
-30:{
-name:"30 Days",
-amount:200,
-days:30
-},
+  }
 
-365:{
-name:"365 Days",
-amount:1000,
-days:365
-}
 
-};
+  function formatDate(timestamp) {
 
+    if (!timestamp) {
+      return "Not active";
+    }
 
-const modal =
-document.getElementById("loginModal");
+    try {
 
-const email =
-document.getElementById("email");
+      const date = timestamp.toDate
+        ? timestamp.toDate()
+        : new Date(timestamp);
 
-const password =
-document.getElementById("password");
+      return date.toLocaleString();
 
-const message =
-document.getElementById("message");
+    } catch {
 
-const grid =
-document.getElementById("resourceGrid");
+      return "Not available";
 
-const userButton =
-document.getElementById("userButton");
+    }
 
-const subscriptionStatus =
-document.getElementById("subscriptionStatus");
+  }
 
-const adminSection =
-document.getElementById("adminSection");
 
-const addResourceForm =
-document.getElementById("addResourceForm");
+  /*
+   * ==========================================================
+   * REGISTER
+   * ==========================================================
+   */
 
-const manageResourcesPanel =
-document.getElementById("manageResourcesPanel");
+  window.registerUser = async function () {
 
-const managePaymentsPanel =
-document.getElementById("managePaymentsPanel");
+    const name =
+      document.getElementById("nameInput").value.trim();
 
-const manageMembersPanel =
-document.getElementById("manageMembersPanel");
+    const email =
+      document.getElementById("emailInput").value.trim();
 
-const adminMessage =
-document.getElementById("adminMessage");
+    const password =
+      document.getElementById("passwordInput").value;
 
-const adminResourceList =
-document.getElementById("adminResourceList");
 
-const adminPaymentList =
-document.getElementById("adminPaymentList");
+    if (!name || !email || !password) {
 
-const adminMemberList =
-document.getElementById("adminMemberList");
+      showMessage(
+        "authMessage",
+        "Please enter your full name, email and password."
+      );
 
+      return;
 
-window.openLogin = function(){
+    }
 
-modal.style.display = "flex";
 
-};
+    if (password.length < 6) {
 
+      showMessage(
+        "authMessage",
+        "Password must be at least 6 characters."
+      );
 
-window.closeLogin = function(){
+      return;
 
-modal.style.display = "none";
+    }
 
-};
 
+    try {
 
-window.closePreview = function(){
+      const credential =
+        await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
-document.getElementById(
-"previewModal"
-).style.display = "none";
 
-document.getElementById(
-"previewFrame"
-).src = "";
+      await updateProfile(
+        credential.user,
+        {
+          displayName: name
+        }
+      );
 
-};
 
+      await setDoc(
+        doc(db, "members", credential.user.uid),
+        {
+          uid: credential.user.uid,
+          name: name,
+          email: email,
+          subscriptionStatus: "inactive",
+          subscriptionExpiry: null,
+          createdAt: serverTimestamp()
+        }
+      );
 
-function showMessage(text){
 
-message.textContent = text;
+      showMessage(
+        "authMessage",
+        "Account created successfully. You can now log in."
+      );
 
-}
 
+    } catch (error) {
 
-function isAdmin(){
+      showMessage(
+        "authMessage",
+        "Registration error: " + error.message
+      );
 
-const user = auth.currentUser;
+    }
 
-return !!(
-user &&
-user.email &&
-user.email.toLowerCase() ===
-ADMIN_EMAIL.toLowerCase()
-);
+  };
 
-}
 
+  /*
+   * ==========================================================
+   * LOGIN
+   * ==========================================================
+   */
 
-async function getMemberData(){
+  window.loginUser = async function () {
 
-const user = auth.currentUser;
+    const email =
+      document.getElementById("emailInput").value.trim();
 
-if(!user)
-return null;
+    const password =
+      document.getElementById("passwordInput").value;
 
-const memberRef =
-doc(
-db,
-"members",
-user.uid
-);
 
-const snap =
-await getDoc(memberRef);
+    if (!email || !password) {
 
-if(!snap.exists())
-return null;
+      showMessage(
+        "authMessage",
+        "Please enter your email and password."
+      );
 
-return snap.data();
+      return;
 
-}
+    }
 
 
-function isSubscriptionActive(member){
+    try {
 
-if(!member)
-return false;
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-if(member.subscriptionStatus !== "active")
-return false;
 
-if(!member.subscriptionExpiry)
-return false;
+      showMessage(
+        "authMessage",
+        "Login successful."
+      );
 
-let expiry;
 
-if(member.subscriptionExpiry.seconds){
+    } catch (error) {
 
-expiry =
-new Date(
-member.subscriptionExpiry.seconds * 1000
-);
+      showMessage(
+        "authMessage",
+        "Login error: " + error.message
+      );
 
-}else{
+    }
 
-expiry =
-new Date(member.subscriptionExpiry);
+  };
 
-}
 
-return expiry.getTime() > Date.now();
+  /*
+   * ==========================================================
+   * PASSWORD RESET
+   * ==========================================================
+   */
 
-}
+  window.resetPassword = async function () {
 
+    const email =
+      document.getElementById("emailInput").value.trim();
 
-function formatDate(value){
 
-if(!value)
-return "Not set";
+    if (!email) {
 
-let date;
+      showMessage(
+        "authMessage",
+        "Enter your email address first."
+      );
 
-if(value.seconds){
+      return;
 
-date =
-new Date(
-value.seconds * 1000
-);
+    }
 
-}else{
 
-date =
-new Date(value);
+    try {
 
-}
+      await sendPasswordResetEmail(
+        auth,
+        email
+      );
 
-return date.toLocaleDateString(
-"en-KE",
-{
-year:"numeric",
-month:"long",
-day:"numeric"
-}
-);
 
-}
+      showMessage(
+        "authMessage",
+        "Password reset email sent."
+      );
 
 
-function formatDateTime(value){
+    } catch (error) {
 
-if(!value)
-return "Not set";
+      showMessage(
+        "authMessage",
+        "Error: " + error.message
+      );
 
-let date;
+    }
 
-if(value.seconds){
+  };
 
-date =
-new Date(
-value.seconds * 1000
-);
 
-}else{
+  /*
+   * ==========================================================
+   * LOGOUT
+   * ==========================================================
+   */
 
-date =
-new Date(value);
+  window.logoutUser = async function () {
 
-}
+    await signOut(auth);
 
-return date.toLocaleString(
-"en-KE",
-{
-year:"numeric",
-month:"short",
-day:"numeric",
-hour:"2-digit",
-minute:"2-digit"
-}
-);
+  };
 
-}
 
+  /*
+   * ==========================================================
+   * AUTH STATE
+   * ==========================================================
+   */
 
-function getDateFromValue(value){
+  onAuthStateChanged(
+    auth,
+    async user => {
 
-if(!value)
-return null;
+      currentUser = user;
 
-if(value.seconds)
-return new Date(
-value.seconds * 1000
-);
 
-return new Date(value);
+      if (!user) {
 
-}
+        document
+          .getElementById("authSection")
+          .classList.remove("hidden");
 
+        document
+          .getElementById("userSection")
+          .classList.add("hidden");
 
-function remainingDays(value){
+        return;
 
-const expiry =
-getDateFromValue(value);
+      }
 
-if(!expiry)
-return 0;
 
-const difference =
-expiry.getTime() -
-Date.now();
+      document
+        .getElementById("authSection")
+        .classList.add("hidden");
 
-if(difference <= 0)
-return 0;
+      document
+        .getElementById("userSection")
+        .classList.remove("hidden");
 
-return Math.ceil(
-difference /
-(1000*60*60*24)
-);
 
-}
+      document
+        .getElementById("displayName")
+        .textContent =
+        user.displayName || "Member";
 
 
-async function updateSubscriptionDisplay(){
+      document
+        .getElementById("displayEmail")
+        .textContent =
+        user.email;
 
-if(!auth.currentUser){
 
-subscriptionStatus.innerHTML =
-'<div class="status-box">' +
-'🔐 Please log in to see your subscription status.' +
-'</div>';
+      await loadMemberData();
 
-return;
 
-}
+      if (isAdmin()) {
 
+        document
+          .getElementById("adminSection")
+          .classList.remove("hidden");
 
-try{
+        document
+          .getElementById("membershipSection")
+          .classList.remove("hidden");
 
-const member =
-await getMemberData();
+        document
+          .getElementById("resourcesSection")
+          .classList.remove("hidden");
 
+        await loadAdminPayments();
 
-if(isAdmin()){
+        await loadAdminResources();
 
-subscriptionStatus.innerHTML =
-'<div class="status-box status-active">' +
-'<strong>🛠️ Administrator Access</strong><br>' +
-'Full learning-resource access is available without a subscription.' +
-'</div>';
+        await loadAdminMembers();
 
-return;
+        loadResources();
 
-}
+      } else {
 
+        document
+          .getElementById("adminSection")
+          .classList.add("hidden");
 
-if(!member){
+        await loadResources();
 
-subscriptionStatus.innerHTML =
-'<div class="status-box">' +
-'Your member profile has not been created yet.' +
-'</div>';
+      }
 
-return;
+    }
+  );
 
-}
 
+  /*
+   * ==========================================================
+   * MEMBER DATA
+   * ==========================================================
+   */
 
-if(isSubscriptionActive(member)){
+  async function loadMemberData() {
 
-const days =
-remainingDays(
-member.subscriptionExpiry
-);
+    if (!currentUser) return;
 
-subscriptionStatus.innerHTML =
-'<div class="status-box status-active">' +
-'<strong>✅ Membership Active</strong><br>' +
-'Plan: ' +
-(member.plan || "Membership") +
-'<br>' +
-'Expiry: ' +
-formatDate(
-member.subscriptionExpiry
-) +
-'<br>' +
-'<strong>' +
-days +
-' day(s) remaining' +
-'</strong>' +
-'</div>';
 
-return;
+    const memberRef =
+      doc(
+        db,
+        "members",
+        currentUser.uid
+      );
 
-}
 
+    const snapshot =
+      await getDoc(memberRef);
 
-const pendingQuery =
-query(
-collection(db,"paymentRequests"),
-where(
-"uid",
-"==",
-auth.currentUser.uid
-)
-);
 
-const pendingSnapshot =
-await getDocs(pendingQuery);
+    if (!snapshot.exists()) {
 
-let hasPending = false;
+      document
+        .getElementById("subscriptionStatus")
+        .textContent = "Inactive";
 
-pendingSnapshot.forEach(
-function(paymentSnap){
+      document
+        .getElementById("subscriptionExpiry")
+        .textContent = "Not active";
 
-const p =
-paymentSnap.data();
+      return;
 
-if(p.status === "pending")
-hasPending = true;
+    }
 
-});
 
+    const data = snapshot.data();
 
-if(hasPending){
 
-subscriptionStatus.innerHTML =
-'<div class="status-box status-pending">' +
-'<strong>⏳ Payment Pending</strong><br>' +
-'Your payment is waiting for administrator approval.' +
-'</div>';
+    const active =
+      data.subscriptionStatus === "active" &&
+      data.subscriptionExpiry &&
+      data.subscriptionExpiry.toDate() > new Date();
 
-}else{
 
-subscriptionStatus.innerHTML =
-'<div class="status-box status-expired">' +
-'<strong>🔒 Resource Access Inactive</strong><br>' +
-'Choose a membership plan, pay to Till ' +
-'<strong>9511521</strong>, and submit your M-Pesa transaction code.' +
-'</div>';
+    document
+      .getElementById("subscriptionStatus")
+      .textContent =
+      isAdmin()
+        ? "Admin — Free Access"
+        : active
+          ? "Active"
+          : "Inactive";
 
-}
 
-}catch(error){
+    document
+      .getElementById("subscriptionExpiry")
+      .textContent =
+      isAdmin()
+        ? "Free"
+        : formatDate(data.subscriptionExpiry);
 
-console.error(error);
 
-}
+  }
 
-}
 
+  /*
+   * ==========================================================
+   * MEMBERSHIP
+   * ==========================================================
+   */
 
-window.choosePlan = function(days){
+  window.showMembership = function () {
 
-if(!auth.currentUser){
+    document
+      .getElementById("membershipSection")
+      .scrollIntoView({
+        behavior: "smooth"
+      });
 
-openLogin();
+  };
 
-showMessage(
-"Please log in or create an account first."
-);
 
-return;
+  window.selectPlan = function (
+    amount,
+    days,
+    name
+  ) {
 
-}
+    selectedPayment = {
+      amount,
+      days,
+      name
+    };
 
-if(isAdmin()){
 
-alert(
-"Administrator access is free. No payment is required."
-);
+    document
+      .getElementById("paymentForm")
+      .classList.remove("hidden");
 
-return;
 
-}
+    document
+      .getElementById("selectedPlan")
+      .textContent = name;
 
-document.getElementById(
-"paymentPlan"
-).value = String(days);
 
-document.getElementById(
-"paymentForm"
-).style.display = "block";
+    document
+      .getElementById("selectedAmount")
+      .textContent = amount;
 
-document.getElementById(
-"paymentForm"
-).scrollIntoView({
-behavior:"smooth",
-block:"center"
-});
 
-};
+    document
+      .getElementById("paymentForm")
+      .scrollIntoView({
+        behavior: "smooth"
+      });
 
+  };
 
-document.getElementById(
-"createMember"
-).onclick =
-async function(){
 
-const name =
-document.getElementById(
-"memberName"
-).value.trim();
+  /*
+   * ==========================================================
+   * SUBMIT PAYMENT
+   * ==========================================================
+   */
 
-const e =
-email.value.trim();
+  window.submitPayment = async function () {
 
-const p =
-password.value;
+    if (!currentUser) {
 
+      showMessage(
+        "paymentMessage",
+        "Please log in first."
+      );
 
-if(!name){
+      return;
 
-showMessage(
-"Please enter your full name."
-);
+    }
 
-return;
 
-}
+    if (!selectedPayment) {
 
+      showMessage(
+        "paymentMessage",
+        "Please select a membership plan."
+      );
 
-if(!e || !p){
+      return;
 
-showMessage(
-"Please enter your email and password."
-);
+    }
 
-return;
 
-}
+    const transactionCode =
+      document
+        .getElementById("transactionCode")
+        .value
+        .trim()
+        .toUpperCase();
 
 
-if(p.length < 6){
+    if (!transactionCode) {
 
-showMessage(
-"Password must contain at least 6 characters."
-);
+      showMessage(
+        "paymentMessage",
+        "Please enter the M-Pesa transaction code."
+      );
 
-return;
+      return;
 
-}
+    }
 
 
-try{
+    if (transactionCode.length < 6) {
 
-const credential =
-await createUserWithEmailAndPassword(
-auth,
-e,
-p
-);
+      showMessage(
+        "paymentMessage",
+        "Please enter a valid transaction code."
+      );
 
+      return;
 
-await setDoc(
-doc(
-db,
-"members",
-credential.user.uid
-),
-{
-uid:
-credential.user.uid,
+    }
 
-name:
-name,
 
-email:
-e,
+    try {
 
-createdAt:
-serverTimestamp(),
+      const existingQuery =
+        query(
+          collection(db, "paymentRequests"),
+          where(
+            "uid",
+            "==",
+            currentUser.uid
+          ),
+          where(
+            "transactionCode",
+            "==",
+            transactionCode
+          )
+        );
 
-subscriptionStatus:
-"inactive",
 
-subscriptionExpiry:
-null,
+      const existing =
+        await getDocs(existingQuery);
 
-subscriptionStart:
-null,
 
-plan:
-"none"
-}
-);
+      if (!existing.empty) {
 
+        showMessage(
+          "paymentMessage",
+          "This transaction code has already been submitted."
+        );
 
-showMessage(
-"Account created successfully. You can now choose a membership plan."
-);
+        return;
 
+      }
 
-}catch(error){
 
-showMessage(
-error.message
-);
+      await addDoc(
+        collection(db, "paymentRequests"),
+        {
+          uid: currentUser.uid,
+          name:
+            currentUser.displayName || "Member",
+          email: currentUser.email,
+          amount: selectedPayment.amount,
+          days: selectedPayment.days,
+          plan: selectedPayment.name,
+          transactionCode: transactionCode,
+          status: "pending",
+          createdAt: serverTimestamp()
+        }
+      );
 
-}
 
-};
+      showMessage(
+        "paymentMessage",
+        "Payment submitted successfully. Status: Pending approval."
+      );
 
 
-document.getElementById(
-"loginMember"
-).onclick =
-async function(){
+      document
+        .getElementById("transactionCode")
+        .value = "";
 
-const e =
-email.value.trim();
 
-const p =
-password.value;
+      await loadMyPayments();
 
 
-if(!e || !p){
+    } catch (error) {
 
-showMessage(
-"Please enter your email and password."
-);
+      showMessage(
+        "paymentMessage",
+        "Payment submission error: " +
+        error.message
+      );
 
-return;
+    }
 
-}
+  };
 
 
-try{
+  /*
+   * ==========================================================
+   * MEMBER PAYMENT HISTORY
+   * ==========================================================
+   */
 
-await signInWithEmailAndPassword(
-auth,
-e,
-p
-);
+  async function loadMyPayments() {
 
-showMessage(
-"Login successful!"
-);
+    if (!currentUser) return;
 
-setTimeout(
-closeLogin,
-700
-);
 
-}catch(error){
+    const paymentQuery =
+      query(
+        collection(db, "paymentRequests"),
+        where(
+          "uid",
+          "==",
+          currentUser.uid
+        )
+      );
 
-showMessage(
-error.message
-);
 
-}
+    const snapshot =
+      await getDocs(paymentQuery);
 
-};
 
+    const container =
+      document.getElementById("myPayments");
 
-document.getElementById(
-"forgotPassword"
-).onclick =
-async function(){
 
-const e =
-email.value.trim();
+    if (snapshot.empty) {
 
-if(!e){
+      container.textContent =
+        "No payment requests yet.";
 
-showMessage(
-"Enter your email address first."
-);
+      return;
 
-return;
+    }
 
-}
 
-try{
+    const payments =
+      snapshot.docs
+        .map(
+          item => ({
+            id: item.id,
+            ...item.data()
+          })
+        )
+        .sort(
+          (a, b) =>
+            getMillis(b.createdAt) -
+            getMillis(a.createdAt)
+        );
 
-await sendPasswordResetEmail(
-auth,
-e
-);
 
-showMessage(
-"Password reset email sent."
-);
+    container.innerHTML = "";
 
-}catch(error){
 
-showMessage(
-error.message
-);
+    payments.forEach(payment => {
 
-}
+      const div =
+        document.createElement("div");
 
-};
+      div.className = "payment";
 
 
-document.getElementById(
-"logoutMember"
-).onclick =
-async function(){
+      div.innerHTML = `
+        <strong>${escapeHtml(payment.plan || "")}</strong><br>
+        Amount: KSh ${payment.amount || ""}<br>
+        Transaction Code:
+        ${escapeHtml(payment.transactionCode || "")}<br>
+        Date:
+        ${formatDate(payment.createdAt)}<br>
+        Status:
+        <span class="${payment.status || ""}">
+          ${escapeHtml(payment.status || "")}
+        </span>
+      `;
 
-await signOut(auth);
 
-showMessage(
-"You have logged out."
-);
+      container.appendChild(div);
 
-};
+    });
 
+  }
 
-function getIcon(category){
 
-const c =
-(category || "").toLowerCase();
+  /*
+   * ==========================================================
+   * RESOURCE ACCESS
+   * ==========================================================
+   */
 
-if(c.includes("exam"))
-return "📝";
+  async function hasActiveAccess() {
 
-if(c.includes("teach"))
-return "👨‍🏫";
+    if (!currentUser) return false;
 
-if(c.includes("revision"))
-return "📖";
 
-if(c.includes("note"))
-return "📚";
+    if (isAdmin()) return true;
 
-return "🎓";
 
-}
+    const memberRef =
+      doc(
+        db,
+        "members",
+        currentUser.uid
+      );
 
 
-function fileType(url,name){
+    const snapshot =
+      await getDoc(memberRef);
 
-const value =
-(name || url || "").toLowerCase();
 
-if(value.endsWith(".pdf"))
-return "pdf";
+    if (!snapshot.exists()) return false;
 
-if(
-value.endsWith(".doc") ||
-value.endsWith(".docx") ||
-value.endsWith(".ppt") ||
-value.endsWith(".pptx") ||
-value.endsWith(".xls") ||
-value.endsWith(".xlsx")
-)
-return "office";
 
-if(
-value.endsWith(".jpg") ||
-value.endsWith(".jpeg") ||
-value.endsWith(".png") ||
-value.endsWith(".gif") ||
-value.endsWith(".webp")
-)
-return "image";
+    const data = snapshot.data();
 
-if(value.endsWith(".txt"))
-return "text";
 
-return "other";
+    if (
+      data.subscriptionStatus !== "active" ||
+      !data.subscriptionExpiry
+    ) {
 
-}
+      return false;
 
+    }
 
-function openDocumentPreview(url,name){
 
-if(!url){
+    return (
+      data.subscriptionExpiry.toDate() >
+      new Date()
+    );
 
-alert(
-"No document is available."
-);
+  }
 
-return;
 
-}
+  /*
+   * ==========================================================
+   * LOAD RESOURCES
+   * ==========================================================
+   */
 
-const type =
-fileType(url,name);
+  window.loadResources = async function () {
 
-const frame =
-document.getElementById(
-"previewFrame"
-);
+    if (!currentUser) return;
 
 
-if(
-type === "pdf" ||
-type === "image" ||
-type === "text"
-){
+    const access =
+      await hasActiveAccess();
 
-frame.src = url;
 
-}else if(type === "office"){
+    const lock =
+      document.getElementById("resourceLock");
 
-frame.src =
-"https://docs.google.com/gview?embedded=1&url=" +
-encodeURIComponent(url);
+    const area =
+      document.getElementById("resourceArea");
 
-}else{
 
-alert(
-"This file type cannot be previewed directly. Download it instead."
-);
+    if (!access) {
 
-return;
+      lock.classList.remove("hidden");
 
-}
+      area.classList.add("hidden");
 
+      return;
 
-document.getElementById(
-"previewModal"
-).style.display =
-"flex";
+    }
 
-}
 
+    lock.classList.add("hidden");
 
-function makeFileBox(
-label,
-url,
-name
-){
+    area.classList.remove("hidden");
 
-const box =
-document.createElement("div");
 
-box.className =
-"file-box";
+    try {
 
+      const snapshot =
+        await getDocs(
+          collection(db, "resources")
+        );
 
-const title =
-document.createElement("div");
 
-title.className =
-"file-title";
+      allResources =
+        snapshot.docs.map(
+          item => ({
+            id: item.id,
+            ...item.data()
+          })
+        );
 
-title.textContent =
-label +
-(name ? " — " + name : "");
 
-box.appendChild(title);
+      allResources.sort(
+        (a, b) =>
+          getMillis(b.createdAt) -
+          getMillis(a.createdAt)
+      );
 
 
-if(!url){
+      renderResources(allResources);
 
-const noFile =
-document.createElement("div");
 
-noFile.textContent =
-"No file uploaded.";
+    } catch (error) {
 
-box.appendChild(noFile);
+      document
+        .getElementById("resourcesList")
+        .textContent =
+        "Unable to load resources: " +
+        error.message;
 
-return box;
+    }
 
-}
+  };
 
 
-const preview =
-document.createElement("button");
+  /*
+   * ==========================================================
+   * RENDER RESOURCES
+   * ==========================================================
+   */
 
-preview.className =
-"resource-btn preview-btn";
+  function renderResources(resources) {
 
-preview.textContent =
-"👁️ Preview";
+    const container =
+      document.getElementById("resourcesList");
 
-preview.onclick =
-function(){
 
-openDocumentPreview(
-url,
-name
-);
+    container.innerHTML = "";
 
-};
 
-box.appendChild(preview);
+    if (!resources.length) {
 
+      container.textContent =
+        "No learning resources available yet.";
 
-const download =
-document.createElement("a");
+      return;
 
-download.className =
-"resource-btn download-btn";
+    }
 
-download.textContent =
-"📥 Download";
 
-download.href =
-url;
+    resources.forEach(resource => {
 
-download.target =
-"_blank";
+      const div =
+        document.createElement("div");
 
-download.rel =
-"noopener";
+      div.className = "resource";
 
-download.download =
-name || "";
 
-box.appendChild(download);
+      let html = `
+        <h3>${escapeHtml(resource.title || "Untitled")}</h3>
 
-return box;
+        <p>
+          ${escapeHtml(resource.description || "")}
+        </p>
 
-}
+        <p>
+          <strong>Category:</strong>
+          ${escapeHtml(resource.category || "")}
+        </p>
 
+        <p>
+          <strong>Subject:</strong>
+          ${escapeHtml(resource.subject || "")}
+        </p>
 
-async function loadResources(){
+        <p>
+          <strong>Class/Form:</strong>
+          ${escapeHtml(resource.className || "")}
+        </p>
+      `;
 
-grid.innerHTML =
-'<div class="loading">' +
-"Loading resources..." +
-"</div>";
 
+      if (resource.paperUrl) {
 
-try{
+        html += `
+          <a
+            href="${resource.paperUrl}"
+            target="_blank"
+            rel="noopener"
+          >
+            📄 Question Paper
+          </a>
+        `;
 
-const member =
-await getMemberData();
+      }
 
 
-if(
-!isAdmin() &&
-(!member ||
-!isSubscriptionActive(member))
-){
+      if (resource.markingUrl) {
 
-grid.innerHTML =
-'<div class="empty">' +
-'🔒 An active subscription is required to access learning resources.<br><br>' +
-'Pay to M-Pesa Buy Goods Till <strong>9511521</strong> and submit your transaction code in the Membership section.' +
-"</div>";
+        html += `
+          <a
+            href="${resource.markingUrl}"
+            target="_blank"
+            rel="noopener"
+          >
+            📝 Marking Scheme
+          </a>
+        `;
 
-return;
+      }
 
-}
 
+      div.innerHTML = html;
 
-const snapshot =
-await getDocs(
-collection(db,"resources")
-);
+      container.appendChild(div);
 
-grid.innerHTML = "";
+    });
 
-let count = 0;
+  }
 
 
-snapshot.forEach(
-function(docSnap){
+  /*
+   * ==========================================================
+   * SEARCH
+   * ==========================================================
+   */
 
-const r =
-docSnap.data();
+  window.filterResources = function () {
 
-if(r.isActive === false)
-return;
+    const term =
+      document
+        .getElementById("resourceSearch")
+        .value
+        .toLowerCase();
 
-count++;
 
+    const filtered =
+      allResources.filter(resource => {
 
-const card =
-document.createElement("div");
+        const text = `
+          ${resource.title || ""}
+          ${resource.description || ""}
+          ${resource.category || ""}
+          ${resource.subject || ""}
+          ${resource.className || ""}
+        `.toLowerCase();
 
-card.className =
-"resource-card";
 
+        return text.includes(term);
 
-const top =
-document.createElement("div");
+      });
 
-top.className =
-"resource-top";
 
-top.textContent =
-getIcon(r.category);
+    renderResources(filtered);
 
+  };
 
-const body =
-document.createElement("div");
 
-body.className =
-"resource-body";
+  /*
+   * ==========================================================
+   * ADMIN PAYMENT LIST
+   * ==========================================================
+   */
 
+  async function loadAdminPayments() {
 
-const title =
-document.createElement("h3");
+    if (!isAdmin()) return;
 
-title.textContent =
-r.title ||
-"Learning Resource";
 
+    const container =
+      document.getElementById("adminPayments");
 
-const description =
-document.createElement("p");
 
-description.textContent =
-r.description ||
-"Learning resource for members.";
+    try {
 
+      const snapshot =
+        await getDocs(
+          collection(db, "paymentRequests")
+        );
 
-const meta =
-document.createElement("div");
 
-meta.className =
-"resource-meta";
+      const payments =
+        snapshot.docs
+          .map(
+            item => ({
+              id: item.id,
+              ...item.data()
+            })
+          )
+          .sort(
+            (a, b) =>
+              getMillis(b.createdAt) -
+              getMillis(a.createdAt)
+          );
 
-meta.textContent =
-(r.category || "Resource") +
-(r.subject ?
-" • " + r.subject : "") +
-(r.form ?
-" • " + r.form : "");
 
+      container.innerHTML = "";
 
-body.appendChild(title);
 
-body.appendChild(description);
+      if (!payments.length) {
 
-body.appendChild(meta);
+        container.textContent =
+          "No payment requests.";
 
+        return;
 
-/* QUESTION PAPER FIRST */
+      }
 
-if(r.paperUrl){
 
-body.appendChild(
-makeFileBox(
-"📄 QUESTION PAPER",
-r.paperUrl,
-r.paperName
-)
-);
+      payments.forEach(payment => {
 
-}else if(r.fileUrl){
+        const div =
+          document.createElement("div");
 
-body.appendChild(
-makeFileBox(
-"📄 DOCUMENT",
-r.fileUrl,
-r.fileName
-)
-);
+        div.className = "payment";
 
-}
 
+        div.innerHTML = `
+          <strong>${escapeHtml(payment.name || "Member")}</strong><br>
+          Email:
+          ${escapeHtml(payment.email || "")}<br>
+          Plan:
+          ${escapeHtml(payment.plan || "")}<br>
+          Amount:
+          KSh ${payment.amount || ""}<br>
+          Transaction Code:
+          ${escapeHtml(payment.transactionCode || "")}<br>
+          Submitted:
+          ${formatDate(payment.createdAt)}<br>
+          Status:
+          <strong>${escapeHtml(payment.status || "")}</strong>
+          <br><br>
+        `;
 
-/* MARKING SCHEME BELOW */
 
-if(r.markingSchemeUrl){
+        if (payment.status === "pending") {
 
-body.appendChild(
-makeFileBox(
-"📝 MARKING SCHEME",
-r.markingSchemeUrl,
-r.markingSchemeName
-)
-);
+          const approve =
+            document.createElement("button");
 
-}
+          approve.textContent =
+            "Approve Payment";
 
+          approve.className =
+            "success";
 
-card.appendChild(top);
 
-card.appendChild(body);
+          approve.onclick =
+            () => approvePayment(payment.id);
 
-grid.appendChild(card);
 
-});
+          const reject =
+            document.createElement("button");
 
+          reject.textContent =
+            "Reject Payment";
 
-if(count === 0){
+          reject.className =
+            "danger";
 
-grid.innerHTML =
-'<div class="empty">' +
-"No resources are available yet." +
-"</div>";
 
-}
+          reject.onclick =
+            () => rejectPayment(payment.id);
 
-}catch(error){
 
-console.error(error);
+          div.appendChild(approve);
 
-grid.innerHTML =
-'<div class="empty">' +
-"Unable to load resources: " +
-error.message +
-"</div>";
+          div.appendChild(reject);
 
-}
+        }
 
-}
 
+        container.appendChild(div);
 
-onAuthStateChanged(
-auth,
-async function(user){
+      });
 
-if(user){
 
-userButton.textContent =
-"👤 " +
-(user.email || "Member");
+    } catch (error) {
 
+      container.textContent =
+        "Error loading payments: " +
+        error.message;
 
-document.getElementById(
-"loginMember"
-).style.display =
-"none";
+    }
 
-document.getElementById(
-"createMember"
-).style.display =
-"none";
+  }
 
-document.getElementById(
-"forgotPassword"
-).style.display =
-"none";
 
-document.getElementById(
-"logoutMember"
-).style.display =
-"block";
+  /*
+   * ==========================================================
+   * APPROVE PAYMENT
+   * ==========================================================
+   */
 
+  async function approvePayment(paymentId) {
 
-if(isAdmin()){
+    if (!isAdmin()) return;
 
-adminSection.style.display =
-"block";
 
-}else{
+    try {
 
-adminSection.style.display =
-"none";
+      await runTransaction(
+        db,
+        async transaction => {
 
-}
+          const paymentRef =
+            doc(
+              db,
+              "paymentRequests",
+              paymentId
+            );
 
 
-await updateSubscriptionDisplay();
+          const paymentSnap =
+            await transaction.get(
+              paymentRef
+            );
 
-await loadResources();
 
+          if (!paymentSnap.exists()) {
 
-}else{
+            throw new Error(
+              "Payment request not found."
+            );
 
-userButton.textContent =
-"🔐 Member Login";
+          }
 
-document.getElementById(
-"loginMember"
-).style.display =
-"block";
 
-document.getElementById(
-"createMember"
-).style.display =
-"block";
+          const payment =
+            paymentSnap.data();
 
-document.getElementById(
-"forgotPassword"
-).style.display =
-"block";
 
-document.getElementById(
-"logoutMember"
-).style.display =
-"none";
+          if (payment.status !== "pending") {
 
-adminSection.style.display =
-"none";
+            throw new Error(
+              "This payment has already been processed."
+            );
 
+          }
 
-subscriptionStatus.innerHTML =
-'<div class="status-box">' +
-'Please log in to see your membership status.' +
-"</div>";
 
+          const memberRef =
+            doc(
+              db,
+              "members",
+              payment.uid
+            );
 
-grid.innerHTML =
-'<div class="empty">' +
-"🔐 Please log in to view member resources." +
-"</div>";
 
-}
+          const memberSnap =
+            await transaction.get(
+              memberRef
+            );
 
-});
 
+          let startDate =
+            new Date();
 
-document.getElementById(
-"resourceSearch"
-).addEventListener(
-"input",
-function(){
 
-const searchTerm =
-this.value.toLowerCase().trim();
+          if (
+            memberSnap.exists() &&
+            memberSnap.data().subscriptionStatus ===
+            "active" &&
+            memberSnap.data().subscriptionExpiry
+          ) {
 
-const cards =
-document.querySelectorAll(
-".resource-card"
-);
+            const existingExpiry =
+              memberSnap
+                .data()
+                .subscriptionExpiry
+                .toDate();
 
-cards.forEach(
-function(card){
 
-const text =
-card.textContent.toLowerCase();
+            if (existingExpiry > startDate) {
 
-card.style.display =
-text.includes(searchTerm)
-? ""
-: "none";
+              startDate = existingExpiry;
 
-});
+            }
 
-});
+          }
 
 
-document.getElementById(
-"submitPayment"
-).onclick =
-async function(){
+          const expiry =
+            new Date(startDate);
 
-if(!auth.currentUser){
 
-openLogin();
+          expiry.setDate(
+            expiry.getDate() +
+            Number(payment.days)
+          );
 
-return;
 
-}
+          transaction.set(
+            memberRef,
+            {
+              uid: payment.uid,
+              name: payment.name || "Member",
+              email: payment.email,
+              subscriptionStatus: "active",
+              subscriptionExpiry: expiry,
+              updatedAt: serverTimestamp()
+            },
+            {
+              merge: true
+            }
+          );
 
 
-if(isAdmin()){
+          transaction.update(
+            paymentRef,
+            {
+              status: "approved",
+              approvedAt: serverTimestamp(),
+              approvedBy: ADMIN_EMAIL
+            }
+          );
 
-document.getElementById(
-"paymentMessage"
-).textContent =
-"Administrator access is free.";
+        }
+      );
 
-return;
 
-}
+      alert(
+        "Payment approved and subscription activated."
+      );
 
 
-const planDays =
-Number(
-document.getElementById(
-"paymentPlan"
-).value
-);
+      await loadAdminPayments();
 
-const transactionCode =
-document.getElementById(
-"transactionCode"
-).value
-.trim()
-.toUpperCase();
+      await loadAdminMembers();
 
 
-const plan =
-PAYMENT_PLANS[planDays];
+    } catch (error) {
 
+      alert(
+        "Approval error: " +
+        error.message
+      );
 
-if(!plan){
+    }
 
-document.getElementById(
-"paymentMessage"
-).textContent =
-"Please select a valid plan.";
+  }
 
-return;
 
-}
+  /*
+   * ==========================================================
+   * REJECT PAYMENT
+   * ==========================================================
+   */
 
+  async function rejectPayment(paymentId) {
 
-if(
-!/^[A-Z0-9]{6,20}$/.test(
-transactionCode
-)
-){
+    if (!isAdmin()) return;
 
-document.getElementById(
-"paymentMessage"
-).textContent =
-"Enter a valid M-Pesa transaction code.";
 
-return;
+    try {
 
-}
+      await updateDoc(
+        doc(
+          db,
+          "paymentRequests",
+          paymentId
+        ),
+        {
+          status: "rejected",
+          rejectedAt: serverTimestamp(),
+          rejectedBy: ADMIN_EMAIL
+        }
+      );
 
 
-const button =
-document.getElementById(
-"submitPayment"
-);
+      alert("Payment rejected.");
 
-button.disabled = true;
 
-button.textContent =
-"Submitting...";
+      await loadAdminPayments();
 
 
-try{
+    } catch (error) {
 
-const existingQuery =
-query(
-collection(db,"paymentRequests"),
-where(
-"uid",
-"==",
-auth.currentUser.uid
-)
-);
+      alert(
+        "Rejection error: " +
+        error.message
+      );
 
-const existing =
-await getDocs(existingQuery);
+    }
 
-let duplicate = false;
+  }
 
-existing.forEach(
-function(snap){
 
-const p =
-snap.data();
+  /*
+   * ==========================================================
+   * ADMIN RESOURCE UPLOAD
+   * ==========================================================
+   */
 
-if(
-p.transactionCode ===
-transactionCode &&
-p.status !== "rejected"
-){
+  window.uploadResource = async function () {
 
-duplicate = true;
+    if (!isAdmin()) {
 
-}
+      alert("Administrator access required.");
 
-});
+      return;
 
+    }
 
-if(duplicate){
 
-throw new Error(
-"This transaction code has already been submitted."
-);
+    const title =
+      document
+        .getElementById("resourceTitle")
+        .value
+        .trim();
 
-}
 
+    const description =
+      document
+        .getElementById("resourceDescription")
+        .value
+        .trim();
 
-const member =
-await getMemberData();
 
+    const category =
+      document
+        .getElementById("resourceCategory")
+        .value
+        .trim();
 
-await addDoc(
-collection(db,"paymentRequests"),
-{
 
-uid:
-auth.currentUser.uid,
+    const subject =
+      document
+        .getElementById("resourceSubject")
+        .value
+        .trim();
 
-name:
-member?.name ||
-auth.currentUser.displayName ||
-"Member",
 
-email:
-auth.currentUser.email,
+    const className =
+      document
+        .getElementById("resourceClass")
+        .value
+        .trim();
 
-plan:
-plan.name,
 
-amount:
-plan.amount,
+    const paper =
+      document
+        .getElementById("paperFile")
+        .files[0];
 
-days:
-plan.days,
 
-transactionCode:
-transactionCode,
+    const marking =
+      document
+        .getElementById("markingFile")
+        .files[0];
 
-status:
-"pending",
 
-submittedAt:
-serverTimestamp()
+    if (!title || !paper) {
 
-}
-);
+      showMessage(
+        "uploadMessage",
+        "Title and Question Paper are required."
+      );
 
+      return;
 
-document.getElementById(
-"paymentMessage"
-).innerHTML =
-'<span style="color:#16a05d;font-weight:bold">' +
-"✅ Payment submitted successfully. It is now waiting for admin approval." +
-"</span>";
+    }
 
 
-document.getElementById(
-"transactionCode"
-).value = "";
+    const MAX_SIZE =
+      25 * 1024 * 1024;
 
 
-await updateSubscriptionDisplay();
+    if (paper.size > MAX_SIZE) {
 
+      showMessage(
+        "uploadMessage",
+        "Question Paper is larger than 25 MB."
+      );
 
-}catch(error){
+      return;
 
-console.error(error);
+    }
 
-document.getElementById(
-"paymentMessage"
-).innerHTML =
-'<span style="color:#b42318">' +
-"❌ " +
-error.message +
-"</span>";
 
-}
+    if (
+      marking &&
+      marking.size > MAX_SIZE
+    ) {
 
+      showMessage(
+        "uploadMessage",
+        "Marking Scheme is larger than 25 MB."
+      );
 
-button.disabled = false;
+      return;
 
-button.textContent =
-"Submit Payment";
+    }
 
-};
 
+    try {
 
-document.getElementById(
-"addResourceButton"
-).onclick =
-function(){
+      showMessage(
+        "uploadMessage",
+        "Uploading resource..."
+      );
 
-if(!isAdmin()){
 
-adminMessage.textContent =
-"Administrator access required.";
+      const resourceRef =
+        await addDoc(
+          collection(db, "resources"),
+          {
+            title,
+            description,
+            category,
+            subject,
+            className,
+            createdAt: serverTimestamp(),
+            createdBy: ADMIN_EMAIL
+          }
+        );
 
-return;
 
-}
+      const resourceId =
+        resourceRef.id;
 
-hideAdminPanels();
 
-addResourceForm.style.display =
-"block";
+      const paperPath =
+        `resources/${resourceId}/paper/${paper.name}`;
 
-};
 
+      const paperStorageRef =
+        ref(
+          storage,
+          paperPath
+        );
 
-document.getElementById(
-"manageResourcesButton"
-).onclick =
-async function(){
 
-if(!isAdmin())
-return;
+      await uploadBytes(
+        paperStorageRef,
+        paper
+      );
 
-hideAdminPanels();
 
-manageResourcesPanel.style.display =
-"block";
+      const paperUrl =
+        await getDownloadURL(
+          paperStorageRef
+        );
 
-await loadAdminResources();
 
-};
+      let markingUrl = "";
 
 
-document.getElementById(
-"managePaymentsButton"
-).onclick =
-async function(){
+      if (marking) {
 
-if(!isAdmin())
-return;
+        const markingPath =
+          `resources/${resourceId}/marking-scheme/${marking.name}`;
 
-hideAdminPanels();
 
-managePaymentsPanel.style.display =
-"block";
+        const markingStorageRef =
+          ref(
+            storage,
+            markingPath
+          );
 
-await loadAdminPayments();
 
-};
+        await uploadBytes(
+          markingStorageRef,
+          marking
+        );
 
 
-document.getElementById(
-"manageMembersButton"
-).onclick =
-async function(){
+        markingUrl =
+          await getDownloadURL(
+            markingStorageRef
+          );
 
-if(!isAdmin())
-return;
+      }
 
-hideAdminPanels();
 
-manageMembersPanel.style.display =
-"block";
+      await updateDoc(
+        resourceRef,
+        {
+          paperUrl,
+          markingUrl,
+          paperName: paper.name,
+          markingName:
+            marking
+              ? marking.name
+              : ""
+        }
+      );
 
-await loadAdminMembers();
 
-};
+      showMessage(
+        "uploadMessage",
+        "Resource uploaded successfully."
+      );
 
 
-function hideAdminPanels(){
+      document
+        .getElementById("resourceTitle")
+        .value = "";
 
-addResourceForm.style.display =
-"none";
+      document
+        .getElementById("resourceDescription")
+        .value = "";
 
-manageResourcesPanel.style.display =
-"none";
+      document
+        .getElementById("resourceCategory")
+        .value = "";
 
-managePaymentsPanel.style.display =
-"none";
+      document
+        .getElementById("resourceSubject")
+        .value = "";
 
-manageMembersPanel.style.display =
-"none";
+      document
+        .getElementById("resourceClass")
+        .value = "";
 
-}
+      document
+        .getElementById("paperFile")
+        .value = "";
 
+      document
+        .getElementById("markingFile")
+        .value = "";
 
-document.getElementById(
-"saveResourceButton"
-).onclick =
-async function(){
 
-if(!isAdmin()){
+      await loadAdminResources();
 
-adminMessage.textContent =
-"Administrator access required.";
+      await loadResources();
 
-return;
 
-}
+    } catch (error) {
 
+      showMessage(
+        "uploadMessage",
+        "Upload error: " +
+        error.message
+      );
 
-const title =
-document.getElementById(
-"adminTitle"
-).value.trim();
+    }
 
-const description =
-document.getElementById(
-"adminDescription"
-).value.trim();
+  };
 
-const category =
-document.getElementById(
-"adminCategory"
-).value.trim();
 
-const subject =
-document.getElementById(
-"adminSubject"
-).value.trim();
+  /*
+   * ==========================================================
+   * ADMIN RESOURCE MANAGEMENT
+   * ==========================================================
+   */
 
-const form =
-document.getElementById(
-"adminForm"
-).value.trim();
+  async function loadAdminResources() {
 
-const paper =
-document.getElementById(
-"paperFile"
-).files[0];
+    if (!isAdmin()) return;
 
-const marking =
-document.getElementById(
-"markingFile"
-).files[0];
 
+    const container =
+      document.getElementById("adminResources");
 
-if(!title){
 
-adminMessage.textContent =
-"Please enter the resource title.";
+    const snapshot =
+      await getDocs(
+        collection(db, "resources")
+      );
 
-return;
 
-}
+    const resources =
+      snapshot.docs.map(
+        item => ({
+          id: item.id,
+          ...item.data()
+        })
+      );
 
 
-if(!paper){
+    container.innerHTML = "";
 
-adminMessage.textContent =
-"Please select the question paper/document.";
 
-return;
+    if (!resources.length) {
 
-}
+      container.textContent =
+        "No resources uploaded.";
 
+      return;
 
-if(paper.size > MAX_FILE_SIZE){
+    }
 
-adminMessage.textContent =
-"Question paper is larger than 25 MB.";
 
-return;
+    resources.forEach(resource => {
 
-}
+      const div =
+        document.createElement("div");
 
+      div.className = "resource";
 
-if(marking &&
-marking.size > MAX_FILE_SIZE){
 
-adminMessage.textContent =
-"Marking scheme is larger than 25 MB.";
+      div.innerHTML = `
+        <strong>
+          ${escapeHtml(resource.title || "")}
+        </strong>
+        <br>
+        ${escapeHtml(resource.subject || "")}
+        -
+        ${escapeHtml(resource.className || "")}
+        <br><br>
+      `;
 
-return;
 
-}
+      const deleteButton =
+        document.createElement("button");
 
+      deleteButton.textContent =
+        "Delete Resource";
 
-const button =
-document.getElementById(
-"saveResourceButton"
-);
+      deleteButton.className =
+        "danger";
 
-button.disabled = true;
 
-button.textContent =
-"Uploading...";
+      deleteButton.onclick =
+        () => deleteResource(resource);
 
 
-try{
+      div.appendChild(deleteButton);
 
-const resourceId =
-Date.now().toString();
 
+      container.appendChild(div);
 
-/* QUESTION PAPER */
+    });
 
-const paperPath =
-"resources/" +
-resourceId +
-"/paper/" +
-paper.name;
+  }
 
-const paperRef =
-ref(
-storage,
-paperPath
-);
 
-await uploadBytes(
-paperRef,
-paper
-);
+  /*
+   * ==========================================================
+   * DELETE RESOURCE
+   * ==========================================================
+   */
 
-const paperUrl =
-await getDownloadURL(
-paperRef
-);
+  async function deleteResource(resource) {
 
+    if (!isAdmin()) return;
 
-/* MARKING SCHEME */
 
-let markingUrl = null;
+    if (
+      !confirm(
+        "Delete this resource?"
+      )
+    ) {
 
-let markingPath = null;
+      return;
 
-if(marking){
+    }
 
-markingPath =
-"resources/" +
-resourceId +
-"/marking-scheme/" +
-marking.name;
 
-const markingRef =
-ref(
-storage,
-markingPath
-);
+    try {
 
-await uploadBytes(
-markingRef,
-marking
-);
+      if (resource.paperName) {
 
-markingUrl =
-await getDownloadURL(
-markingRef
-);
+        try {
 
-}
+          await deleteObject(
+            ref(
+              storage,
+              `resources/${resource.id}/paper/${resource.paperName}`
+            )
+          );
 
+        } catch {}
 
-/* FIRESTORE RESOURCE */
+      }
 
-await setDoc(
-doc(
-db,
-"resources",
-resourceId
-),
-{
 
-title:
-title,
+      if (resource.markingName) {
 
-description:
-description,
+        try {
 
-category:
-category,
+          await deleteObject(
+            ref(
+              storage,
+              `resources/${resource.id}/marking-scheme/${resource.markingName}`
+            )
+          );
 
-subject:
-subject,
+        } catch {}
 
-form:
-form,
+      }
 
-paperUrl:
-paperUrl,
 
-paperName:
-paper.name,
+      await deleteDoc(
+        doc(
+          db,
+          "resources",
+          resource.id
+        )
+      );
 
-paperPath:
-paperPath,
 
-markingSchemeUrl:
-markingUrl,
+      await loadAdminResources();
 
-markingSchemeName:
-marking
-? marking.name
-: null,
+      await loadResources();
 
-markingSchemePath:
-markingPath,
 
-isActive:
-true,
+    } catch (error) {
 
-createdAt:
-serverTimestamp()
+      alert(
+        "Delete error: " +
+        error.message
+      );
 
-}
-);
+    }
 
+  }
 
-adminMessage.textContent =
-"✅ Resource uploaded successfully.";
 
+  /*
+   * ==========================================================
+   * ADMIN MEMBER MANAGEMENT
+   * ==========================================================
+   */
 
-document.getElementById(
-"adminTitle"
-).value = "";
+  async function loadAdminMembers() {
 
-document.getElementById(
-"adminDescription"
-).value = "";
+    if (!isAdmin()) return;
 
-document.getElementById(
-"adminCategory"
-).value = "";
 
-document.getElementById(
-"adminSubject"
-).value = "";
+    const container =
+      document.getElementById("adminMembers");
 
-document.getElementById(
-"adminForm"
-).value = "";
 
-document.getElementById(
-"paperFile"
-).value = "";
+    try {
 
-document.getElementById(
-"markingFile"
-).value = "";
+      const snapshot =
+        await getDocs(
+          collection(db, "members")
+        );
 
 
-await loadResources();
+      const members =
+        snapshot.docs.map(
+          item => ({
+            id: item.id,
+            ...item.data()
+          })
+        );
 
 
-}catch(error){
+      container.innerHTML = "";
 
-console.error(error);
 
-adminMessage.textContent =
-"❌ Upload failed: " +
-error.message;
+      if (!members.length) {
 
-}
+        container.textContent =
+          "No members.";
 
+        return;
 
-button.disabled = false;
+      }
 
-button.textContent =
-"💾 Upload Resource";
 
-};
+      members.forEach(member => {
 
+        const div =
+          document.createElement("div");
 
-async function loadAdminResources(){
+        div.className = "payment";
 
-adminResourceList.innerHTML =
-"Loading resources...";
 
+        div.innerHTML = `
+          <strong>
+            ${escapeHtml(member.name || "Member")}
+          </strong>
+          <br>
+          Email:
+          ${escapeHtml(member.email || "")}
+          <br>
+          Status:
+          ${escapeHtml(member.subscriptionStatus || "inactive")}
+          <br>
+          Expiry:
+          ${formatDate(member.subscriptionExpiry)}
+          <br><br>
+        `;
 
-try{
 
-const snapshot =
-await getDocs(
-collection(db,"resources")
-);
+        const activate7 =
+          document.createElement("button");
 
+        activate7.textContent =
+          "Add 7 Days";
 
-if(snapshot.empty){
 
-adminResourceList.innerHTML =
-"No resources found.";
+        activate7.onclick =
+          () =>
+            manualSubscription(
+              member.id,
+              7
+            );
 
-return;
 
-}
+        const activate30 =
+          document.createElement("button");
 
+        activate30.textContent =
+          "Add 30 Days";
 
-adminResourceList.innerHTML =
-"";
 
+        activate30.onclick =
+          () =>
+            manualSubscription(
+              member.id,
+              30
+            );
 
-snapshot.forEach(
-function(docSnap){
 
-const r =
-docSnap.data();
+        const activate365 =
+          document.createElement("button");
 
+        activate365.textContent =
+          "Add 365 Days";
 
-const div =
-document.createElement("div");
 
-div.className =
-"admin-resource";
+        activate365.onclick =
+          () =>
+            manualSubscription(
+              member.id,
+              365
+            );
 
 
-div.innerHTML =
-"<strong>" +
-(r.title || "Untitled") +
-"</strong><br>" +
+        const expire =
+          document.createElement("button");
 
-"<small>" +
-(r.category || "Resource") +
+        expire.textContent =
+          "Expire Subscription";
 
-(r.subject ?
-" • " + r.subject : "") +
+        expire.className =
+          "danger";
 
-(r.form ?
-" • " + r.form : "") +
 
-"</small>";
+        expire.onclick =
+          () =>
+            expireMember(member.id);
 
 
-const deleteButton =
-document.createElement("button");
+        div.appendChild(activate7);
 
-deleteButton.className =
-"small-btn expire-btn";
+        div.appendChild(activate30);
 
-deleteButton.style.marginTop =
-"8px";
+        div.appendChild(activate365);
 
-deleteButton.textContent =
-"🗑️ Delete";
+        div.appendChild(expire);
 
 
-deleteButton.onclick =
-async function(){
+        container.appendChild(div);
 
-if(!confirm(
-"Delete this resource and its files?"
-))
-return;
+      });
 
 
-try{
+    } catch (error) {
 
-if(r.paperPath){
+      container.textContent =
+        "Error loading members: " +
+        error.message;
 
-try{
+    }
 
-await deleteObject(
-ref(
-storage,
-r.paperPath
-)
-);
+  }
 
-}catch(e){}
 
-}
+  /*
+   * ==========================================================
+   * MANUAL SUBSCRIPTION
+   * ==========================================================
+   */
 
+  async function manualSubscription(
+    uid,
+    days
+  ) {
 
-if(r.markingSchemePath){
+    if (!isAdmin()) return;
 
-try{
 
-await deleteObject(
-ref(
-storage,
-r.markingSchemePath
-)
-);
+    try {
 
-}catch(e){}
+      const memberRef =
+        doc(
+          db,
+          "members",
+          uid
+        );
 
-}
 
+      const snapshot =
+        await getDoc(memberRef);
 
-await deleteDoc(
-doc(
-db,
-"resources",
-docSnap.id
-)
-);
 
+      let start =
+        new Date();
 
-adminMessage.textContent =
-"✅ Resource deleted.";
 
-await loadAdminResources();
+      if (
+        snapshot.exists() &&
+        snapshot.data().subscriptionStatus ===
+        "active" &&
+        snapshot.data().subscriptionExpiry
+      ) {
 
-await loadResources();
+        const expiry =
+          snapshot
+            .data()
+            .subscriptionExpiry
+            .toDate();
 
 
-}catch(error){
+        if (expiry > start) {
 
-adminMessage.textContent =
-"❌ Delete failed: " +
-error.message;
+          start = expiry;
 
-}
+        }
 
-};
+      }
 
 
-div.appendChild(
-document.createElement("br")
-);
+      const newExpiry =
+        new Date(start);
 
-div.appendChild(
-deleteButton
-);
 
-adminResourceList.appendChild(
-div
-);
+      newExpiry.setDate(
+        newExpiry.getDate() +
+        days
+      );
 
-});
 
+      await updateDoc(
+        memberRef,
+        {
+          subscriptionStatus: "active",
+          subscriptionExpiry: newExpiry,
+          updatedAt: serverTimestamp()
+        }
+      );
 
-}catch(error){
 
-adminResourceList.innerHTML =
-"Unable to load resources: " +
-error.message;
+      alert(
+        `Subscription extended by ${days} days.`
+      );
 
-}
 
-}
+      await loadAdminMembers();
 
 
-async function loadAdminPayments(){
+      if (
+        currentUser &&
+        currentUser.uid === uid
+      ) {
 
-adminPaymentList.innerHTML =
-"Loading payment requests...";
+        await loadMemberData();
 
+        await loadResources();
 
-try{
+      }
 
-const snapshot =
-await getDocs(
-collection(db,"paymentRequests")
-);
 
+    } catch (error) {
 
-if(snapshot.empty){
+      alert(
+        "Subscription error: " +
+        error.message
+      );
 
-adminPaymentList.innerHTML =
-"No payment requests yet.";
+    }
 
-return;
+  }
 
-}
 
+  /*
+   * ==========================================================
+   * EXPIRE MEMBER
+   * ==========================================================
+   */
 
-adminPaymentList.innerHTML =
-"";
+  async function expireMember(uid) {
 
+    if (!isAdmin()) return;
 
-const payments = [];
 
-snapshot.forEach(
-function(snap){
+    if (
+      !confirm(
+        "Expire this member's subscription?"
+      )
+    ) {
 
-payments.push({
-id:snap.id,
-data:snap.data()
-});
+      return;
 
-});
+    }
 
 
-payments.sort(
-function(a,b){
+    try {
 
-const ad =
-getDateFromValue(
-a.data.submittedAt
-);
+      await updateDoc(
+        doc(
+          db,
+          "members",
+          uid
+        ),
+        {
+          subscriptionStatus: "inactive",
+          subscriptionExpiry: new Date(),
+          updatedAt: serverTimestamp()
+        }
+      );
 
-const bd =
-getDateFromValue(
-b.data.submittedAt
-);
 
-return (
-(bd ? bd.getTime() : 0) -
-(ad ? ad.getTime() : 0)
-);
+      await loadAdminMembers();
 
-});
 
+    } catch (error) {
 
-payments.forEach(
-function(item){
+      alert(
+        "Error: " +
+        error.message
+      );
 
-const p =
-item.data;
+    }
 
+  }
 
-const card =
-document.createElement("div");
 
-card.className =
-"payment-card";
+  /*
+   * ==========================================================
+   * UTILITY FUNCTIONS
+   * ==========================================================
+   */
 
+  function getMillis(timestamp) {
 
-let statusClass =
-"pending-label";
+    if (!timestamp) return 0;
 
-if(p.status === "approved")
-statusClass =
-"approved-label";
 
-if(p.status === "rejected")
-statusClass =
-"rejected-label";
+    try {
 
+      if (timestamp.toMillis) {
 
-card.innerHTML =
+        return timestamp.toMillis();
 
-"<strong>" +
-(p.name || "Member") +
-"</strong><br>" +
+      }
 
-"<small>" +
-"Email: " +
-(p.email || "Not available") +
-"<br>" +
 
-"Plan: " +
-(p.plan || "Unknown") +
-"<br>" +
+      if (timestamp.toDate) {
 
-"Amount: KSh " +
-(p.amount || 0) +
-"<br>" +
+        return timestamp.toDate().getTime();
 
-"Transaction Code: " +
-"<strong>" +
-(p.transactionCode || "") +
-"</strong>" +
-"<br>" +
+      }
 
-"Submitted: " +
-formatDateTime(
-p.submittedAt
-) +
-"</small><br><br>" +
 
-"<span class=\"" +
-statusClass +
-"\">" +
-(p.status || "pending").toUpperCase() +
-"</span>";
+      return new Date(timestamp).getTime();
 
+    } catch {
 
-if(p.status === "pending"){
+      return 0;
 
-const actions =
-document.createElement("div");
+    }
 
-actions.className =
-"payment-actions";
+  }
 
 
-const approve =
-document.createElement("button");
+  function escapeHtml(value) {
 
-approve.className =
-"small-btn approve-btn";
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
 
-approve.textContent =
-"✅ Approve";
+  }
 
 
-approve.onclick =
-async function(){
+  /*
+   * ==========================================================
+   * INITIAL PAYMENT HISTORY
+   * ==========================================================
+   */
 
-await approvePayment(
-item.id,
-p
-);
-
-};
-
-
-const reject =
-document.createElement("button");
-
-reject.className =
-"small-btn reject-btn";
-
-reject.textContent =
-"❌ Reject";
-
-
-reject.onclick =
-async function(){
-
-await rejectPayment(
-item.id
-);
-
-};
-
-
-actions.appendChild(
-approve
-);
-
-actions.appendChild(
-reject
-);
-
-card.appendChild(
-actions
-);
-
-}
-
-
-adminPaymentList.appendChild(
-card
-);
-
-});
-
-
-}catch(error){
-
-adminPaymentList.innerHTML =
-"Unable to load payment requests: " +
-error.message;
-
-}
-
-}
-
-
-async function approvePayment(
-paymentId,
-payment
-){
-
-if(!isAdmin())
-return;
-
-
-if(!confirm(
-"Approve this M-Pesa payment and activate the member?"
-))
-return;
-
-
-try{
-
-const memberRef =
-doc(
-db,
-"members",
-payment.uid
-);
-
-const paymentRef =
-doc(
-db,
-"paymentRequests",
-paymentId
-);
-
-
-await runTransaction(
-db,
-async function(transaction){
-
-const memberSnap =
-await transaction.get(
-memberRef
-);
-
-const paymentSnap =
-await transaction.get(
-paymentRef
-);
-
-
-if(!paymentSnap.exists()){
-
-throw new Error(
-"Payment request no longer exists."
-);
-
-}
-
-
-const currentPayment =
-paymentSnap.data();
-
-
-if(currentPayment.status !== "pending"){
-
-throw new Error(
-"This payment has already been processed."
-);
-
-}
-
-
-const member =
-memberSnap.exists()
-? memberSnap.data()
-: {};
-
-
-let startDate =
-new Date();
-
-
-let expiry =
-new Date();
-
-
-const oldExpiry =
-getDateFromValue(
-member.subscriptionExpiry
-);
-
-
-if(
-member.subscriptionStatus === "active" &&
-oldExpiry &&
-oldExpiry.getTime() > Date.now()
-){
-
-startDate =
-oldExpiry;
-
-expiry =
-new Date(oldExpiry.getTime());
-
-}else{
-
-expiry =
-new Date();
-
-}
-
-
-expiry.setDate(
-expiry.getDate() +
-Number(payment.days)
-);
-
-
-transaction.set(
-memberRef,
-{
-
-uid:
-payment.uid,
-
-name:
-payment.name ||
-member.name ||
-"Member",
-
-email:
-payment.email ||
-member.email ||
-"",
-
-subscriptionStatus:
-"active",
-
-subscriptionStart:
-Timestamp.fromDate(
-new Date()
-),
-
-subscriptionExpiry:
-Timestamp.fromDate(
-expiry
-),
-
-plan:
-payment.plan
-
-},
-{
-merge:true
-}
-);
-
-
-transaction.update(
-paymentRef,
-{
-
-status:
-"approved",
-
-approvedAt:
-serverTimestamp(),
-
-approvedBy:
-ADMIN_EMAIL
-
-}
-);
-
-});
-
-
-adminMessage.textContent =
-"✅ Payment approved and membership activated.";
-
-
-await loadAdminPayments();
-
-await loadAdminMembers();
-
-await updateSubscriptionDisplay();
-
-await loadResources();
-
-
-}catch(error){
-
-console.error(error);
-
-adminMessage.textContent =
-"❌ Approval failed: " +
-error.message;
-
-}
-
-}
-
-
-async function rejectPayment(
-paymentId
-){
-
-if(!isAdmin())
-return;
-
-
-if(!confirm(
-"Reject this payment request?"
-))
-return;
-
-
-try{
-
-await setDoc(
-doc(
-db,
-"paymentRequests",
-paymentId
-),
-{
-
-status:
-"rejected",
-
-rejectedAt:
-serverTimestamp(),
-
-rejectedBy:
-ADMIN_EMAIL
-
-},
-{
-merge:true
-}
-);
-
-
-adminMessage.textContent =
-"Payment request rejected.";
-
-await loadAdminPayments();
-
-await updateSubscriptionDisplay();
-
-
-}catch(error){
-
-adminMessage.textContent =
-"❌ Rejection failed: " +
-error.message;
-
-}
-
-}
-
-
-async function loadAdminMembers(){
-
-adminMemberList.innerHTML =
-"Loading members...";
-
-
-try{
-
-const snapshot =
-await getDocs(
-collection(db,"members")
-);
-
-
-if(snapshot.empty){
-
-adminMemberList.innerHTML =
-"No members found.";
-
-return;
-
-}
-
-
-adminMemberList.innerHTML =
-"";
-
-
-snapshot.forEach(
-function(memberSnap){
-
-const m =
-memberSnap.data();
-
-
-const div =
-document.createElement("div");
-
-div.className =
-"member-card";
-
-
-const expiryText =
-m.subscriptionExpiry
-? formatDate(
-m.subscriptionExpiry
-)
-: "Not active";
-
-
-const days =
-m.subscriptionExpiry
-? remainingDays(
-m.subscriptionExpiry
-)
-: 0;
-
-
-div.innerHTML =
-
-"<strong>" +
-(m.name || "Member") +
-"</strong><br>" +
-
-"<small>" +
-
-"Email: " +
-(m.email || "Not available") +
-"<br>" +
-
-"Status: " +
-(m.subscriptionStatus || "inactive") +
-"<br>" +
-
-"Plan: " +
-(m.plan || "none") +
-"<br>" +
-
-"Expiry: " +
-expiryText +
-"<br>" +
-
-"Remaining: " +
-days +
-" day(s)" +
-
-"</small>";
-
-
-const actions =
-document.createElement("div");
-
-actions.className =
-"member-actions";
-
-
-const activate =
-document.createElement("button");
-
-activate.className =
-"small-btn activate-btn";
-
-activate.textContent =
-"Activate 30 Days";
-
-activate.onclick =
-function(){
-
-activateMember(
-memberSnap.id,
-30
-);
-
-};
-
-
-const extend =
-document.createElement("button");
-
-extend.className =
-"small-btn extend-btn";
-
-extend.textContent =
-"Extend 30 Days";
-
-extend.onclick =
-function(){
-
-extendMember(
-memberSnap.id,
-30
-);
-
-};
-
-
-const expire =
-document.createElement("button");
-
-expire.className =
-"small-btn expire-btn";
-
-expire.textContent =
-"Expire";
-
-expire.onclick =
-function(){
-
-expireMember(
-memberSnap.id
-);
-
-};
-
-
-actions.appendChild(
-activate
-);
-
-actions.appendChild(
-extend
-);
-
-actions.appendChild(
-expire
-);
-
-div.appendChild(
-actions
-);
-
-adminMemberList.appendChild(
-div
-);
-
-});
-
-
-}catch(error){
-
-adminMemberList.innerHTML =
-"Unable to load members: " +
-error.message;
-
-}
-
-}
-
-
-window.activateMember =
-async function(
-memberId,
-days
-){
-
-if(!isAdmin())
-return;
-
-
-try{
-
-const expiry =
-new Date();
-
-expiry.setDate(
-expiry.getDate() +
-days
-);
-
-
-await setDoc(
-doc(
-db,
-"members",
-memberId
-),
-{
-
-subscriptionStatus:
-"active",
-
-subscriptionStart:
-serverTimestamp(),
-
-subscriptionExpiry:
-Timestamp.fromDate(
-expiry
-),
-
-plan:
-days +
-" days"
-
-},
-{
-merge:true
-}
-);
-
-
-adminMessage.textContent =
-"✅ Membership activated for " +
-days +
-" days.";
-
-await loadAdminMembers();
-
-
-}catch(error){
-
-adminMessage.textContent =
-"❌ Activation failed: " +
-error.message;
-
-}
-
-};
-
-
-window.extendMember =
-async function(
-memberId,
-days
-){
-
-if(!isAdmin())
-return;
-
-
-try{
-
-const memberSnap =
-await getDoc(
-doc(
-db,
-"members",
-memberId
-)
-);
-
-
-const member =
-memberSnap.data();
-
-
-let expiry =
-new Date();
-
-
-const oldExpiry =
-getDateFromValue(
-member?.subscriptionExpiry
-);
-
-
-if(
-oldExpiry &&
-oldExpiry.getTime() >
-Date.now()
-){
-
-expiry =
-oldExpiry;
-
-}
-
-
-expiry.setDate(
-expiry.getDate() +
-days
-);
-
-
-await setDoc(
-doc(
-db,
-"members",
-memberId
-),
-{
-
-subscriptionStatus:
-"active",
-
-subscriptionExpiry:
-Timestamp.fromDate(
-expiry
-),
-
-plan:
-"Extended " +
-days +
-" days"
-
-},
-{
-merge:true
-}
-);
-
-
-adminMessage.textContent =
-"✅ Membership extended.";
-
-await loadAdminMembers();
-
-
-}catch(error){
-
-adminMessage.textContent =
-"❌ Extension failed: " +
-error.message;
-
-}
-
-};
-
-
-window.expireMember =
-async function(
-memberId
-){
-
-if(!isAdmin())
-return;
-
-
-if(!confirm(
-"Expire this member's subscription?"
-))
-return;
-
-
-try{
-
-await setDoc(
-doc(
-db,
-"members",
-memberId
-),
-{
-
-subscriptionStatus:
-"expired",
-
-subscriptionExpiry:
-Timestamp.fromDate(
-new Date()
-)
-
-},
-{
-merge:true
-}
-);
-
-
-adminMessage.textContent =
-"✅ Membership expired.";
-
-await loadAdminMembers();
-
-
-}catch(error){
-
-adminMessage.textContent =
-"❌ Could not expire member: " +
-error.message;
-
-}
-
-};
-
-
-document.getElementById(
-"adminLogoutButton"
-).onclick =
-async function(){
-
-await signOut(auth);
-
-adminSection.style.display =
-"none";
-
-};
-
+  auth.onAuthStateChanged;
 
 </script>
 
