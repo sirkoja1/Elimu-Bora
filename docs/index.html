@@ -234,41 +234,6 @@
       margin: 0;
     }
 
-    /* CATEGORY CARDS */
-
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 15px;
-    }
-
-    .category-card {
-      border: 1px solid #dce5ee;
-      border-radius: 13px;
-      padding: 18px;
-      background: #f9fbfd;
-      text-align: center;
-    }
-
-    .category-icon {
-      font-size: 32px;
-      display: block;
-      margin-bottom: 7px;
-    }
-
-    .category-card h3 {
-      margin: 5px 0;
-      font-size: 17px;
-    }
-
-    .category-card p {
-      margin: 5px 0 0;
-      color: #667085;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
     /* RESOURCES */
 
     .resource {
@@ -540,8 +505,7 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .plans-grid,
-      .category-grid {
+      .plans-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -682,7 +646,7 @@
 
 
     <!-- =====================================================
-         ADMIN PANEL — NOW AT THE TOP
+         ADMIN PANEL — AT THE TOP
          ===================================================== -->
 
     <div id="adminSection" class="card admin-top-panel hidden">
@@ -701,7 +665,6 @@
         <strong>Administrator access is free.</strong>
         Manage resources, members and payment requests from here.
       </div>
-
 
       <div class="admin-buttons">
 
@@ -794,63 +757,8 @@
 
 
     <!-- =====================================================
-         RESOURCE CATEGORIES
-         ===================================================== -->
-
-    <div class="card">
-
-      <h2>Explore Elimu Bora</h2>
-
-      <p class="section-intro">
-        Search for educational materials after your
-        subscription has been approved.
-      </p>
-
-      <div class="category-grid">
-
-        <div class="category-card">
-          <span class="category-icon">📚</span>
-          <h3>Learning Resources</h3>
-          <p>Notes and other educational materials.</p>
-        </div>
-
-        <div class="category-card">
-          <span class="category-icon">📝</span>
-          <h3>Examinations</h3>
-          <p>Question papers and matching marking schemes.</p>
-        </div>
-
-        <div class="category-card">
-          <span class="category-icon">📄</span>
-          <h3>Question Papers</h3>
-          <p>Practice papers organized by subject and class.</p>
-        </div>
-
-        <div class="category-card">
-          <span class="category-icon">✅</span>
-          <h3>Marking Schemes</h3>
-          <p>Matching marking schemes for examinations.</p>
-        </div>
-
-        <div class="category-card">
-          <span class="category-icon">🎓</span>
-          <h3>Study Materials</h3>
-          <p>Useful resources for learning and revision.</p>
-        </div>
-
-        <div class="category-card">
-          <span class="category-icon">🔎</span>
-          <h3>Search</h3>
-          <p>Search by title, subject, class or year.</p>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- =====================================================
-         RESOURCES
+         SEARCH RESOURCES
+         NOW IMMEDIATELY AFTER MEMBER DETAILS
          ===================================================== -->
 
     <div id="resourcesSection" class="card">
@@ -887,11 +795,6 @@
           placeholder="🔎 Search resources..."
           oninput="filterResources()"
         >
-
-        <!-- IMPORTANT:
-             This starts empty.
-             Resources will NOT automatically appear here.
-        -->
 
         <div
           id="resourceSearchMessage"
@@ -1129,9 +1032,6 @@
 
     <!-- =====================================================
          ADMIN MANAGEMENT
-         The panel itself is at the top.
-         These are the management sections controlled
-         by the buttons at the top.
          ===================================================== -->
 
     <div
@@ -1145,9 +1045,7 @@
 
         <h2>💳 Payment Requests</h2>
 
-        <div
-          id="adminPayments"
-        >
+        <div id="adminPayments">
           Loading payment requests...
         </div>
 
@@ -1173,7 +1071,6 @@
           id="resourceDescription"
           placeholder="Description"
         ></textarea>
-
 
         <label>
           <strong>Resource Type</strong>
@@ -1206,7 +1103,6 @@
 
         </select>
 
-
         <input
           id="resourceSubject"
           type="text"
@@ -1218,9 +1114,6 @@
           type="text"
           placeholder="Class/Form e.g. Form 4"
         >
-
-
-        <!-- EXAMINATION DETAILS -->
 
         <div
           id="examFields"
@@ -1275,7 +1168,6 @@
 
         </div>
 
-
         <label>
           <strong>
             Question Paper / Main Document
@@ -1286,7 +1178,6 @@
           id="paperFile"
           type="file"
         >
-
 
         <label>
           <strong>
@@ -1342,9 +1233,7 @@
 
         <h2>📚 Manage Resources</h2>
 
-        <div
-          id="adminResources"
-        >
+        <div id="adminResources">
           Loading resources...
         </div>
 
@@ -1360,9 +1249,7 @@
 
         <h2>👥 Manage Members</h2>
 
-        <div
-          id="adminMembers"
-        >
+        <div id="adminMembers">
           Loading members...
         </div>
 
@@ -1415,11 +1302,9 @@
 
 <script type="module">
 
-  /*
-   * ==========================================================
-   * FIREBASE CONFIGURATION
-   * ==========================================================
-   */
+  /* ==========================================================
+     FIREBASE CONFIGURATION
+     ========================================================== */
 
   const firebaseConfig = {
     apiKey: "AIzaSyC6JBx_7_aZl6zhFAXUMgbi3EBMQaFzYpc",
@@ -1432,11 +1317,9 @@
   };
 
 
-  /*
-   * ==========================================================
-   * CLOUDINARY
-   * ==========================================================
-   */
+  /* ==========================================================
+     CLOUDINARY
+     ========================================================== */
 
   const CLOUDINARY_CLOUD_NAME =
     "elhbi1xs";
@@ -1445,11 +1328,9 @@
     "elimu_bora_documents";
 
 
-  /*
-   * ==========================================================
-   * FIREBASE IMPORTS
-   * ==========================================================
-   */
+  /* ==========================================================
+     FIREBASE IMPORTS
+     ========================================================== */
 
   import {
     initializeApp
@@ -1484,11 +1365,9 @@
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-  /*
-   * ==========================================================
-   * INITIALIZE FIREBASE
-   * ==========================================================
-   */
+  /* ==========================================================
+     INITIALIZE FIREBASE
+     ========================================================== */
 
   const app =
     initializeApp(firebaseConfig);
@@ -1500,21 +1379,17 @@
     getFirestore(app);
 
 
-  /*
-   * ==========================================================
-   * ADMIN
-   * ==========================================================
-   */
+  /* ==========================================================
+     ADMIN
+     ========================================================== */
 
   const ADMIN_EMAIL =
     "kojasalim93@gmail.com";
 
 
-  /*
-   * ==========================================================
-   * PAYMENT PLANS
-   * ==========================================================
-   */
+  /* ==========================================================
+     PAYMENT PLANS
+     ========================================================== */
 
   const PAYMENT_PLANS = {
 
@@ -1540,17 +1415,13 @@
 
 
   let currentUser = null;
-
   let selectedPayment = null;
-
   let allResources = [];
 
 
-  /*
-   * ==========================================================
-   * REGISTRATION UI
-   * ==========================================================
-   */
+  /* ==========================================================
+     REGISTRATION UI
+     ========================================================== */
 
   window.showRegistration = function () {
 
@@ -1572,11 +1443,9 @@
   };
 
 
-  /*
-   * ==========================================================
-   * HELPERS
-   * ==========================================================
-   */
+  /* ==========================================================
+     HELPERS
+     ========================================================== */
 
   function isAdmin() {
 
@@ -1597,10 +1466,7 @@
       document.getElementById(id);
 
     if (element) {
-
-      element.textContent =
-        message;
-
+      element.textContent = message;
     }
 
   }
@@ -1609,11 +1475,8 @@
   function formatDate(timestamp) {
 
     if (!timestamp) {
-
       return "Not active";
-
     }
-
 
     try {
 
@@ -1621,7 +1484,6 @@
         timestamp.toDate
           ? timestamp.toDate()
           : new Date(timestamp);
-
 
       return date.toLocaleString();
 
@@ -1638,24 +1500,17 @@
 
     if (!timestamp) return 0;
 
-
     try {
 
       if (timestamp.toMillis) {
-
         return timestamp.toMillis();
-
       }
 
-
       if (timestamp.toDate) {
-
         return timestamp
           .toDate()
           .getTime();
-
       }
-
 
       return new Date(timestamp)
         .getTime();
@@ -1681,11 +1536,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * ADMIN NAVIGATION
-   * ==========================================================
-   */
+  /* ==========================================================
+     ADMIN NAVIGATION
+     ========================================================== */
 
   window.scrollToAdminPart = function (
     id
@@ -1696,17 +1549,10 @@
 
     if (!element) return;
 
-
-    /*
-     * The admin management area is hidden from
-     * normal users and shown only to admin.
-     */
-
     const management =
       document.getElementById(
         "adminManagementArea"
       );
-
 
     if (
       isAdmin() &&
@@ -1718,7 +1564,6 @@
 
     }
 
-
     element.scrollIntoView({
       behavior: "smooth",
       block: "start"
@@ -1727,11 +1572,9 @@
   };
 
 
-  /*
-   * ==========================================================
-   * EXAMINATION ADMIN FIELDS
-   * ==========================================================
-   */
+  /* ==========================================================
+     EXAMINATION ADMIN FIELDS
+     ========================================================== */
 
   window.toggleExamFields = function () {
 
@@ -1744,7 +1587,6 @@
       document.getElementById(
         "examFields"
       );
-
 
     if (
       category === "Examinations"
@@ -1763,11 +1605,9 @@
   };
 
 
-  /*
-   * ==========================================================
-   * REGISTER
-   * ==========================================================
-   */
+  /* ==========================================================
+     REGISTER
+     ========================================================== */
 
   window.registerUser = async function () {
 
@@ -1777,7 +1617,6 @@
         .value
         .trim();
 
-
     const email =
       document
         .getElementById("registerEmailInput")
@@ -1785,12 +1624,10 @@
         .trim()
         .toLowerCase();
 
-
     const password =
       document
         .getElementById("registerPasswordInput")
         .value;
-
 
     if (
       !name ||
@@ -1807,7 +1644,6 @@
 
     }
 
-
     if (
       password.length < 6
     ) {
@@ -1821,7 +1657,6 @@
 
     }
 
-
     try {
 
       const credential =
@@ -1831,14 +1666,12 @@
           password
         );
 
-
       await updateProfile(
         credential.user,
         {
           displayName: name
         }
       );
-
 
       await setDoc(
         doc(
@@ -1856,30 +1689,24 @@
         }
       );
 
-
       showMessage(
         "authMessage",
         "Account created successfully. You are now logged in."
       );
 
-
       document
         .getElementById("nameInput")
         .value = "";
-
 
       document
         .getElementById("registerEmailInput")
         .value = "";
 
-
       document
         .getElementById("registerPasswordInput")
         .value = "";
 
-
       hideRegistration();
-
 
     } catch (error) {
 
@@ -1894,11 +1721,9 @@
   };
 
 
-  /*
-   * ==========================================================
-   * LOGIN
-   * ==========================================================
-   */
+  /* ==========================================================
+     LOGIN
+     ========================================================== */
 
   window.loginUser = async function () {
 
@@ -1909,12 +1734,10 @@
         .trim()
         .toLowerCase();
 
-
     const password =
       document
         .getElementById("passwordInput")
         .value;
-
 
     if (
       !email ||
@@ -1930,7 +1753,6 @@
 
     }
 
-
     try {
 
       await signInWithEmailAndPassword(
@@ -1939,12 +1761,10 @@
         password
       );
 
-
       showMessage(
         "authMessage",
         "Login successful."
       );
-
 
     } catch (error) {
 
@@ -1959,11 +1779,9 @@
   };
 
 
-  /*
-   * ==========================================================
-   * PASSWORD RESET
-   * ==========================================================
-   */
+  /* ==========================================================
+     PASSWORD RESET
+     ========================================================== */
 
   window.resetPassword = async function () {
 
@@ -1973,7 +1791,6 @@
         .value
         .trim()
         .toLowerCase();
-
 
     if (!email) {
 
@@ -1986,7 +1803,6 @@
 
     }
 
-
     try {
 
       await sendPasswordResetEmail(
@@ -1994,12 +1810,10 @@
         email
       );
 
-
       showMessage(
         "authMessage",
         "Password reset email sent. Check your email inbox."
       );
-
 
     } catch (error) {
 
@@ -2014,11 +1828,9 @@
   };
 
 
-  /*
-   * ==========================================================
-   * LOGOUT
-   * ==========================================================
-   */
+  /* ==========================================================
+     LOGOUT
+     ========================================================== */
 
   window.logoutUser = async function () {
 
@@ -2027,18 +1839,15 @@
   };
 
 
-  /*
-   * ==========================================================
-   * AUTH STATE
-   * ==========================================================
-   */
+  /* ==========================================================
+     AUTH STATE
+     ========================================================== */
 
   onAuthStateChanged(
     auth,
     async user => {
 
       currentUser = user;
-
 
       if (!user) {
 
@@ -2047,41 +1856,34 @@
           .classList
           .remove("hidden");
 
-
         document
           .getElementById("userSection")
           .classList
           .add("hidden");
-
 
         document
           .getElementById("adminSection")
           .classList
           .add("hidden");
 
-
         document
           .getElementById("adminManagementArea")
           .classList
           .add("hidden");
 
-
         return;
 
       }
-
 
       document
         .getElementById("authSection")
         .classList
         .add("hidden");
 
-
       document
         .getElementById("userSection")
         .classList
         .remove("hidden");
-
 
       document
         .getElementById("displayName")
@@ -2089,55 +1891,33 @@
         user.displayName ||
         "Member";
 
-
       document
         .getElementById("displayEmail")
         .textContent =
         user.email ||
         "";
 
-
       await loadMemberData();
 
       await loadMyPayments();
 
-
       if (isAdmin()) {
-
-        /*
-         * Admin panel appears at the TOP.
-         */
 
         document
           .getElementById("adminSection")
           .classList
           .remove("hidden");
 
-
-        /*
-         * The detailed admin management area is
-         * available to the admin but does not clutter
-         * the top of the page.
-         */
-
         document
           .getElementById("adminManagementArea")
           .classList
           .remove("hidden");
-
 
         await loadAdminPayments();
 
         await loadAdminResources();
 
         await loadAdminMembers();
-
-
-        /*
-         * Admin can see resources in the admin
-         * management section, but the public/member
-         * resource list still requires a search.
-         */
 
         await loadResources();
 
@@ -2148,12 +1928,10 @@
           .classList
           .add("hidden");
 
-
         document
           .getElementById("adminManagementArea")
           .classList
           .add("hidden");
-
 
         await loadResources();
 
@@ -2163,16 +1941,13 @@
   );
 
 
-  /*
-   * ==========================================================
-   * MEMBER DATA
-   * ==========================================================
-   */
+  /* ==========================================================
+     MEMBER DATA
+     ========================================================== */
 
   async function loadMemberData() {
 
     if (!currentUser) return;
-
 
     const memberRef =
       doc(
@@ -2181,10 +1956,8 @@
         currentUser.uid
       );
 
-
     const snapshot =
       await getDoc(memberRef);
-
 
     if (!snapshot.exists()) {
 
@@ -2193,24 +1966,19 @@
         .textContent =
         "Inactive";
 
-
       document
         .getElementById("subscriptionExpiry")
         .textContent =
         "Not active";
 
-
       return;
 
     }
 
-
     const data =
       snapshot.data();
 
-
     let active = false;
-
 
     if (
       data.subscriptionStatus ===
@@ -2233,7 +2001,6 @@
 
     }
 
-
     document
       .getElementById(
         "subscriptionStatus"
@@ -2244,7 +2011,6 @@
         : active
           ? "Active"
           : "Inactive";
-
 
     document
       .getElementById(
@@ -2260,11 +2026,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * MEMBERSHIP
-   * ==========================================================
-   */
+  /* ==========================================================
+     MEMBERSHIP
+     ========================================================== */
 
   window.showMembership = function () {
 
@@ -2291,24 +2055,20 @@
       name
     };
 
-
     document
       .getElementById("paymentForm")
       .classList
       .remove("hidden");
-
 
     document
       .getElementById("selectedPlan")
       .textContent =
       name;
 
-
     document
       .getElementById("selectedAmount")
       .textContent =
       amount;
-
 
     document
       .getElementById("paymentForm")
@@ -2319,11 +2079,9 @@
   };
 
 
-  /*
-   * ==========================================================
-   * SUBMIT PAYMENT
-   * ==========================================================
-   */
+  /* ==========================================================
+     SUBMIT PAYMENT
+     ========================================================== */
 
   window.submitPayment = async function () {
 
@@ -2338,7 +2096,6 @@
 
     }
 
-
     if (!selectedPayment) {
 
       showMessage(
@@ -2350,16 +2107,12 @@
 
     }
 
-
     const transactionCode =
       document
-        .getElementById(
-          "transactionCode"
-        )
+        .getElementById("transactionCode")
         .value
         .trim()
         .toUpperCase();
-
 
     if (!transactionCode) {
 
@@ -2371,7 +2124,6 @@
       return;
 
     }
-
 
     if (
       transactionCode.length < 6
@@ -2385,7 +2137,6 @@
       return;
 
     }
-
 
     try {
 
@@ -2407,12 +2158,10 @@
           )
         );
 
-
       const existing =
         await getDocs(
           existingQuery
         );
-
 
       if (!existing.empty) {
 
@@ -2424,7 +2173,6 @@
         return;
 
       }
-
 
       await addDoc(
         collection(
@@ -2462,22 +2210,16 @@
         }
       );
 
-
       showMessage(
         "paymentMessage",
         "Payment submitted successfully. Status: Pending approval."
       );
 
-
       document
-        .getElementById(
-          "transactionCode"
-        )
+        .getElementById("transactionCode")
         .value = "";
 
-
       await loadMyPayments();
-
 
     } catch (error) {
 
@@ -2492,16 +2234,13 @@
   };
 
 
-  /*
-   * ==========================================================
-   * MEMBER PAYMENT HISTORY
-   * ==========================================================
-   */
+  /* ==========================================================
+     MEMBER PAYMENT HISTORY
+     ========================================================== */
 
   async function loadMyPayments() {
 
     if (!currentUser) return;
-
 
     const paymentQuery =
       query(
@@ -2516,7 +2255,6 @@
         )
       );
 
-
     try {
 
       const snapshot =
@@ -2524,12 +2262,10 @@
           paymentQuery
         );
 
-
       const container =
         document.getElementById(
           "myPayments"
         );
-
 
       if (snapshot.empty) {
 
@@ -2539,7 +2275,6 @@
         return;
 
       }
-
 
       const payments =
         snapshot.docs
@@ -2560,10 +2295,8 @@
               )
           );
 
-
       container.innerHTML =
         "";
-
 
       payments.forEach(
         payment => {
@@ -2573,10 +2306,8 @@
               "div"
             );
 
-
           div.className =
             "payment";
-
 
           div.innerHTML = `
             <strong>
@@ -2614,7 +2345,6 @@
             </span>
           `;
 
-
           container.appendChild(
             div
           );
@@ -2622,13 +2352,10 @@
         }
       );
 
-
     } catch (error) {
 
       document
-        .getElementById(
-          "myPayments"
-        )
+        .getElementById("myPayments")
         .textContent =
         "Unable to load payment history: " +
         error.message;
@@ -2638,21 +2365,17 @@
   }
 
 
-  /*
-   * ==========================================================
-   * RESOURCE ACCESS
-   * ==========================================================
-   */
+  /* ==========================================================
+     RESOURCE ACCESS
+     ========================================================== */
 
   async function hasActiveAccess() {
 
     if (!currentUser)
       return false;
 
-
     if (isAdmin())
       return true;
-
 
     const memberRef =
       doc(
@@ -2661,20 +2384,16 @@
         currentUser.uid
       );
 
-
     const snapshot =
       await getDoc(
         memberRef
       );
 
-
     if (!snapshot.exists())
       return false;
 
-
     const data =
       snapshot.data();
-
 
     if (
       data.subscriptionStatus !==
@@ -2685,7 +2404,6 @@
       return false;
 
     }
-
 
     try {
 
@@ -2704,37 +2422,27 @@
   }
 
 
-  /*
-   * ==========================================================
-   * LOAD RESOURCES
-   *
-   * IMPORTANT:
-   * Resources are loaded into memory but are NOT displayed.
-   * The member must search before anything is rendered.
-   * ==========================================================
-   */
+  /* ==========================================================
+     LOAD RESOURCES
+     ========================================================== */
 
   window.loadResources = async function () {
 
     if (!currentUser)
       return;
 
-
     const access =
       await hasActiveAccess();
-
 
     const lock =
       document.getElementById(
         "resourceLock"
       );
 
-
     const area =
       document.getElementById(
         "resourceArea"
       );
-
 
     if (!access) {
 
@@ -2748,14 +2456,11 @@
 
     }
 
-
     lock.classList
       .add("hidden");
 
-
     area.classList
       .remove("hidden");
-
 
     try {
 
@@ -2767,7 +2472,6 @@
           )
         );
 
-
       allResources =
         snapshot.docs.map(
           item => ({
@@ -2776,7 +2480,6 @@
             ...item.data()
           })
         );
-
 
       allResources.sort(
         (a, b) =>
@@ -2788,11 +2491,8 @@
           )
       );
 
-
       /*
-       * DO NOT render all resources here.
-       *
-       * This is the key change.
+       * Do not show resources automatically.
        */
 
       const list =
@@ -2810,25 +2510,19 @@
           "resourceSearch"
         );
 
-
       list.innerHTML =
         "";
-
 
       list.classList
         .add("hidden");
 
-
       message.classList
         .remove("hidden");
-
 
       message.textContent =
         "🔎 Type something in the search box to find resources.";
 
-
       search.value = "";
-
 
     } catch (error) {
 
@@ -2845,11 +2539,9 @@
   };
 
 
-  /*
-   * ==========================================================
-   * DOCUMENT PREVIEW
-   * ==========================================================
-   */
+  /* ==========================================================
+     DOCUMENT PREVIEW
+     ========================================================== */
 
   function getFileExtension(url) {
 
@@ -2862,7 +2554,6 @@
 
       const parts =
         clean.split(".");
-
 
       return parts.length > 1
         ? parts.pop()
@@ -2882,7 +2573,6 @@
     const extension =
       getFileExtension(url);
 
-
     const officeExtensions = [
       "doc",
       "docx",
@@ -2891,7 +2581,6 @@
       "xls",
       "xlsx"
     ];
-
 
     if (
       officeExtensions.includes(
@@ -2906,7 +2595,6 @@
 
     }
 
-
     return url;
 
   }
@@ -2919,37 +2607,30 @@
 
     if (!url) return;
 
-
     const modal =
       document.getElementById(
         "previewModal"
       );
-
 
     const frame =
       document.getElementById(
         "previewFrame"
       );
 
-
     const previewTitle =
       document.getElementById(
         "previewTitle"
       );
 
-
     previewTitle.textContent =
       title ||
       "Document Preview";
 
-
     frame.src =
       getPreviewUrl(url);
 
-
     modal.classList
       .remove("hidden");
-
 
     document.body.style.overflow =
       "hidden";
@@ -2964,20 +2645,16 @@
         "previewModal"
       );
 
-
     const frame =
       document.getElementById(
         "previewFrame"
       );
 
-
     frame.src =
       "";
 
-
     modal.classList
       .add("hidden");
-
 
     document.body.style.overflow =
       "";
@@ -2985,11 +2662,9 @@
   };
 
 
-  /*
-   * ==========================================================
-   * RESOURCE LINK
-   * ==========================================================
-   */
+  /* ==========================================================
+     RESOURCE LINK
+     ========================================================== */
 
   function createResourceLink(
     url,
@@ -3000,14 +2675,11 @@
     if (!url)
       return "";
 
-
     const safeUrl =
       escapeHtml(url);
 
-
     const safeLabel =
       escapeHtml(label);
-
 
     if (download) {
 
@@ -3025,14 +2697,11 @@
 
     }
 
-
     const encodedUrl =
       encodeURIComponent(url);
 
-
     const encodedLabel =
       encodeURIComponent(label);
-
 
     return `
       <a
@@ -3049,11 +2718,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * RENDER RESOURCES
-   * ==========================================================
-   */
+  /* ==========================================================
+     RENDER RESOURCES
+     ========================================================== */
 
   function renderResources(
     resources
@@ -3064,31 +2731,21 @@
         "resourcesList"
       );
 
-
     const message =
       document.getElementById(
         "resourceSearchMessage"
       );
 
-
     container.innerHTML =
       "";
-
-
-    /*
-     * If no search results exist,
-     * keep the resource list hidden.
-     */
 
     if (!resources.length) {
 
       container.classList
         .remove("hidden");
 
-
       message.classList
         .add("hidden");
-
 
       container.innerHTML = `
         <div class="status">
@@ -3100,14 +2757,11 @@
 
     }
 
-
     message.classList
       .add("hidden");
 
-
     container.classList
       .remove("hidden");
-
 
     resources.forEach(
       resource => {
@@ -3117,10 +2771,8 @@
             "div"
           );
 
-
         div.className =
           "resource";
-
 
         const isExam =
           String(
@@ -3130,7 +2782,6 @@
             .includes(
               "examination"
             );
-
 
         let html = `
 
@@ -3203,7 +2854,6 @@
           </div>
         `;
 
-
         if (
           resource.paperUrl
         ) {
@@ -3237,7 +2887,6 @@
           `;
 
         }
-
 
         if (
           resource.markingUrl
@@ -3273,10 +2922,8 @@
 
         }
 
-
         div.innerHTML =
           html;
-
 
         container.appendChild(
           div
@@ -3288,13 +2935,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * SEARCH
-   *
-   * NOTHING IS SHOWN UNTIL THE USER SEARCHES.
-   * ==========================================================
-   */
+  /* ==========================================================
+     SEARCH
+     ========================================================== */
 
   window.filterResources = function () {
 
@@ -3303,27 +2946,23 @@
         "resourceSearch"
       );
 
-
     const term =
       input.value
         .toLowerCase()
         .trim();
-
 
     const message =
       document.getElementById(
         "resourceSearchMessage"
       );
 
-
     const list =
       document.getElementById(
         "resourcesList"
       );
 
-
     /*
-     * Empty search = hide all resources.
+     * Empty search means no resources displayed.
      */
 
     if (!term) {
@@ -3331,27 +2970,21 @@
       list.innerHTML =
         "";
 
-
       list.classList
         .add("hidden");
-
 
       message.classList
         .remove("hidden");
 
-
       message.textContent =
         "🔎 Type something in the search box to find resources.";
-
 
       return;
 
     }
 
-
     /*
-     * Search title, description, category,
-     * subject, class, year and exam type.
+     * Search across all useful resource fields.
      */
 
     const filtered =
@@ -3376,14 +3009,12 @@
 
           `.toLowerCase();
 
-
           return text.includes(
             term
           );
 
         }
       );
-
 
     renderResources(
       filtered
@@ -3392,23 +3023,19 @@
   };
 
 
-  /*
-   * ==========================================================
-   * ADMIN PAYMENT LIST
-   * ==========================================================
-   */
+  /* ==========================================================
+     ADMIN PAYMENT LIST
+     ========================================================== */
 
   async function loadAdminPayments() {
 
     if (!isAdmin())
       return;
 
-
     const container =
       document.getElementById(
         "adminPayments"
       );
-
 
     try {
 
@@ -3419,7 +3046,6 @@
             "paymentRequests"
           )
         );
-
 
       const payments =
         snapshot.docs
@@ -3440,10 +3066,8 @@
               )
           );
 
-
       container.innerHTML =
         "";
-
 
       if (!payments.length) {
 
@@ -3454,7 +3078,6 @@
 
       }
 
-
       payments.forEach(
         payment => {
 
@@ -3463,10 +3086,8 @@
               "div"
             );
 
-
           div.className =
             "payment";
-
 
           div.innerHTML = `
             <strong>
@@ -3521,7 +3142,6 @@
             <br><br>
           `;
 
-
           if (
             payment.status ===
             "pending"
@@ -3532,14 +3152,11 @@
                 "button"
               );
 
-
             approve.textContent =
               "Approve Payment";
 
-
             approve.className =
               "success";
-
 
             approve.onclick =
               () =>
@@ -3547,20 +3164,16 @@
                   payment.id
                 );
 
-
             const reject =
               document.createElement(
                 "button"
               );
 
-
             reject.textContent =
               "Reject Payment";
 
-
             reject.className =
               "danger";
-
 
             reject.onclick =
               () =>
@@ -3568,11 +3181,9 @@
                   payment.id
                 );
 
-
             div.appendChild(
               approve
             );
-
 
             div.appendChild(
               reject
@@ -3580,14 +3191,12 @@
 
           }
 
-
           container.appendChild(
             div
           );
 
         }
       );
-
 
     } catch (error) {
 
@@ -3600,11 +3209,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * APPROVE PAYMENT
-   * ==========================================================
-   */
+  /* ==========================================================
+     APPROVE PAYMENT
+     ========================================================== */
 
   async function approvePayment(
     paymentId
@@ -3612,7 +3219,6 @@
 
     if (!isAdmin())
       return;
-
 
     try {
 
@@ -3627,12 +3233,10 @@
               paymentId
             );
 
-
           const paymentSnap =
             await transaction.get(
               paymentRef
             );
-
 
           if (!paymentSnap.exists()) {
 
@@ -3642,10 +3246,8 @@
 
           }
 
-
           const payment =
             paymentSnap.data();
-
 
           if (
             payment.status !==
@@ -3658,7 +3260,6 @@
 
           }
 
-
           const memberRef =
             doc(
               db,
@@ -3666,16 +3267,13 @@
               payment.uid
             );
 
-
           const memberSnap =
             await transaction.get(
               memberRef
             );
 
-
           let startDate =
             new Date();
-
 
           if (
             memberSnap.exists() &&
@@ -3692,7 +3290,6 @@
                 .subscriptionExpiry
                 .toDate();
 
-
             if (
               existingExpiry >
               startDate
@@ -3705,12 +3302,10 @@
 
           }
 
-
           const expiry =
             new Date(
               startDate
             );
-
 
           expiry.setDate(
             expiry.getDate() +
@@ -3718,7 +3313,6 @@
               payment.days
             )
           );
-
 
           transaction.set(
             memberRef,
@@ -3749,7 +3343,6 @@
             }
           );
 
-
           transaction.update(
             paymentRef,
             {
@@ -3768,16 +3361,13 @@
         }
       );
 
-
       alert(
         "Payment approved and subscription activated."
       );
 
-
       await loadAdminPayments();
 
       await loadAdminMembers();
-
 
     } catch (error) {
 
@@ -3791,11 +3381,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * REJECT PAYMENT
-   * ==========================================================
-   */
+  /* ==========================================================
+     REJECT PAYMENT
+     ========================================================== */
 
   async function rejectPayment(
     paymentId
@@ -3803,7 +3391,6 @@
 
     if (!isAdmin())
       return;
-
 
     try {
 
@@ -3826,14 +3413,11 @@
         }
       );
 
-
       alert(
         "Payment rejected."
       );
 
-
       await loadAdminPayments();
-
 
     } catch (error) {
 
@@ -3847,11 +3431,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * CLOUDINARY UPLOAD
-   * ==========================================================
-   */
+  /* ==========================================================
+     CLOUDINARY UPLOAD
+     ========================================================== */
 
   async function uploadToCloudinary(
     file,
@@ -3864,28 +3446,23 @@
       `https://api.cloudinary.com/v1_1/` +
       `${CLOUDINARY_CLOUD_NAME}/auto/upload`;
 
-
     const formData =
       new FormData();
-
 
     formData.append(
       "file",
       file
     );
 
-
     formData.append(
       "upload_preset",
       CLOUDINARY_UPLOAD_PRESET
     );
 
-
     formData.append(
       "context",
       `resource_id=${resourceId}|document_type=${type}`
     );
-
 
     return new Promise(
       (
@@ -3896,12 +3473,10 @@
         const xhr =
           new XMLHttpRequest();
 
-
         xhr.open(
           "POST",
           url
         );
-
 
         xhr.upload.onprogress =
           event => {
@@ -3920,7 +3495,6 @@
 
           };
 
-
         xhr.onload =
           () => {
 
@@ -3935,7 +3509,6 @@
                   JSON.parse(
                     xhr.responseText
                   );
-
 
                 resolve(
                   result
@@ -3960,7 +3533,6 @@
                     xhr.responseText
                   );
 
-
                 reject(
                   new Error(
                     result.error?.message ||
@@ -3982,7 +3554,6 @@
 
           };
 
-
         xhr.onerror =
           () => {
 
@@ -3994,7 +3565,6 @@
 
           };
 
-
         xhr.send(
           formData
         );
@@ -4005,11 +3575,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * ADMIN RESOURCE UPLOAD
-   * ==========================================================
-   */
+  /* ==========================================================
+     ADMIN RESOURCE UPLOAD
+     ========================================================== */
 
   window.uploadResource =
     async function () {
@@ -4024,7 +3592,6 @@
 
       }
 
-
       const title =
         document
           .getElementById(
@@ -4032,7 +3599,6 @@
           )
           .value
           .trim();
-
 
       const description =
         document
@@ -4042,7 +3608,6 @@
           .value
           .trim();
 
-
       const category =
         document
           .getElementById(
@@ -4050,7 +3615,6 @@
           )
           .value
           .trim();
-
 
       const subject =
         document
@@ -4060,7 +3624,6 @@
           .value
           .trim();
 
-
       const className =
         document
           .getElementById(
@@ -4068,7 +3631,6 @@
           )
           .value
           .trim();
-
 
       const examYear =
         document
@@ -4078,7 +3640,6 @@
           .value
           .trim();
 
-
       const examType =
         document
           .getElementById(
@@ -4087,7 +3648,6 @@
           .value
           .trim();
 
-
       const paper =
         document
           .getElementById(
@@ -4095,14 +3655,12 @@
           )
           .files[0];
 
-
       const marking =
         document
           .getElementById(
             "markingFile"
           )
           .files[0];
-
 
       if (
         !title ||
@@ -4117,7 +3675,6 @@
         return;
 
       }
-
 
       if (
         category ===
@@ -4134,7 +3691,6 @@
 
       }
 
-
       if (
         category ===
           "Examinations" &&
@@ -4150,12 +3706,10 @@
 
       }
 
-
       const MAX_SIZE =
         25 *
         1024 *
         1024;
-
 
       if (
         paper.size >
@@ -4170,7 +3724,6 @@
         return;
 
       }
-
 
       if (
         marking &&
@@ -4187,14 +3740,12 @@
 
       }
 
-
       try {
 
         showMessage(
           "uploadMessage",
           "Creating resource..."
         );
-
 
         const resourceRef =
           await addDoc(
@@ -4239,36 +3790,26 @@
             }
           );
 
-
         const resourceId =
           resourceRef.id;
-
 
         const progressContainer =
           document.getElementById(
             "uploadProgressContainer"
           );
 
-
         const progressBar =
           document.getElementById(
             "uploadProgressBar"
           );
 
-
         progressContainer.classList
           .remove("hidden");
-
-
-        /*
-         * QUESTION PAPER
-         */
 
         showMessage(
           "uploadMessage",
           "Uploading question paper..."
         );
-
 
         const paperResult =
           await uploadToCloudinary(
@@ -4286,19 +3827,12 @@
             }
           );
 
-
         const paperUrl =
           paperResult.secure_url;
-
 
         const paperPublicId =
           paperResult.public_id ||
           "";
-
-
-        /*
-         * MARKING SCHEME
-         */
 
         let markingUrl =
           "";
@@ -4306,14 +3840,12 @@
         let markingPublicId =
           "";
 
-
         if (marking) {
 
           showMessage(
             "uploadMessage",
             "Uploading marking scheme..."
           );
-
 
           const markingResult =
             await uploadToCloudinary(
@@ -4334,21 +3866,14 @@
               }
             );
 
-
           markingUrl =
             markingResult.secure_url;
-
 
           markingPublicId =
             markingResult.public_id ||
             "";
 
         }
-
-
-        /*
-         * SAVE URLS
-         */
 
         await updateDoc(
           resourceRef,
@@ -4375,20 +3900,13 @@
           }
         );
 
-
         progressBar.style.width =
           "100%";
-
 
         showMessage(
           "uploadMessage",
           "Resource uploaded successfully."
         );
-
-
-        /*
-         * CLEAR FORM
-         */
 
         document
           .getElementById(
@@ -4396,13 +3914,11 @@
           )
           .value = "";
 
-
         document
           .getElementById(
             "resourceDescription"
           )
           .value = "";
-
 
         document
           .getElementById(
@@ -4411,13 +3927,11 @@
           .value =
           "Learning Resources";
 
-
         document
           .getElementById(
             "resourceSubject"
           )
           .value = "";
-
 
         document
           .getElementById(
@@ -4425,13 +3939,11 @@
           )
           .value = "";
 
-
         document
           .getElementById(
             "examYear"
           )
           .value = "";
-
 
         document
           .getElementById(
@@ -4439,13 +3951,11 @@
           )
           .value = "";
 
-
         document
           .getElementById(
             "paperFile"
           )
           .value = "";
-
 
         document
           .getElementById(
@@ -4453,14 +3963,12 @@
           )
           .value = "";
 
-
         document
           .getElementById(
             "examFields"
           )
           .classList
           .add("hidden");
-
 
         setTimeout(
           () => {
@@ -4476,11 +3984,9 @@
           1500
         );
 
-
         await loadAdminResources();
 
         await loadResources();
-
 
       } catch (error) {
 
@@ -4495,23 +4001,19 @@
     };
 
 
-  /*
-   * ==========================================================
-   * ADMIN RESOURCE MANAGEMENT
-   * ==========================================================
-   */
+  /* ==========================================================
+     ADMIN RESOURCE MANAGEMENT
+     ========================================================== */
 
   async function loadAdminResources() {
 
     if (!isAdmin())
       return;
 
-
     const container =
       document.getElementById(
         "adminResources"
       );
-
 
     try {
 
@@ -4523,7 +4025,6 @@
           )
         );
 
-
       const resources =
         snapshot.docs.map(
           item => ({
@@ -4532,7 +4033,6 @@
             ...item.data()
           })
         );
-
 
       resources.sort(
         (a, b) =>
@@ -4544,10 +4044,8 @@
           )
       );
 
-
       container.innerHTML =
         "";
-
 
       if (!resources.length) {
 
@@ -4558,7 +4056,6 @@
 
       }
 
-
       resources.forEach(
         resource => {
 
@@ -4567,10 +4064,8 @@
               "div"
             );
 
-
           div.className =
             "resource";
-
 
           div.innerHTML = `
             <strong>
@@ -4631,20 +4126,16 @@
             <br><br>
           `;
 
-
           const deleteButton =
             document.createElement(
               "button"
             );
 
-
           deleteButton.textContent =
             "Delete Resource";
 
-
           deleteButton.className =
             "danger";
-
 
           deleteButton.onclick =
             () =>
@@ -4652,11 +4143,9 @@
                 resource
               );
 
-
           div.appendChild(
             deleteButton
           );
-
 
           container.appendChild(
             div
@@ -4664,7 +4153,6 @@
 
         }
       );
-
 
     } catch (error) {
 
@@ -4677,11 +4165,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * DELETE RESOURCE
-   * ==========================================================
-   */
+  /* ==========================================================
+     DELETE RESOURCE
+     ========================================================== */
 
   async function deleteResource(
     resource
@@ -4689,7 +4175,6 @@
 
     if (!isAdmin())
       return;
-
 
     if (
       !confirm(
@@ -4701,7 +4186,6 @@
 
     }
 
-
     try {
 
       await deleteDoc(
@@ -4712,16 +4196,13 @@
         )
       );
 
-
       alert(
         "Resource removed from Elimu Bora."
       );
 
-
       await loadAdminResources();
 
       await loadResources();
-
 
     } catch (error) {
 
@@ -4735,23 +4216,19 @@
   }
 
 
-  /*
-   * ==========================================================
-   * ADMIN MEMBER MANAGEMENT
-   * ==========================================================
-   */
+  /* ==========================================================
+     ADMIN MEMBER MANAGEMENT
+     ========================================================== */
 
   async function loadAdminMembers() {
 
     if (!isAdmin())
       return;
 
-
     const container =
       document.getElementById(
         "adminMembers"
       );
-
 
     try {
 
@@ -4763,7 +4240,6 @@
           )
         );
 
-
       const members =
         snapshot.docs.map(
           item => ({
@@ -4773,10 +4249,8 @@
           })
         );
 
-
       container.innerHTML =
         "";
-
 
       if (!members.length) {
 
@@ -4787,7 +4261,6 @@
 
       }
 
-
       members.forEach(
         member => {
 
@@ -4796,10 +4269,8 @@
               "div"
             );
 
-
           div.className =
             "payment";
-
 
           div.innerHTML = `
             <strong>
@@ -4835,16 +4306,13 @@
             <br><br>
           `;
 
-
           const activate7 =
             document.createElement(
               "button"
             );
 
-
           activate7.textContent =
             "Add 7 Days";
-
 
           activate7.onclick =
             () =>
@@ -4853,16 +4321,13 @@
                 7
               );
 
-
           const activate30 =
             document.createElement(
               "button"
             );
 
-
           activate30.textContent =
             "Add 30 Days";
-
 
           activate30.onclick =
             () =>
@@ -4871,16 +4336,13 @@
                 30
               );
 
-
           const activate365 =
             document.createElement(
               "button"
             );
 
-
           activate365.textContent =
             "Add 365 Days";
-
 
           activate365.onclick =
             () =>
@@ -4889,20 +4351,16 @@
                 365
               );
 
-
           const expire =
             document.createElement(
               "button"
             );
 
-
           expire.textContent =
             "Expire Subscription";
 
-
           expire.className =
             "danger";
-
 
           expire.onclick =
             () =>
@@ -4910,26 +4368,21 @@
                 member.id
               );
 
-
           div.appendChild(
             activate7
           );
-
 
           div.appendChild(
             activate30
           );
 
-
           div.appendChild(
             activate365
           );
 
-
           div.appendChild(
             expire
           );
-
 
           container.appendChild(
             div
@@ -4937,7 +4390,6 @@
 
         }
       );
-
 
     } catch (error) {
 
@@ -4950,11 +4402,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * MANUAL SUBSCRIPTION
-   * ==========================================================
-   */
+  /* ==========================================================
+     MANUAL SUBSCRIPTION
+     ========================================================== */
 
   async function manualSubscription(
     uid,
@@ -4963,7 +4413,6 @@
 
     if (!isAdmin())
       return;
-
 
     try {
 
@@ -4974,16 +4423,13 @@
           uid
         );
 
-
       const snapshot =
         await getDoc(
           memberRef
         );
 
-
       let start =
         new Date();
-
 
       if (
         snapshot.exists() &&
@@ -5000,7 +4446,6 @@
             .subscriptionExpiry
             .toDate();
 
-
         if (
           expiry >
           start
@@ -5013,18 +4458,15 @@
 
       }
 
-
       const newExpiry =
         new Date(
           start
         );
 
-
       newExpiry.setDate(
         newExpiry.getDate() +
         days
       );
-
 
       await updateDoc(
         memberRef,
@@ -5040,14 +4482,11 @@
         }
       );
 
-
       alert(
         `Subscription extended by ${days} days.`
       );
 
-
       await loadAdminMembers();
-
 
       if (
         currentUser &&
@@ -5059,7 +4498,6 @@
         await loadResources();
 
       }
-
 
     } catch (error) {
 
@@ -5073,11 +4511,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * EXPIRE MEMBER
-   * ==========================================================
-   */
+  /* ==========================================================
+     EXPIRE MEMBER
+     ========================================================== */
 
   async function expireMember(
     uid
@@ -5085,7 +4521,6 @@
 
     if (!isAdmin())
       return;
-
 
     if (
       !confirm(
@@ -5096,7 +4531,6 @@
       return;
 
     }
-
 
     try {
 
@@ -5118,9 +4552,7 @@
         }
       );
 
-
       await loadAdminMembers();
-
 
     } catch (error) {
 
@@ -5134,11 +4566,9 @@
   }
 
 
-  /*
-   * ==========================================================
-   * INITIAL EXAM FIELD STATE
-   * ==========================================================
-   */
+  /* ==========================================================
+     INITIAL EXAM FIELD STATE
+     ========================================================== */
 
   toggleExamFields();
 
