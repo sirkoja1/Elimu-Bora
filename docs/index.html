@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -192,6 +192,45 @@
     }
 
     .welcome-actions button {
+      margin: 0;
+    }
+
+    /* ADMIN TOP PANEL */
+
+    .admin-top-panel {
+      border-top: 5px solid #dc3545;
+      background: #fff;
+    }
+
+    .admin-top-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .admin-top-title h2 {
+      margin: 0;
+    }
+
+    .admin-badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 20px;
+      background: #ffe8eb;
+      color: #b42318;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .admin-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .admin-buttons button {
       margin: 0;
     }
 
@@ -496,7 +535,11 @@
       padding: 15px;
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 900px) {
+      .admin-buttons {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
       .plans-grid,
       .category-grid {
         grid-template-columns: 1fr;
@@ -529,6 +572,10 @@
       .welcome-actions {
         grid-template-columns: 1fr;
       }
+
+      .admin-buttons {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -536,7 +583,9 @@
 <body>
 
 <header>
-  <div class="header-badge">📚 LEARNING • EXAMINATIONS • RESOURCES</div>
+  <div class="header-badge">
+    📚 LEARNING • EXAMINATIONS • RESOURCES
+  </div>
 
   <h1>Welcome to Elimu Bora</h1>
 
@@ -631,7 +680,63 @@
 
   <div id="userSection" class="hidden">
 
-    <!-- WELCOME -->
+
+    <!-- =====================================================
+         ADMIN PANEL — NOW AT THE TOP
+         ===================================================== -->
+
+    <div id="adminSection" class="card admin-top-panel hidden">
+
+      <div class="admin-top-title">
+
+        <h2>⚙️ Admin Panel</h2>
+
+        <span class="admin-badge">
+          ADMINISTRATOR
+        </span>
+
+      </div>
+
+      <div class="status">
+        <strong>Administrator access is free.</strong>
+        Manage resources, members and payment requests from here.
+      </div>
+
+
+      <div class="admin-buttons">
+
+        <button
+          onclick="scrollToAdminPart('adminUploadArea')"
+        >
+          ➕ Add Resource
+        </button>
+
+        <button
+          onclick="scrollToAdminPart('adminResourcesArea')"
+        >
+          📚 Manage Resources
+        </button>
+
+        <button
+          onclick="scrollToAdminPart('adminMembersArea')"
+        >
+          👥 Manage Members
+        </button>
+
+        <button
+          onclick="scrollToAdminPart('adminPaymentsArea')"
+        >
+          💳 Payment Requests
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         WELCOME
+         ===================================================== -->
 
     <div class="card hero-card">
 
@@ -645,7 +750,7 @@
       <div class="welcome-actions">
 
         <button onclick="loadResources()">
-          📚 Explore Resources
+          📚 Search Resources
         </button>
 
         <button onclick="showMembership()">
@@ -657,7 +762,9 @@
     </div>
 
 
-    <!-- MEMBER INFORMATION -->
+    <!-- =====================================================
+         MEMBER INFORMATION
+         ===================================================== -->
 
     <div class="card">
 
@@ -695,7 +802,7 @@
       <h2>Explore Elimu Bora</h2>
 
       <p class="section-intro">
-        Access organized educational materials after your
+        Search for educational materials after your
         subscription has been approved.
       </p>
 
@@ -734,7 +841,7 @@
         <div class="category-card">
           <span class="category-icon">🔎</span>
           <h3>Search</h3>
-          <p>Find resources by title, subject, class or year.</p>
+          <p>Search by title, subject, class or year.</p>
         </div>
 
       </div>
@@ -748,7 +855,7 @@
 
     <div id="resourcesSection" class="card">
 
-      <h2>Learning Resources & Examinations</h2>
+      <h2>🔎 Search Learning Resources</h2>
 
       <div id="resourceLock" class="locked">
 
@@ -769,16 +876,34 @@
 
       <div id="resourceArea" class="hidden">
 
+        <p class="section-intro">
+          Resources are hidden until you search. Enter a title,
+          subject, class, examination, year or topic below.
+        </p>
+
         <input
           id="resourceSearch"
           type="text"
-          placeholder="🔎 Search examinations, papers, subjects, classes..."
+          placeholder="🔎 Search resources..."
           oninput="filterResources()"
         >
 
-        <div id="resourcesList">
-          Loading resources...
+        <!-- IMPORTANT:
+             This starts empty.
+             Resources will NOT automatically appear here.
+        -->
+
+        <div
+          id="resourceSearchMessage"
+          class="status"
+        >
+          🔎 Type something in the search box to find resources.
         </div>
+
+        <div
+          id="resourcesList"
+          class="hidden"
+        ></div>
 
       </div>
 
@@ -803,7 +928,8 @@
         <h3>Subscription Plans</h3>
 
         <p>
-          Pay through <strong>M-Pesa Buy Goods and Services</strong>.
+          Pay through
+          <strong>M-Pesa Buy Goods and Services</strong>.
         </p>
 
         <div class="status">
@@ -816,13 +942,17 @@
 
             <h3>7 Days</h3>
 
-            <div class="plan-price">KSh 50</div>
+            <div class="plan-price">
+              KSh 50
+            </div>
 
             <p>
               Access learning resources for 7 days.
             </p>
 
-            <button onclick="selectPlan(50, 7, '7 Days')">
+            <button
+              onclick="selectPlan(50, 7, '7 Days')"
+            >
               Select Plan
             </button>
 
@@ -833,13 +963,17 @@
 
             <h3>30 Days</h3>
 
-            <div class="plan-price">KSh 200</div>
+            <div class="plan-price">
+              KSh 200
+            </div>
 
             <p>
               Access learning resources for 30 days.
             </p>
 
-            <button onclick="selectPlan(200, 30, '30 Days')">
+            <button
+              onclick="selectPlan(200, 30, '30 Days')"
+            >
               Select Plan
             </button>
 
@@ -850,13 +984,17 @@
 
             <h3>365 Days</h3>
 
-            <div class="plan-price">KSh 1,000</div>
+            <div class="plan-price">
+              KSh 1,000
+            </div>
 
             <p>
               Access learning resources for 365 days.
             </p>
 
-            <button onclick="selectPlan(1000, 365, '365 Days')">
+            <button
+              onclick="selectPlan(1000, 365, '365 Days')"
+            >
               Select Plan
             </button>
 
@@ -898,11 +1036,17 @@
           placeholder="Enter M-Pesa Transaction Code"
         >
 
-        <button class="success" onclick="submitPayment()">
+        <button
+          class="success"
+          onclick="submitPayment()"
+        >
           Submit Payment
         </button>
 
-        <div id="paymentMessage" class="status"></div>
+        <div
+          id="paymentMessage"
+          class="status"
+        ></div>
 
       </div>
 
@@ -933,7 +1077,9 @@
 
         <div class="care-item">
           📞 <strong>Call:</strong>
-          <a href="tel:0716710082">0716710082</a>
+          <a href="tel:0716710082">
+            0716710082
+          </a>
         </div>
 
         <div class="care-item">
@@ -960,7 +1106,7 @@
 
 
     <!-- =====================================================
-         LOGIN / LOGOUT CARD AT BOTTOM
+         ACCOUNT
          ===================================================== -->
 
     <div class="card">
@@ -971,7 +1117,10 @@
         You are currently logged in to Elimu Bora.
       </p>
 
-      <button class="danger" onclick="logoutUser()">
+      <button
+        class="danger"
+        onclick="logoutUser()"
+      >
         🚪 Logout
       </button>
 
@@ -979,127 +1128,76 @@
 
 
     <!-- =====================================================
-         ADMIN
+         ADMIN MANAGEMENT
+         The panel itself is at the top.
+         These are the management sections controlled
+         by the buttons at the top.
          ===================================================== -->
 
-    <div id="adminSection" class="card hidden">
-
-      <h2>Admin Panel</h2>
-
-      <div class="status">
-        <strong>Administrator access is free.</strong>
-      </div>
-
+    <div
+      id="adminManagementArea"
+      class="card hidden"
+    >
 
       <!-- ADMIN PAYMENTS -->
 
-      <h3>Payment Requests</h3>
+      <div id="adminPaymentsArea">
 
-      <div id="adminPayments">
-        Loading payment requests...
+        <h2>💳 Payment Requests</h2>
+
+        <div
+          id="adminPayments"
+        >
+          Loading payment requests...
+        </div>
+
       </div>
 
 
       <!-- ADMIN RESOURCE UPLOAD -->
 
-      <h3>Upload Learning Resource</h3>
-
-      <input
-        id="resourceTitle"
-        type="text"
-        placeholder="Resource Title"
+      <div
+        id="adminUploadArea"
+        style="margin-top:25px;"
       >
 
-      <textarea
-        id="resourceDescription"
-        placeholder="Description"
-      ></textarea>
-
-
-      <label>
-        <strong>Resource Type</strong>
-      </label>
-
-      <select id="resourceCategory" onchange="toggleExamFields()">
-
-        <option value="Learning Resources">
-          Learning Resources
-        </option>
-
-        <option value="Examinations">
-          Examinations
-        </option>
-
-        <option value="Notes">
-          Notes
-        </option>
-
-        <option value="Revision Materials">
-          Revision Materials
-        </option>
-
-        <option value="Other">
-          Other
-        </option>
-
-      </select>
-
-
-      <input
-        id="resourceSubject"
-        type="text"
-        placeholder="Subject e.g. Mathematics"
-      >
-
-      <input
-        id="resourceClass"
-        type="text"
-        placeholder="Class/Form e.g. Form 4"
-      >
-
-
-      <!-- EXAMINATION DETAILS -->
-
-      <div id="examFields" class="hidden">
-
-        <h3>Examination Details</h3>
+        <h2>➕ Add Learning Resource</h2>
 
         <input
-          id="examYear"
-          type="number"
-          placeholder="Examination Year e.g. 2026"
-          min="1900"
-          max="2100"
+          id="resourceTitle"
+          type="text"
+          placeholder="Resource Title"
         >
 
-        <select id="examType">
+        <textarea
+          id="resourceDescription"
+          placeholder="Description"
+        ></textarea>
 
-          <option value="">
-            Select Examination Type
+
+        <label>
+          <strong>Resource Type</strong>
+        </label>
+
+        <select
+          id="resourceCategory"
+          onchange="toggleExamFields()"
+        >
+
+          <option value="Learning Resources">
+            Learning Resources
           </option>
 
-          <option value="CAT">
-            CAT / Continuous Assessment
+          <option value="Examinations">
+            Examinations
           </option>
 
-          <option value="Mid Term">
-            Mid Term Examination
+          <option value="Notes">
+            Notes
           </option>
 
-          <option value="End Term">
-            End Term Examination
-          </option>
-
-          <option value="Mock">
-            Mock Examination
-          </option>
-
-          <option value="Revision">
-            Revision Examination
-          </option>
-
-          <option value="KCSE">
-            KCSE
+          <option value="Revision Materials">
+            Revision Materials
           </option>
 
           <option value="Other">
@@ -1108,67 +1206,166 @@
 
         </select>
 
-      </div>
+
+        <input
+          id="resourceSubject"
+          type="text"
+          placeholder="Subject e.g. Mathematics"
+        >
+
+        <input
+          id="resourceClass"
+          type="text"
+          placeholder="Class/Form e.g. Form 4"
+        >
 
 
-      <label>
-        <strong>Question Paper / Main Document</strong>
-      </label>
+        <!-- EXAMINATION DETAILS -->
 
-      <input
-        id="paperFile"
-        type="file"
-      >
-
-
-      <label>
-        <strong>Marking Scheme</strong>
-      </label>
-
-      <input
-        id="markingFile"
-        type="file"
-      >
-
-      <p class="small">
-        Common document types can be uploaded, including PDF,
-        DOC, DOCX, PPT, PPTX, XLS, XLSX and images.
-        For examinations, the question paper and marking scheme
-        are stored together as one resource.
-      </p>
-
-      <button class="success" onclick="uploadResource()">
-        ☁️ Upload Resource
-      </button>
-
-      <div
-        class="upload-progress hidden"
-        id="uploadProgressContainer"
-      >
         <div
-          id="uploadProgressBar"
-          class="upload-progress-bar"
-        ></div>
-      </div>
+          id="examFields"
+          class="hidden"
+        >
 
-      <div id="uploadMessage" class="status"></div>
+          <h3>Examination Details</h3>
+
+          <input
+            id="examYear"
+            type="number"
+            placeholder="Examination Year e.g. 2026"
+            min="1900"
+            max="2100"
+          >
+
+          <select id="examType">
+
+            <option value="">
+              Select Examination Type
+            </option>
+
+            <option value="CAT">
+              CAT / Continuous Assessment
+            </option>
+
+            <option value="Mid Term">
+              Mid Term Examination
+            </option>
+
+            <option value="End Term">
+              End Term Examination
+            </option>
+
+            <option value="Mock">
+              Mock Examination
+            </option>
+
+            <option value="Revision">
+              Revision Examination
+            </option>
+
+            <option value="KCSE">
+              KCSE
+            </option>
+
+            <option value="Other">
+              Other
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <label>
+          <strong>
+            Question Paper / Main Document
+          </strong>
+        </label>
+
+        <input
+          id="paperFile"
+          type="file"
+        >
+
+
+        <label>
+          <strong>
+            Marking Scheme
+          </strong>
+        </label>
+
+        <input
+          id="markingFile"
+          type="file"
+        >
+
+        <p class="small">
+          Common document types can be uploaded, including PDF,
+          DOC, DOCX, PPT, PPTX, XLS, XLSX and images.
+          For examinations, the question paper and marking scheme
+          are stored together as one resource.
+        </p>
+
+        <button
+          class="success"
+          onclick="uploadResource()"
+        >
+          ☁️ Upload Resource
+        </button>
+
+        <div
+          class="upload-progress hidden"
+          id="uploadProgressContainer"
+        >
+
+          <div
+            id="uploadProgressBar"
+            class="upload-progress-bar"
+          ></div>
+
+        </div>
+
+        <div
+          id="uploadMessage"
+          class="status"
+        ></div>
+
+      </div>
 
 
       <!-- ADMIN RESOURCES -->
 
-      <h3>Manage Resources</h3>
+      <div
+        id="adminResourcesArea"
+        style="margin-top:25px;"
+      >
 
-      <div id="adminResources">
-        Loading resources...
+        <h2>📚 Manage Resources</h2>
+
+        <div
+          id="adminResources"
+        >
+          Loading resources...
+        </div>
+
       </div>
 
 
       <!-- ADMIN MEMBERS -->
 
-      <h3>Manage Members</h3>
+      <div
+        id="adminMembersArea"
+        style="margin-top:25px;"
+      >
 
-      <div id="adminMembers">
-        Loading members...
+        <h2>👥 Manage Members</h2>
+
+        <div
+          id="adminMembers"
+        >
+          Loading members...
+        </div>
+
       </div>
 
     </div>
@@ -1182,7 +1379,10 @@
      DOCUMENT PREVIEW MODAL
      ===================================================== -->
 
-<div id="previewModal" class="hidden">
+<div
+  id="previewModal"
+  class="hidden"
+>
 
   <div class="preview-box">
 
@@ -1238,7 +1438,8 @@
    * ==========================================================
    */
 
-  const CLOUDINARY_CLOUD_NAME = "elhbi1xs";
+  const CLOUDINARY_CLOUD_NAME =
+    "elhbi1xs";
 
   const CLOUDINARY_UPLOAD_PRESET =
     "elimu_bora_documents";
@@ -1289,11 +1490,14 @@
    * ==========================================================
    */
 
-  const app = initializeApp(firebaseConfig);
+  const app =
+    initializeApp(firebaseConfig);
 
-  const auth = getAuth(app);
+  const auth =
+    getAuth(app);
 
-  const db = getFirestore(app);
+  const db =
+    getFirestore(app);
 
 
   /*
@@ -1302,7 +1506,8 @@
    * ==========================================================
    */
 
-  const ADMIN_EMAIL = "kojasalim93@gmail.com";
+  const ADMIN_EMAIL =
+    "kojasalim93@gmail.com";
 
 
   /*
@@ -1351,7 +1556,8 @@
 
     document
       .getElementById("registrationArea")
-      .classList.remove("hidden");
+      .classList
+      .remove("hidden");
 
   };
 
@@ -1360,7 +1566,8 @@
 
     document
       .getElementById("registrationArea")
-      .classList.add("hidden");
+      .classList
+      .add("hidden");
 
   };
 
@@ -1381,14 +1588,18 @@
   }
 
 
-  function showMessage(id, message) {
+  function showMessage(
+    id,
+    message
+  ) {
 
     const element =
       document.getElementById(id);
 
     if (element) {
 
-      element.textContent = message;
+      element.textContent =
+        message;
 
     }
 
@@ -1439,12 +1650,15 @@
 
       if (timestamp.toDate) {
 
-        return timestamp.toDate().getTime();
+        return timestamp
+          .toDate()
+          .getTime();
 
       }
 
 
-      return new Date(timestamp).getTime();
+      return new Date(timestamp)
+        .getTime();
 
     } catch {
 
@@ -1469,6 +1683,52 @@
 
   /*
    * ==========================================================
+   * ADMIN NAVIGATION
+   * ==========================================================
+   */
+
+  window.scrollToAdminPart = function (
+    id
+  ) {
+
+    const element =
+      document.getElementById(id);
+
+    if (!element) return;
+
+
+    /*
+     * The admin management area is hidden from
+     * normal users and shown only to admin.
+     */
+
+    const management =
+      document.getElementById(
+        "adminManagementArea"
+      );
+
+
+    if (
+      isAdmin() &&
+      management
+    ) {
+
+      management.classList
+        .remove("hidden");
+
+    }
+
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  };
+
+
+  /*
+   * ==========================================================
    * EXAMINATION ADMIN FIELDS
    * ==========================================================
    */
@@ -1481,15 +1741,22 @@
         .value;
 
     const examFields =
-      document.getElementById("examFields");
+      document.getElementById(
+        "examFields"
+      );
 
-    if (category === "Examinations") {
 
-      examFields.classList.remove("hidden");
+    if (
+      category === "Examinations"
+    ) {
+
+      examFields.classList
+        .remove("hidden");
 
     } else {
 
-      examFields.classList.add("hidden");
+      examFields.classList
+        .add("hidden");
 
     }
 
@@ -1525,7 +1792,11 @@
         .value;
 
 
-    if (!name || !email || !password) {
+    if (
+      !name ||
+      !email ||
+      !password
+    ) {
 
       showMessage(
         "authMessage",
@@ -1537,7 +1808,9 @@
     }
 
 
-    if (password.length < 6) {
+    if (
+      password.length < 6
+    ) {
 
       showMessage(
         "authMessage",
@@ -1643,7 +1916,10 @@
         .value;
 
 
-    if (!email || !password) {
+    if (
+      !email ||
+      !password
+    ) {
 
       showMessage(
         "authMessage",
@@ -1768,17 +2044,26 @@
 
         document
           .getElementById("authSection")
-          .classList.remove("hidden");
+          .classList
+          .remove("hidden");
 
 
         document
           .getElementById("userSection")
-          .classList.add("hidden");
+          .classList
+          .add("hidden");
 
 
         document
           .getElementById("adminSection")
-          .classList.add("hidden");
+          .classList
+          .add("hidden");
+
+
+        document
+          .getElementById("adminManagementArea")
+          .classList
+          .add("hidden");
 
 
         return;
@@ -1788,24 +2073,28 @@
 
       document
         .getElementById("authSection")
-        .classList.add("hidden");
+        .classList
+        .add("hidden");
 
 
       document
         .getElementById("userSection")
-        .classList.remove("hidden");
+        .classList
+        .remove("hidden");
 
 
       document
         .getElementById("displayName")
         .textContent =
-        user.displayName || "Member";
+        user.displayName ||
+        "Member";
 
 
       document
         .getElementById("displayEmail")
         .textContent =
-        user.email || "";
+        user.email ||
+        "";
 
 
       await loadMemberData();
@@ -1815,9 +2104,26 @@
 
       if (isAdmin()) {
 
+        /*
+         * Admin panel appears at the TOP.
+         */
+
         document
           .getElementById("adminSection")
-          .classList.remove("hidden");
+          .classList
+          .remove("hidden");
+
+
+        /*
+         * The detailed admin management area is
+         * available to the admin but does not clutter
+         * the top of the page.
+         */
+
+        document
+          .getElementById("adminManagementArea")
+          .classList
+          .remove("hidden");
 
 
         await loadAdminPayments();
@@ -1826,13 +2132,27 @@
 
         await loadAdminMembers();
 
+
+        /*
+         * Admin can see resources in the admin
+         * management section, but the public/member
+         * resource list still requires a search.
+         */
+
         await loadResources();
 
       } else {
 
         document
           .getElementById("adminSection")
-          .classList.add("hidden");
+          .classList
+          .add("hidden");
+
+
+        document
+          .getElementById("adminManagementArea")
+          .classList
+          .add("hidden");
 
 
         await loadResources();
@@ -1870,12 +2190,14 @@
 
       document
         .getElementById("subscriptionStatus")
-        .textContent = "Inactive";
+        .textContent =
+        "Inactive";
 
 
       document
         .getElementById("subscriptionExpiry")
-        .textContent = "Not active";
+        .textContent =
+        "Not active";
 
 
       return;
@@ -1883,21 +2205,24 @@
     }
 
 
-    const data = snapshot.data();
+    const data =
+      snapshot.data();
 
 
     let active = false;
 
 
     if (
-      data.subscriptionStatus === "active" &&
+      data.subscriptionStatus ===
+        "active" &&
       data.subscriptionExpiry
     ) {
 
       try {
 
         active =
-          data.subscriptionExpiry.toDate() >
+          data.subscriptionExpiry
+            .toDate() >
           new Date();
 
       } catch {
@@ -1910,7 +2235,9 @@
 
 
     document
-      .getElementById("subscriptionStatus")
+      .getElementById(
+        "subscriptionStatus"
+      )
       .textContent =
       isAdmin()
         ? "Admin — Free Access"
@@ -1920,11 +2247,15 @@
 
 
     document
-      .getElementById("subscriptionExpiry")
+      .getElementById(
+        "subscriptionExpiry"
+      )
       .textContent =
       isAdmin()
         ? "Free"
-        : formatDate(data.subscriptionExpiry);
+        : formatDate(
+            data.subscriptionExpiry
+          );
 
   }
 
@@ -1938,7 +2269,9 @@
   window.showMembership = function () {
 
     document
-      .getElementById("membershipSection")
+      .getElementById(
+        "membershipSection"
+      )
       .scrollIntoView({
         behavior: "smooth"
       });
@@ -1961,17 +2294,20 @@
 
     document
       .getElementById("paymentForm")
-      .classList.remove("hidden");
+      .classList
+      .remove("hidden");
 
 
     document
       .getElementById("selectedPlan")
-      .textContent = name;
+      .textContent =
+      name;
 
 
     document
       .getElementById("selectedAmount")
-      .textContent = amount;
+      .textContent =
+      amount;
 
 
     document
@@ -2017,7 +2353,9 @@
 
     const transactionCode =
       document
-        .getElementById("transactionCode")
+        .getElementById(
+          "transactionCode"
+        )
         .value
         .trim()
         .toUpperCase();
@@ -2035,7 +2373,9 @@
     }
 
 
-    if (transactionCode.length < 6) {
+    if (
+      transactionCode.length < 6
+    ) {
 
       showMessage(
         "paymentMessage",
@@ -2051,7 +2391,10 @@
 
       const existingQuery =
         query(
-          collection(db, "paymentRequests"),
+          collection(
+            db,
+            "paymentRequests"
+          ),
           where(
             "uid",
             "==",
@@ -2066,7 +2409,9 @@
 
 
       const existing =
-        await getDocs(existingQuery);
+        await getDocs(
+          existingQuery
+        );
 
 
       if (!existing.empty) {
@@ -2082,18 +2427,38 @@
 
 
       await addDoc(
-        collection(db, "paymentRequests"),
+        collection(
+          db,
+          "paymentRequests"
+        ),
         {
-          uid: currentUser.uid,
+          uid:
+            currentUser.uid,
+
           name:
-            currentUser.displayName || "Member",
-          email: currentUser.email,
-          amount: selectedPayment.amount,
-          days: selectedPayment.days,
-          plan: selectedPayment.name,
-          transactionCode: transactionCode,
-          status: "pending",
-          createdAt: serverTimestamp()
+            currentUser.displayName ||
+            "Member",
+
+          email:
+            currentUser.email,
+
+          amount:
+            selectedPayment.amount,
+
+          days:
+            selectedPayment.days,
+
+          plan:
+            selectedPayment.name,
+
+          transactionCode:
+            transactionCode,
+
+          status:
+            "pending",
+
+          createdAt:
+            serverTimestamp()
         }
       );
 
@@ -2105,7 +2470,9 @@
 
 
       document
-        .getElementById("transactionCode")
+        .getElementById(
+          "transactionCode"
+        )
         .value = "";
 
 
@@ -2138,7 +2505,10 @@
 
     const paymentQuery =
       query(
-        collection(db, "paymentRequests"),
+        collection(
+          db,
+          "paymentRequests"
+        ),
         where(
           "uid",
           "==",
@@ -2150,11 +2520,15 @@
     try {
 
       const snapshot =
-        await getDocs(paymentQuery);
+        await getDocs(
+          paymentQuery
+        );
 
 
       const container =
-        document.getElementById("myPayments");
+        document.getElementById(
+          "myPayments"
+        );
 
 
       if (snapshot.empty) {
@@ -2171,63 +2545,90 @@
         snapshot.docs
           .map(
             item => ({
-              id: item.id,
+              id:
+                item.id,
               ...item.data()
             })
           )
           .sort(
             (a, b) =>
-              getMillis(b.createdAt) -
-              getMillis(a.createdAt)
+              getMillis(
+                b.createdAt
+              ) -
+              getMillis(
+                a.createdAt
+              )
           );
 
 
-      container.innerHTML = "";
+      container.innerHTML =
+        "";
 
 
-      payments.forEach(payment => {
+      payments.forEach(
+        payment => {
 
-        const div =
-          document.createElement("div");
-
-
-        div.className = "payment";
-
-
-        div.innerHTML = `
-          <strong>
-            ${escapeHtml(payment.plan || "")}
-          </strong>
-          <br>
-
-          Amount:
-          KSh ${escapeHtml(payment.amount || "")}
-          <br>
-
-          Transaction Code:
-          ${escapeHtml(payment.transactionCode || "")}
-          <br>
-
-          Date:
-          ${formatDate(payment.createdAt)}
-          <br>
-
-          Status:
-          <span class="${escapeHtml(payment.status || "")}">
-            ${escapeHtml(payment.status || "")}
-          </span>
-        `;
+          const div =
+            document.createElement(
+              "div"
+            );
 
 
-        container.appendChild(div);
+          div.className =
+            "payment";
 
-      });
+
+          div.innerHTML = `
+            <strong>
+              ${escapeHtml(
+                payment.plan || ""
+              )}
+            </strong>
+            <br>
+
+            Amount:
+            KSh ${escapeHtml(
+              payment.amount || ""
+            )}
+            <br>
+
+            Transaction Code:
+            ${escapeHtml(
+              payment.transactionCode || ""
+            )}
+            <br>
+
+            Date:
+            ${formatDate(
+              payment.createdAt
+            )}
+            <br>
+
+            Status:
+            <span class="${escapeHtml(
+              payment.status || ""
+            )}">
+              ${escapeHtml(
+                payment.status || ""
+              )}
+            </span>
+          `;
+
+
+          container.appendChild(
+            div
+          );
+
+        }
+      );
 
 
     } catch (error) {
 
       document
-        .getElementById("myPayments")
+        .getElementById(
+          "myPayments"
+        )
         .textContent =
         "Unable to load payment history: " +
         error.message;
@@ -2245,10 +2646,12 @@
 
   async function hasActiveAccess() {
 
-    if (!currentUser) return false;
+    if (!currentUser)
+      return false;
 
 
-    if (isAdmin()) return true;
+    if (isAdmin())
+      return true;
 
 
     const memberRef =
@@ -2260,17 +2663,22 @@
 
 
     const snapshot =
-      await getDoc(memberRef);
+      await getDoc(
+        memberRef
+      );
 
 
-    if (!snapshot.exists()) return false;
+    if (!snapshot.exists())
+      return false;
 
 
-    const data = snapshot.data();
+    const data =
+      snapshot.data();
 
 
     if (
-      data.subscriptionStatus !== "active" ||
+      data.subscriptionStatus !==
+        "active" ||
       !data.subscriptionExpiry
     ) {
 
@@ -2282,7 +2690,8 @@
     try {
 
       return (
-        data.subscriptionExpiry.toDate() >
+        data.subscriptionExpiry
+          .toDate() >
         new Date()
       );
 
@@ -2298,12 +2707,17 @@
   /*
    * ==========================================================
    * LOAD RESOURCES
+   *
+   * IMPORTANT:
+   * Resources are loaded into memory but are NOT displayed.
+   * The member must search before anything is rendered.
    * ==========================================================
    */
 
   window.loadResources = async function () {
 
-    if (!currentUser) return;
+    if (!currentUser)
+      return;
 
 
     const access =
@@ -2311,41 +2725,54 @@
 
 
     const lock =
-      document.getElementById("resourceLock");
+      document.getElementById(
+        "resourceLock"
+      );
 
 
     const area =
-      document.getElementById("resourceArea");
+      document.getElementById(
+        "resourceArea"
+      );
 
 
     if (!access) {
 
-      lock.classList.remove("hidden");
+      lock.classList
+        .remove("hidden");
 
-      area.classList.add("hidden");
+      area.classList
+        .add("hidden");
 
       return;
 
     }
 
 
-    lock.classList.add("hidden");
+    lock.classList
+      .add("hidden");
 
-    area.classList.remove("hidden");
+
+    area.classList
+      .remove("hidden");
 
 
     try {
 
       const snapshot =
         await getDocs(
-          collection(db, "resources")
+          collection(
+            db,
+            "resources"
+          )
         );
 
 
       allResources =
         snapshot.docs.map(
           item => ({
-            id: item.id,
+            id:
+              item.id,
             ...item.data()
           })
         );
@@ -2353,18 +2780,62 @@
 
       allResources.sort(
         (a, b) =>
-          getMillis(b.createdAt) -
-          getMillis(a.createdAt)
+          getMillis(
+            b.createdAt
+          ) -
+          getMillis(
+            a.createdAt
+          )
       );
 
 
-      renderResources(allResources);
+      /*
+       * DO NOT render all resources here.
+       *
+       * This is the key change.
+       */
+
+      const list =
+        document.getElementById(
+          "resourcesList"
+        );
+
+      const message =
+        document.getElementById(
+          "resourceSearchMessage"
+        );
+
+      const search =
+        document.getElementById(
+          "resourceSearch"
+        );
+
+
+      list.innerHTML =
+        "";
+
+
+      list.classList
+        .add("hidden");
+
+
+      message.classList
+        .remove("hidden");
+
+
+      message.textContent =
+        "🔎 Type something in the search box to find resources.";
+
+
+      search.value = "";
 
 
     } catch (error) {
 
       document
-        .getElementById("resourcesList")
+        .getElementById(
+          "resourceSearchMessage"
+        )
         .textContent =
         "Unable to load resources: " +
         error.message;
@@ -2385,10 +2856,13 @@
     try {
 
       const clean =
-        url.split("?")[0].toLowerCase();
+        url
+          .split("?")[0]
+          .toLowerCase();
 
       const parts =
         clean.split(".");
+
 
       return parts.length > 1
         ? parts.pop()
@@ -2409,10 +2883,6 @@
       getFileExtension(url);
 
 
-    /*
-     * Office documents are sent through Google Docs Viewer.
-     */
-
     const officeExtensions = [
       "doc",
       "docx",
@@ -2423,7 +2893,11 @@
     ];
 
 
-    if (officeExtensions.includes(extension)) {
+    if (
+      officeExtensions.includes(
+        extension
+      )
+    ) {
 
       return (
         "https://docs.google.com/gview?embedded=true&url=" +
@@ -2432,10 +2906,6 @@
 
     }
 
-
-    /*
-     * PDFs and images can normally be displayed directly.
-     */
 
     return url;
 
@@ -2451,26 +2921,34 @@
 
 
     const modal =
-      document.getElementById("previewModal");
+      document.getElementById(
+        "previewModal"
+      );
 
 
     const frame =
-      document.getElementById("previewFrame");
+      document.getElementById(
+        "previewFrame"
+      );
 
 
     const previewTitle =
-      document.getElementById("previewTitle");
+      document.getElementById(
+        "previewTitle"
+      );
 
 
     previewTitle.textContent =
-      title || "Document Preview";
+      title ||
+      "Document Preview";
 
 
     frame.src =
       getPreviewUrl(url);
 
 
-    modal.classList.remove("hidden");
+    modal.classList
+      .remove("hidden");
 
 
     document.body.style.overflow =
@@ -2482,17 +2960,23 @@
   window.closePreview = function () {
 
     const modal =
-      document.getElementById("previewModal");
+      document.getElementById(
+        "previewModal"
+      );
 
 
     const frame =
-      document.getElementById("previewFrame");
+      document.getElementById(
+        "previewFrame"
+      );
 
 
-    frame.src = "";
+    frame.src =
+      "";
 
 
-    modal.classList.add("hidden");
+    modal.classList
+      .add("hidden");
 
 
     document.body.style.overflow =
@@ -2513,7 +2997,8 @@
     download
   ) {
 
-    if (!url) return "";
+    if (!url)
+      return "";
 
 
     const safeUrl =
@@ -2540,11 +3025,6 @@
 
     }
 
-
-    /*
-     * Encode URL before putting it inside onclick.
-     * This allows Preview to open the document viewer.
-     */
 
     const encodedUrl =
       encodeURIComponent(url);
@@ -2575,166 +3055,235 @@
    * ==========================================================
    */
 
-  function renderResources(resources) {
+  function renderResources(
+    resources
+  ) {
 
     const container =
-      document.getElementById("resourcesList");
+      document.getElementById(
+        "resourcesList"
+      );
 
 
-    container.innerHTML = "";
+    const message =
+      document.getElementById(
+        "resourceSearchMessage"
+      );
 
+
+    container.innerHTML =
+      "";
+
+
+    /*
+     * If no search results exist,
+     * keep the resource list hidden.
+     */
 
     if (!resources.length) {
 
-      container.textContent =
-        "No learning resources available yet.";
+      container.classList
+        .remove("hidden");
+
+
+      message.classList
+        .add("hidden");
+
+
+      container.innerHTML = `
+        <div class="status">
+          No resources found for your search.
+        </div>
+      `;
 
       return;
 
     }
 
 
-    resources.forEach(resource => {
-
-      const div =
-        document.createElement("div");
+    message.classList
+      .add("hidden");
 
 
-      div.className = "resource";
+    container.classList
+      .remove("hidden");
 
 
-      const isExam =
-        String(resource.category || "")
-          .toLowerCase()
-          .includes("examination");
+    resources.forEach(
+      resource => {
+
+        const div =
+          document.createElement(
+            "div"
+          );
 
 
-      let html = `
-
-        <h3 class="resource-title">
-          ${isExam ? "📝 " : "📚 "}
-          ${escapeHtml(resource.title || "Untitled")}
-        </h3>
-
-        <p class="resource-description">
-          ${escapeHtml(resource.description || "")}
-        </p>
-
-        <div class="resource-meta">
-
-          <span class="badge ${isExam ? "exam" : ""}">
-            ${escapeHtml(resource.category || "Learning Resources")}
-          </span>
-
-          ${
-            resource.subject
-              ? `<span class="badge">
-                  📖 ${escapeHtml(resource.subject)}
-                </span>`
-              : ""
-          }
-
-          ${
-            resource.className
-              ? `<span class="badge">
-                  🎓 ${escapeHtml(resource.className)}
-                </span>`
-              : ""
-          }
-
-          ${
-            resource.examYear
-              ? `<span class="badge">
-                  📅 ${escapeHtml(resource.examYear)}
-                </span>`
-              : ""
-          }
-
-          ${
-            resource.examType
-              ? `<span class="badge exam">
-                  ${escapeHtml(resource.examType)}
-                </span>`
-              : ""
-          }
-
-        </div>
-      `;
+        div.className =
+          "resource";
 
 
-      if (resource.paperUrl) {
+        const isExam =
+          String(
+            resource.category || ""
+          )
+            .toLowerCase()
+            .includes(
+              "examination"
+            );
 
-        html += `
 
-          <div class="paper-box">
+        let html = `
 
-            <strong>📄 Question Paper / Main Document</strong>
+          <h3 class="resource-title">
+            ${isExam ? "📝 " : "📚 "}
+            ${escapeHtml(
+              resource.title ||
+              "Untitled"
+            )}
+          </h3>
 
-            <div class="resource-actions">
+          <p class="resource-description">
+            ${escapeHtml(
+              resource.description ||
+              ""
+            )}
+          </p>
 
-              ${createResourceLink(
-                resource.paperUrl,
-                "Question Paper - Preview",
-                false
+          <div class="resource-meta">
+
+            <span class="badge ${
+              isExam ? "exam" : ""
+            }">
+              ${escapeHtml(
+                resource.category ||
+                "Learning Resources"
               )}
+            </span>
 
-              ${createResourceLink(
-                resource.paperUrl,
-                "Question Paper - Download",
-                true
-              )}
+            ${
+              resource.subject
+                ? `<span class="badge">
+                    📖 ${escapeHtml(
+                      resource.subject
+                    )}
+                  </span>`
+                : ""
+            }
+
+            ${
+              resource.className
+                ? `<span class="badge">
+                    🎓 ${escapeHtml(
+                      resource.className
+                    )}
+                  </span>`
+                : ""
+            }
+
+            ${
+              resource.examYear
+                ? `<span class="badge">
+                    📅 ${escapeHtml(
+                      resource.examYear
+                    )}
+                  </span>`
+                : ""
+            }
+
+            ${
+              resource.examType
+                ? `<span class="badge exam">
+                    ${escapeHtml(
+                      resource.examType
+                    )}
+                  </span>`
+                : ""
+            }
+
+          </div>
+        `;
+
+
+        if (
+          resource.paperUrl
+        ) {
+
+          html += `
+
+            <div class="paper-box">
+
+              <strong>
+                📄 Question Paper / Main Document
+              </strong>
+
+              <div class="resource-actions">
+
+                ${createResourceLink(
+                  resource.paperUrl,
+                  "Question Paper - Preview",
+                  false
+                )}
+
+                ${createResourceLink(
+                  resource.paperUrl,
+                  "Question Paper - Download",
+                  true
+                )}
+
+              </div>
 
             </div>
 
-          </div>
+          `;
 
-        `;
-
-      }
+        }
 
 
-      if (resource.markingUrl) {
+        if (
+          resource.markingUrl
+        ) {
 
-        html += `
+          html += `
 
-          <div class="marking-box">
+            <div class="marking-box">
 
-            <strong>✅ Matching Marking Scheme</strong>
+              <strong>
+                ✅ Matching Marking Scheme
+              </strong>
 
-            <div class="resource-actions">
+              <div class="resource-actions">
 
-              ${createResourceLink(
-                resource.markingUrl,
-                "Marking Scheme - Preview",
-                false
-              )}
+                ${createResourceLink(
+                  resource.markingUrl,
+                  "Marking Scheme - Preview",
+                  false
+                )}
 
-              ${createResourceLink(
-                resource.markingUrl,
-                "Marking Scheme - Download",
-                true
-              )}
+                ${createResourceLink(
+                  resource.markingUrl,
+                  "Marking Scheme - Download",
+                  true
+                )}
+
+              </div>
 
             </div>
 
-          </div>
+          `;
 
-        `;
+        }
+
+
+        div.innerHTML =
+          html;
+
+
+        container.appendChild(
+          div
+        );
 
       }
-
-
-      html += `
-        </div>
-      `;
-
-
-      div.innerHTML = html;
-
-
-      container.appendChild(div);
-
-    });
+    );
 
   }
 
@@ -2742,39 +3291,103 @@
   /*
    * ==========================================================
    * SEARCH
+   *
+   * NOTHING IS SHOWN UNTIL THE USER SEARCHES.
    * ==========================================================
    */
 
   window.filterResources = function () {
 
+    const input =
+      document.getElementById(
+        "resourceSearch"
+      );
+
+
     const term =
-      document
-        .getElementById("resourceSearch")
-        .value
+      input.value
         .toLowerCase()
         .trim();
 
 
+    const message =
+      document.getElementById(
+        "resourceSearchMessage"
+      );
+
+
+    const list =
+      document.getElementById(
+        "resourcesList"
+      );
+
+
+    /*
+     * Empty search = hide all resources.
+     */
+
+    if (!term) {
+
+      list.innerHTML =
+        "";
+
+
+      list.classList
+        .add("hidden");
+
+
+      message.classList
+        .remove("hidden");
+
+
+      message.textContent =
+        "🔎 Type something in the search box to find resources.";
+
+
+      return;
+
+    }
+
+
+    /*
+     * Search title, description, category,
+     * subject, class, year and exam type.
+     */
+
     const filtered =
-      allResources.filter(resource => {
+      allResources.filter(
+        resource => {
 
-        const text = `
-          ${resource.title || ""}
-          ${resource.description || ""}
-          ${resource.category || ""}
-          ${resource.subject || ""}
-          ${resource.className || ""}
-          ${resource.examYear || ""}
-          ${resource.examType || ""}
-        `.toLowerCase();
+          const text = `
+
+            ${resource.title || ""}
+
+            ${resource.description || ""}
+
+            ${resource.category || ""}
+
+            ${resource.subject || ""}
+
+            ${resource.className || ""}
+
+            ${resource.examYear || ""}
+
+            ${resource.examType || ""}
+
+          `.toLowerCase();
 
 
-        return text.includes(term);
+          return text.includes(
+            term
+          );
 
-      });
+        }
+      );
 
 
-    renderResources(filtered);
+    renderResources(
+      filtered
+    );
 
   };
 
@@ -2787,18 +3400,24 @@
 
   async function loadAdminPayments() {
 
-    if (!isAdmin()) return;
+    if (!isAdmin())
+      return;
 
 
     const container =
-      document.getElementById("adminPayments");
+      document.getElementById(
+        "adminPayments"
+      );
 
 
     try {
 
       const snapshot =
         await getDocs(
-          collection(db, "paymentRequests")
+          collection(
+            db,
+            "paymentRequests"
+          )
         );
 
 
@@ -2806,18 +3425,24 @@
         snapshot.docs
           .map(
             item => ({
-              id: item.id,
+              id:
+                item.id,
               ...item.data()
             })
           )
           .sort(
             (a, b) =>
-              getMillis(b.createdAt) -
-              getMillis(a.createdAt)
+              getMillis(
+                b.createdAt
+              ) -
+              getMillis(
+                a.createdAt
+              )
           );
 
 
-      container.innerHTML = "";
+      container.innerHTML =
+        "";
 
 
       if (!payments.length) {
@@ -2830,95 +3455,138 @@
       }
 
 
-      payments.forEach(payment => {
+      payments.forEach(
+        payment => {
 
-        const div =
-          document.createElement("div");
-
-
-        div.className = "payment";
-
-
-        div.innerHTML = `
-          <strong>
-            ${escapeHtml(payment.name || "Member")}
-          </strong>
-          <br>
-
-          Email:
-          ${escapeHtml(payment.email || "")}
-          <br>
-
-          Plan:
-          ${escapeHtml(payment.plan || "")}
-          <br>
-
-          Amount:
-          KSh ${escapeHtml(payment.amount || "")}
-          <br>
-
-          Transaction Code:
-          ${escapeHtml(payment.transactionCode || "")}
-          <br>
-
-          Submitted:
-          ${formatDate(payment.createdAt)}
-          <br>
-
-          Status:
-          <strong>
-            ${escapeHtml(payment.status || "")}
-          </strong>
-          <br><br>
-        `;
+          const div =
+            document.createElement(
+              "div"
+            );
 
 
-        if (payment.status === "pending") {
-
-          const approve =
-            document.createElement("button");
+          div.className =
+            "payment";
 
 
-          approve.textContent =
-            "Approve Payment";
+          div.innerHTML = `
+            <strong>
+              ${escapeHtml(
+                payment.name ||
+                "Member"
+              )}
+            </strong>
+            <br>
+
+            Email:
+            ${escapeHtml(
+              payment.email ||
+              ""
+            )}
+            <br>
+
+            Plan:
+            ${escapeHtml(
+              payment.plan ||
+              ""
+            )}
+            <br>
+
+            Amount:
+            KSh ${escapeHtml(
+              payment.amount ||
+              ""
+            )}
+            <br>
+
+            Transaction Code:
+            ${escapeHtml(
+              payment.transactionCode ||
+              ""
+            )}
+            <br>
+
+            Submitted:
+            ${formatDate(
+              payment.createdAt
+            )}
+            <br>
+
+            Status:
+            <strong>
+              ${escapeHtml(
+                payment.status ||
+                ""
+              )}
+            </strong>
+            <br><br>
+          `;
 
 
-          approve.className =
-            "success";
+          if (
+            payment.status ===
+            "pending"
+          ) {
+
+            const approve =
+              document.createElement(
+                "button"
+              );
 
 
-          approve.onclick =
-            () =>
-              approvePayment(payment.id);
+            approve.textContent =
+              "Approve Payment";
 
 
-          const reject =
-            document.createElement("button");
+            approve.className =
+              "success";
 
 
-          reject.textContent =
-            "Reject Payment";
+            approve.onclick =
+              () =>
+                approvePayment(
+                  payment.id
+                );
 
 
-          reject.className =
-            "danger";
+            const reject =
+              document.createElement(
+                "button"
+              );
 
 
-          reject.onclick =
-            () =>
-              rejectPayment(payment.id);
+            reject.textContent =
+              "Reject Payment";
 
 
-          div.appendChild(approve);
+            reject.className =
+              "danger";
 
-          div.appendChild(reject);
+
+            reject.onclick =
+              () =>
+                rejectPayment(
+                  payment.id
+                );
+
+
+            div.appendChild(
+              approve
+            );
+
+
+            div.appendChild(
+              reject
+            );
+
+          }
+
+
+          container.appendChild(
+            div
+          );
 
         }
-
-
-        container.appendChild(div);
-
-      });
+      );
 
 
     } catch (error) {
@@ -2938,9 +3606,12 @@
    * ==========================================================
    */
 
-  async function approvePayment(paymentId) {
+  async function approvePayment(
+    paymentId
+  ) {
 
-    if (!isAdmin()) return;
+    if (!isAdmin())
+      return;
 
 
     try {
@@ -2976,7 +3647,10 @@
             paymentSnap.data();
 
 
-          if (payment.status !== "pending") {
+          if (
+            payment.status !==
+            "pending"
+          ) {
 
             throw new Error(
               "This payment has already been processed."
@@ -3005,9 +3679,11 @@
 
           if (
             memberSnap.exists() &&
-            memberSnap.data().subscriptionStatus ===
-            "active" &&
-            memberSnap.data().subscriptionExpiry
+            memberSnap.data()
+              .subscriptionStatus ===
+              "active" &&
+            memberSnap.data()
+              .subscriptionExpiry
           ) {
 
             const existingExpiry =
@@ -3017,9 +3693,13 @@
                 .toDate();
 
 
-            if (existingExpiry > startDate) {
+            if (
+              existingExpiry >
+              startDate
+            ) {
 
-              startDate = existingExpiry;
+              startDate =
+                existingExpiry;
 
             }
 
@@ -3027,27 +3707,45 @@
 
 
           const expiry =
-            new Date(startDate);
+            new Date(
+              startDate
+            );
 
 
           expiry.setDate(
             expiry.getDate() +
-            Number(payment.days)
+            Number(
+              payment.days
+            )
           );
 
 
           transaction.set(
             memberRef,
             {
-              uid: payment.uid,
-              name: payment.name || "Member",
-              email: payment.email,
-              subscriptionStatus: "active",
-              subscriptionExpiry: expiry,
-              updatedAt: serverTimestamp()
+              uid:
+                payment.uid,
+
+              name:
+                payment.name ||
+                "Member",
+
+              email:
+                payment.email,
+
+              subscriptionStatus:
+                "active",
+
+              subscriptionExpiry:
+                expiry,
+
+              updatedAt:
+                serverTimestamp()
+
             },
             {
-              merge: true
+              merge:
+                true
             }
           );
 
@@ -3055,9 +3753,15 @@
           transaction.update(
             paymentRef,
             {
-              status: "approved",
-              approvedAt: serverTimestamp(),
-              approvedBy: ADMIN_EMAIL
+              status:
+                "approved",
+
+              approvedAt:
+                serverTimestamp(),
+
+              approvedBy:
+                ADMIN_EMAIL
+
             }
           );
 
@@ -3093,9 +3797,12 @@
    * ==========================================================
    */
 
-  async function rejectPayment(paymentId) {
+  async function rejectPayment(
+    paymentId
+  ) {
 
-    if (!isAdmin()) return;
+    if (!isAdmin())
+      return;
 
 
     try {
@@ -3107,14 +3814,22 @@
           paymentId
         ),
         {
-          status: "rejected",
-          rejectedAt: serverTimestamp(),
-          rejectedBy: ADMIN_EMAIL
+          status:
+            "rejected",
+
+          rejectedAt:
+            serverTimestamp(),
+
+          rejectedBy:
+            ADMIN_EMAIL
+
         }
       );
 
 
-      alert("Payment rejected.");
+      alert(
+        "Payment rejected."
+      );
 
 
       await loadAdminPayments();
@@ -3173,7 +3888,10 @@
 
 
     return new Promise(
-      (resolve, reject) => {
+      (
+        resolve,
+        reject
+      ) => {
 
         const xhr =
           new XMLHttpRequest();
@@ -3214,10 +3932,14 @@
               try {
 
                 const result =
-                  JSON.parse(xhr.responseText);
+                  JSON.parse(
+                    xhr.responseText
+                  );
 
 
-                resolve(result);
+                resolve(
+                  result
+                );
 
               } catch {
 
@@ -3234,7 +3956,9 @@
               try {
 
                 const result =
-                  JSON.parse(xhr.responseText);
+                  JSON.parse(
+                    xhr.responseText
+                  );
 
 
                 reject(
@@ -3271,7 +3995,9 @@
           };
 
 
-        xhr.send(formData);
+        xhr.send(
+          formData
+        );
 
       }
     );
@@ -3285,406 +4011,488 @@
    * ==========================================================
    */
 
-  window.uploadResource = async function () {
+  window.uploadResource =
+    async function () {
 
-    if (!isAdmin()) {
+      if (!isAdmin()) {
 
-      alert(
-        "Administrator access required."
-      );
-
-      return;
-
-    }
-
-
-    const title =
-      document
-        .getElementById("resourceTitle")
-        .value
-        .trim();
-
-
-    const description =
-      document
-        .getElementById("resourceDescription")
-        .value
-        .trim();
-
-
-    const category =
-      document
-        .getElementById("resourceCategory")
-        .value
-        .trim();
-
-
-    const subject =
-      document
-        .getElementById("resourceSubject")
-        .value
-        .trim();
-
-
-    const className =
-      document
-        .getElementById("resourceClass")
-        .value
-        .trim();
-
-
-    const examYear =
-      document
-        .getElementById("examYear")
-        .value
-        .trim();
-
-
-    const examType =
-      document
-        .getElementById("examType")
-        .value
-        .trim();
-
-
-    const paper =
-      document
-        .getElementById("paperFile")
-        .files[0];
-
-
-    const marking =
-      document
-        .getElementById("markingFile")
-        .files[0];
-
-
-    if (!title || !paper) {
-
-      showMessage(
-        "uploadMessage",
-        "Title and Question Paper are required."
-      );
-
-      return;
-
-    }
-
-
-    if (
-      category === "Examinations" &&
-      !marking
-    ) {
-
-      showMessage(
-        "uploadMessage",
-        "For an Examination, please upload both the Question Paper and Marking Scheme."
-      );
-
-      return;
-
-    }
-
-
-    if (
-      category === "Examinations" &&
-      !examYear
-    ) {
-
-      showMessage(
-        "uploadMessage",
-        "Please enter the examination year."
-      );
-
-      return;
-
-    }
-
-
-    const MAX_SIZE =
-      25 * 1024 * 1024;
-
-
-    if (paper.size > MAX_SIZE) {
-
-      showMessage(
-        "uploadMessage",
-        "Question Paper is larger than 25 MB."
-      );
-
-      return;
-
-    }
-
-
-    if (
-      marking &&
-      marking.size > MAX_SIZE
-    ) {
-
-      showMessage(
-        "uploadMessage",
-        "Marking Scheme is larger than 25 MB."
-      );
-
-      return;
-
-    }
-
-
-    try {
-
-      showMessage(
-        "uploadMessage",
-        "Creating resource..."
-      );
-
-
-      const resourceRef =
-        await addDoc(
-          collection(db, "resources"),
-          {
-            title,
-            description,
-            category,
-            subject,
-            className,
-            resourceType:
-              category === "Examinations"
-                ? "examination"
-                : "learning_resource",
-            examYear:
-              category === "Examinations"
-                ? examYear
-                : "",
-            examType:
-              category === "Examinations"
-                ? examType
-                : "",
-            createdAt: serverTimestamp(),
-            createdBy: ADMIN_EMAIL,
-            storageProvider: "cloudinary"
-          }
+        alert(
+          "Administrator access required."
         );
 
+        return;
 
-      const resourceId =
-        resourceRef.id;
-
-
-      const progressContainer =
-        document.getElementById(
-          "uploadProgressContainer"
-        );
+      }
 
 
-      const progressBar =
-        document.getElementById(
-          "uploadProgressBar"
-        );
+      const title =
+        document
+          .getElementById(
+            "resourceTitle"
+          )
+          .value
+          .trim();
 
 
-      progressContainer
-        .classList
-        .remove("hidden");
+      const description =
+        document
+          .getElementById(
+            "resourceDescription"
+          )
+          .value
+          .trim();
 
 
-      /*
-       * QUESTION PAPER
-       */
-
-      showMessage(
-        "uploadMessage",
-        "Uploading question paper..."
-      );
-
-
-      const paperResult =
-        await uploadToCloudinary(
-          paper,
-          resourceId,
-          "question_paper",
-          progress => {
-
-            progressBar.style.width =
-              Math.round(
-                progress * 50
-              ) + "%";
-
-          }
-        );
+      const category =
+        document
+          .getElementById(
+            "resourceCategory"
+          )
+          .value
+          .trim();
 
 
-      const paperUrl =
-        paperResult.secure_url;
+      const subject =
+        document
+          .getElementById(
+            "resourceSubject"
+          )
+          .value
+          .trim();
 
 
-      const paperPublicId =
-        paperResult.public_id || "";
+      const className =
+        document
+          .getElementById(
+            "resourceClass"
+          )
+          .value
+          .trim();
 
 
-      /*
-       * MARKING SCHEME
-       */
+      const examYear =
+        document
+          .getElementById(
+            "examYear"
+          )
+          .value
+          .trim();
 
-      let markingUrl = "";
 
-      let markingPublicId = "";
+      const examType =
+        document
+          .getElementById(
+            "examType"
+          )
+          .value
+          .trim();
 
 
-      if (marking) {
+      const paper =
+        document
+          .getElementById(
+            "paperFile"
+          )
+          .files[0];
+
+
+      const marking =
+        document
+          .getElementById(
+            "markingFile"
+          )
+          .files[0];
+
+
+      if (
+        !title ||
+        !paper
+      ) {
 
         showMessage(
           "uploadMessage",
-          "Uploading marking scheme..."
+          "Title and Question Paper are required."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        category ===
+          "Examinations" &&
+        !marking
+      ) {
+
+        showMessage(
+          "uploadMessage",
+          "For an Examination, please upload both the Question Paper and Marking Scheme."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        category ===
+          "Examinations" &&
+        !examYear
+      ) {
+
+        showMessage(
+          "uploadMessage",
+          "Please enter the examination year."
+        );
+
+        return;
+
+      }
+
+
+      const MAX_SIZE =
+        25 *
+        1024 *
+        1024;
+
+
+      if (
+        paper.size >
+        MAX_SIZE
+      ) {
+
+        showMessage(
+          "uploadMessage",
+          "Question Paper is larger than 25 MB."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        marking &&
+        marking.size >
+        MAX_SIZE
+      ) {
+
+        showMessage(
+          "uploadMessage",
+          "Marking Scheme is larger than 25 MB."
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        showMessage(
+          "uploadMessage",
+          "Creating resource..."
         );
 
 
-        const markingResult =
-          await uploadToCloudinary(
-            marking,
-            resourceId,
-            "marking_scheme",
-            progress => {
+        const resourceRef =
+          await addDoc(
+            collection(
+              db,
+              "resources"
+            ),
+            {
+              title,
+              description,
+              category,
+              subject,
+              className,
 
-              progressBar.style.width =
-                (50 +
-                  Math.round(
-                    progress * 50
-                  )) + "%";
+              resourceType:
+                category ===
+                "Examinations"
+                  ? "examination"
+                  : "learning_resource",
+
+              examYear:
+                category ===
+                "Examinations"
+                  ? examYear
+                  : "",
+
+              examType:
+                category ===
+                "Examinations"
+                  ? examType
+                  : "",
+
+              createdAt:
+                serverTimestamp(),
+
+              createdBy:
+                ADMIN_EMAIL,
+
+              storageProvider:
+                "cloudinary"
 
             }
           );
 
 
-        markingUrl =
-          markingResult.secure_url;
+        const resourceId =
+          resourceRef.id;
 
 
-        markingPublicId =
-          markingResult.public_id || "";
+        const progressContainer =
+          document.getElementById(
+            "uploadProgressContainer"
+          );
+
+
+        const progressBar =
+          document.getElementById(
+            "uploadProgressBar"
+          );
+
+
+        progressContainer.classList
+          .remove("hidden");
+
+
+        /*
+         * QUESTION PAPER
+         */
+
+        showMessage(
+          "uploadMessage",
+          "Uploading question paper..."
+        );
+
+
+        const paperResult =
+          await uploadToCloudinary(
+            paper,
+            resourceId,
+            "question_paper",
+            progress => {
+
+              progressBar.style.width =
+                Math.round(
+                  progress * 50
+                ) +
+                "%";
+
+            }
+          );
+
+
+        const paperUrl =
+          paperResult.secure_url;
+
+
+        const paperPublicId =
+          paperResult.public_id ||
+          "";
+
+
+        /*
+         * MARKING SCHEME
+         */
+
+        let markingUrl =
+          "";
+
+        let markingPublicId =
+          "";
+
+
+        if (marking) {
+
+          showMessage(
+            "uploadMessage",
+            "Uploading marking scheme..."
+          );
+
+
+          const markingResult =
+            await uploadToCloudinary(
+              marking,
+              resourceId,
+              "marking_scheme",
+              progress => {
+
+                progressBar.style.width =
+                  (
+                    50 +
+                    Math.round(
+                      progress * 50
+                    )
+                  ) +
+                  "%";
+
+              }
+            );
+
+
+          markingUrl =
+            markingResult.secure_url;
+
+
+          markingPublicId =
+            markingResult.public_id ||
+            "";
+
+        }
+
+
+        /*
+         * SAVE URLS
+         */
+
+        await updateDoc(
+          resourceRef,
+          {
+            paperUrl,
+
+            markingUrl,
+
+            paperName:
+              paper.name,
+
+            markingName:
+              marking
+                ? marking.name
+                : "",
+
+            paperPublicId,
+
+            markingPublicId,
+
+            storageProvider:
+              "cloudinary"
+
+          }
+        );
+
+
+        progressBar.style.width =
+          "100%";
+
+
+        showMessage(
+          "uploadMessage",
+          "Resource uploaded successfully."
+        );
+
+
+        /*
+         * CLEAR FORM
+         */
+
+        document
+          .getElementById(
+            "resourceTitle"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "resourceDescription"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "resourceCategory"
+          )
+          .value =
+          "Learning Resources";
+
+
+        document
+          .getElementById(
+            "resourceSubject"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "resourceClass"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "examYear"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "examType"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "paperFile"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "markingFile"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "examFields"
+          )
+          .classList
+          .add("hidden");
+
+
+        setTimeout(
+          () => {
+
+            progressContainer
+              .classList
+              .add("hidden");
+
+            progressBar.style.width =
+              "0%";
+
+          },
+          1500
+        );
+
+
+        await loadAdminResources();
+
+        await loadResources();
+
+
+      } catch (error) {
+
+        showMessage(
+          "uploadMessage",
+          "Upload error: " +
+          error.message
+        );
 
       }
 
-
-      /*
-       * SAVE URLS
-       */
-
-      await updateDoc(
-        resourceRef,
-        {
-          paperUrl,
-          markingUrl,
-          paperName: paper.name,
-          markingName:
-            marking
-              ? marking.name
-              : "",
-          paperPublicId,
-          markingPublicId,
-          storageProvider: "cloudinary"
-        }
-      );
-
-
-      progressBar.style.width =
-        "100%";
-
-
-      showMessage(
-        "uploadMessage",
-        "Resource uploaded successfully."
-      );
-
-
-      /*
-       * CLEAR FORM
-       */
-
-      document
-        .getElementById("resourceTitle")
-        .value = "";
-
-
-      document
-        .getElementById("resourceDescription")
-        .value = "";
-
-
-      document
-        .getElementById("resourceCategory")
-        .value =
-        "Learning Resources";
-
-
-      document
-        .getElementById("resourceSubject")
-        .value = "";
-
-
-      document
-        .getElementById("resourceClass")
-        .value = "";
-
-
-      document
-        .getElementById("examYear")
-        .value = "";
-
-
-      document
-        .getElementById("examType")
-        .value = "";
-
-
-      document
-        .getElementById("paperFile")
-        .value = "";
-
-
-      document
-        .getElementById("markingFile")
-        .value = "";
-
-
-      document
-        .getElementById("examFields")
-        .classList
-        .add("hidden");
-
-
-      setTimeout(
-        () => {
-
-          progressContainer
-            .classList
-            .add("hidden");
-
-          progressBar.style.width =
-            "0%";
-
-        },
-        1500
-      );
-
-
-      await loadAdminResources();
-
-      await loadResources();
-
-
-    } catch (error) {
-
-      showMessage(
-        "uploadMessage",
-        "Upload error: " +
-        error.message
-      );
-
-    }
-
-  };
+    };
 
 
   /*
@@ -3695,7 +4503,8 @@
 
   async function loadAdminResources() {
 
-    if (!isAdmin()) return;
+    if (!isAdmin())
+      return;
 
 
     const container =
@@ -3708,14 +4517,18 @@
 
       const snapshot =
         await getDocs(
-          collection(db, "resources")
+          collection(
+            db,
+            "resources"
+          )
         );
 
 
       const resources =
         snapshot.docs.map(
           item => ({
-            id: item.id,
+            id:
+              item.id,
             ...item.data()
           })
         );
@@ -3723,12 +4536,17 @@
 
       resources.sort(
         (a, b) =>
-          getMillis(b.createdAt) -
-          getMillis(a.createdAt)
+          getMillis(
+            b.createdAt
+          ) -
+          getMillis(
+            a.createdAt
+          )
       );
 
 
-      container.innerHTML = "";
+      container.innerHTML =
+        "";
 
 
       if (!resources.length) {
@@ -3741,83 +4559,111 @@
       }
 
 
-      resources.forEach(resource => {
+      resources.forEach(
+        resource => {
 
-        const div =
-          document.createElement("div");
+          const div =
+            document.createElement(
+              "div"
+            );
 
 
-        div.className =
-          "resource";
+          div.className =
+            "resource";
 
 
-        div.innerHTML = `
-          <strong>
-            ${escapeHtml(resource.title || "")}
-          </strong>
+          div.innerHTML = `
+            <strong>
+              ${escapeHtml(
+                resource.title ||
+                ""
+              )}
+            </strong>
 
-          <br>
+            <br>
 
-          Category:
-          ${escapeHtml(resource.category || "")}
-
-          <br>
-
-          ${escapeHtml(resource.subject || "")}
-          -
-          ${escapeHtml(resource.className || "")}
-
-          ${
-            resource.examYear
-              ? `<br>Year: ${escapeHtml(resource.examYear)}`
-              : ""
-          }
-
-          ${
-            resource.examType
-              ? `<br>Exam Type: ${escapeHtml(resource.examType)}`
-              : ""
-          }
-
-          <br>
-
-          <span class="small">
-            Storage:
+            Category:
             ${escapeHtml(
-              resource.storageProvider ||
-              "Cloudinary"
+              resource.category ||
+              ""
             )}
-          </span>
 
-          <br><br>
-        `;
+            <br>
+
+            ${escapeHtml(
+              resource.subject ||
+              ""
+            )}
+            -
+            ${escapeHtml(
+              resource.className ||
+              ""
+            )}
+
+            ${
+              resource.examYear
+                ? `<br>Year:
+                   ${escapeHtml(
+                     resource.examYear
+                   )}`
+                : ""
+            }
+
+            ${
+              resource.examType
+                ? `<br>Exam Type:
+                   ${escapeHtml(
+                     resource.examType
+                   )}`
+                : ""
+            }
+
+            <br>
+
+            <span class="small">
+              Storage:
+              ${escapeHtml(
+                resource.storageProvider ||
+                "Cloudinary"
+              )}
+            </span>
+
+            <br><br>
+          `;
 
 
-        const deleteButton =
-          document.createElement("button");
+          const deleteButton =
+            document.createElement(
+              "button"
+            );
 
 
-        deleteButton.textContent =
-          "Delete Resource";
+          deleteButton.textContent =
+            "Delete Resource";
 
 
-        deleteButton.className =
-          "danger";
+          deleteButton.className =
+            "danger";
 
 
-        deleteButton.onclick =
-          () =>
-            deleteResource(resource);
+          deleteButton.onclick =
+            () =>
+              deleteResource(
+                resource
+              );
 
 
-        div.appendChild(
-          deleteButton
-        );
+          div.appendChild(
+            deleteButton
+          );
 
 
-        container.appendChild(div);
+          container.appendChild(
+            div
+          );
 
-      });
+        }
+      );
 
 
     } catch (error) {
@@ -3837,9 +4683,12 @@
    * ==========================================================
    */
 
-  async function deleteResource(resource) {
+  async function deleteResource(
+    resource
+  ) {
 
-    if (!isAdmin()) return;
+    if (!isAdmin())
+      return;
 
 
     if (
@@ -3894,7 +4743,8 @@
 
   async function loadAdminMembers() {
 
-    if (!isAdmin()) return;
+    if (!isAdmin())
+      return;
 
 
     const container =
@@ -3907,20 +4757,25 @@
 
       const snapshot =
         await getDocs(
-          collection(db, "members")
+          collection(
+            db,
+            "members"
+          )
         );
 
 
       const members =
         snapshot.docs.map(
           item => ({
-            id: item.id,
+            id:
+              item.id,
             ...item.data()
           })
         );
 
 
-      container.innerHTML = "";
+      container.innerHTML =
+        "";
 
 
       if (!members.length) {
@@ -3933,143 +4788,155 @@
       }
 
 
-      members.forEach(member => {
+      members.forEach(
+        member => {
 
-        const div =
-          document.createElement("div");
+          const div =
+            document.createElement(
+              "div"
+            );
 
 
-        div.className =
-          "payment";
+          div.className =
+            "payment";
 
 
-        div.innerHTML = `
-          <strong>
+          div.innerHTML = `
+            <strong>
+              ${escapeHtml(
+                member.name ||
+                "Member"
+              )}
+            </strong>
+
+            <br>
+
+            Email:
             ${escapeHtml(
-              member.name ||
-              "Member"
+              member.email ||
+              ""
             )}
-          </strong>
 
-          <br>
+            <br>
 
-          Email:
-          ${escapeHtml(
-            member.email ||
-            ""
-          )}
+            Status:
+            ${escapeHtml(
+              member.subscriptionStatus ||
+              "inactive"
+            )}
 
-          <br>
+            <br>
 
-          Status:
-          ${escapeHtml(
-            member.subscriptionStatus ||
-            "inactive"
-          )}
+            Expiry:
+            ${formatDate(
+              member.subscriptionExpiry
+            )}
 
-          <br>
-
-          Expiry:
-          ${formatDate(
-            member.subscriptionExpiry
-          )}
-
-          <br><br>
-        `;
+            <br><br>
+          `;
 
 
-        const activate7 =
-          document.createElement("button");
-
-
-        activate7.textContent =
-          "Add 7 Days";
-
-
-        activate7.onclick =
-          () =>
-            manualSubscription(
-              member.id,
-              7
+          const activate7 =
+            document.createElement(
+              "button"
             );
 
 
-        const activate30 =
-          document.createElement("button");
+          activate7.textContent =
+            "Add 7 Days";
 
 
-        activate30.textContent =
-          "Add 30 Days";
+          activate7.onclick =
+            () =>
+              manualSubscription(
+                member.id,
+                7
+              );
 
 
-        activate30.onclick =
-          () =>
-            manualSubscription(
-              member.id,
-              30
+          const activate30 =
+            document.createElement(
+              "button"
             );
 
 
-        const activate365 =
-          document.createElement("button");
+          activate30.textContent =
+            "Add 30 Days";
 
 
-        activate365.textContent =
-          "Add 365 Days";
+          activate30.onclick =
+            () =>
+              manualSubscription(
+                member.id,
+                30
+              );
 
 
-        activate365.onclick =
-          () =>
-            manualSubscription(
-              member.id,
-              365
+          const activate365 =
+            document.createElement(
+              "button"
             );
 
 
-        const expire =
-          document.createElement("button");
+          activate365.textContent =
+            "Add 365 Days";
 
 
-        expire.textContent =
-          "Expire Subscription";
+          activate365.onclick =
+            () =>
+              manualSubscription(
+                member.id,
+                365
+              );
 
 
-        expire.className =
-          "danger";
-
-
-        expire.onclick =
-          () =>
-            expireMember(
-              member.id
+          const expire =
+            document.createElement(
+              "button"
             );
 
 
-        div.appendChild(
-          activate7
-        );
+          expire.textContent =
+            "Expire Subscription";
 
 
-        div.appendChild(
-          activate30
-        );
+          expire.className =
+            "danger";
 
 
-        div.appendChild(
-          activate365
-        );
+          expire.onclick =
+            () =>
+              expireMember(
+                member.id
+              );
 
 
-        div.appendChild(
-          expire
-        );
+          div.appendChild(
+            activate7
+          );
 
 
-        container.appendChild(
-          div
-        );
+          div.appendChild(
+            activate30
+          );
 
-      });
+
+          div.appendChild(
+            activate365
+          );
+
+
+          div.appendChild(
+            expire
+          );
+
+
+          container.appendChild(
+            div
+          );
+
+        }
+      );
 
 
     } catch (error) {
@@ -4094,7 +4961,8 @@
     days
   ) {
 
-    if (!isAdmin()) return;
+    if (!isAdmin())
+      return;
 
 
     try {
@@ -4119,9 +4987,11 @@
 
       if (
         snapshot.exists() &&
-        snapshot.data().subscriptionStatus ===
-        "active" &&
-        snapshot.data().subscriptionExpiry
+        snapshot.data()
+          .subscriptionStatus ===
+          "active" &&
+        snapshot.data()
+          .subscriptionExpiry
       ) {
 
         const expiry =
@@ -4131,9 +5001,13 @@
             .toDate();
 
 
-        if (expiry > start) {
+        if (
+          expiry >
+          start
+        ) {
 
-          start = expiry;
+          start =
+            expiry;
 
         }
 
@@ -4141,7 +5015,9 @@
 
 
       const newExpiry =
-        new Date(start);
+        new Date(
+          start
+        );
 
 
       newExpiry.setDate(
@@ -4153,9 +5029,14 @@
       await updateDoc(
         memberRef,
         {
-          subscriptionStatus: "active",
-          subscriptionExpiry: newExpiry,
-          updatedAt: serverTimestamp()
+          subscriptionStatus:
+            "active",
+
+          subscriptionExpiry:
+            newExpiry,
+
+          updatedAt:
+            serverTimestamp()
         }
       );
 
@@ -4198,9 +5079,12 @@
    * ==========================================================
    */
 
-  async function expireMember(uid) {
+  async function expireMember(
+    uid
+  ) {
 
-    if (!isAdmin()) return;
+    if (!isAdmin())
+      return;
 
 
     if (
@@ -4223,9 +5107,14 @@
           uid
         ),
         {
-          subscriptionStatus: "inactive",
-          subscriptionExpiry: new Date(),
-          updatedAt: serverTimestamp()
+          subscriptionStatus:
+            "inactive",
+
+          subscriptionExpiry:
+            new Date(),
+
+          updatedAt:
+            serverTimestamp()
         }
       );
 
@@ -4256,4 +5145,4 @@
 </script>
 
 </body>
-</html>  
+</html>
