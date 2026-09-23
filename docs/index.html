@@ -2995,39 +2995,39 @@
      */
 
     const filtered =
-      allResources.filter(
-        resource => {
+  allResources.filter(
+    resource => {
 
-          const text = `
+      const text = `
 
-            ${resource.title || ""}
+        ${resource.title || ""}
 
-            ${resource.description || ""}
+        ${resource.description || ""}
 
-            ${resource.category || ""}
+        ${resource.category || ""}
 
-            ${resource.subject || ""}
+        ${resource.subject || ""}
 
-            ${resource.className || ""}
+        ${resource.className || ""}
 
-            ${resource.examYear || ""}
+        ${resource.examYear || ""}
 
-            ${resource.examType || ""}
+        ${resource.examType || ""}
 
-          `.toLowerCase();
+      `.toLowerCase();
 
-          return text.includes(
-            term
-          );
+      const words =
+        term
+          .split(/\s+/)
+          .filter(Boolean);
 
-        }
+      return words.every(
+        word =>
+          text.includes(word)
       );
 
-    renderResources(
-      filtered
-    );
-
-  };
+    }
+  );
 
 
   /* ==========================================================
