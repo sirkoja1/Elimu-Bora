@@ -2854,73 +2854,86 @@
           </div>
         `;
 
-        if (
-          resource.paperUrl
-        ) {
+        if (resource.paperUrl) {
 
-          html += `
+  html += `
 
-            <div class="paper-box">
+    <div class="paper-box">
 
-              <strong>
-                📄 Question Paper / Main Document
-              </strong>
+      <strong
+        onclick="toggleResourceActions(this)"
+        style="cursor:pointer;"
+      >
+        📄 Question Paper / Main Document
+        <span style="font-size:12px;">
+          (Tap to open)
+        </span>
+      </strong>
 
-              <div class="resource-actions">
+      <div
+        class="resource-actions hidden"
+      >
 
-                ${createResourceLink(
-                  resource.paperUrl,
-                  "Question Paper - Preview",
-                  false
-                )}
+        ${createResourceLink(
+          resource.paperUrl,
+          "Question Paper - Preview",
+          false
+        )}
 
-                ${createResourceLink(
-                  resource.paperUrl,
-                  "Question Paper - Download",
-                  true
-                )}
+        ${createResourceLink(
+          resource.paperUrl,
+          "Question Paper - Download",
+          true
+        )}
 
-              </div>
+      </div>
 
-            </div>
+    </div>
 
-          `;
+  `;
 
-        }
+}
 
-        if (
-          resource.markingUrl
-        ) {
 
-          html += `
+if (resource.markingUrl) {
 
-            <div class="marking-box">
+  html += `
 
-              <strong>
-                ✅ Matching Marking Scheme
-              </strong>
+    <div class="marking-box">
 
-              <div class="resource-actions">
+      <strong
+        onclick="toggleResourceActions(this)"
+        style="cursor:pointer;"
+      >
+        ✅ Matching Marking Scheme
+        <span style="font-size:12px;">
+          (Tap to open)
+        </span>
+      </strong>
 
-                ${createResourceLink(
-                  resource.markingUrl,
-                  "Marking Scheme - Preview",
-                  false
-                )}
+      <div
+        class="resource-actions hidden"
+      >
 
-                ${createResourceLink(
-                  resource.markingUrl,
-                  "Marking Scheme - Download",
-                  true
-                )}
+        ${createResourceLink(
+          resource.markingUrl,
+          "Marking Scheme - Preview",
+          false
+        )}
 
-              </div>
+        ${createResourceLink(
+          resource.markingUrl,
+          "Marking Scheme - Download",
+          true
+        )}
 
-            </div>
+      </div>
 
-          `;
+    </div>
 
-        }
+  `;
+
+}
 
         div.innerHTML =
           html;
@@ -3021,6 +3034,18 @@
     );
 
   };
+  };
+
+window.toggleResourceActions = function (element) {
+
+  const actions =
+    element.nextElementSibling;
+
+  if (!actions) return;
+
+  actions.classList.toggle("hidden");
+
+};
 
 
   /* ==========================================================
