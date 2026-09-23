@@ -3866,63 +3866,59 @@
     /* =========================
        SELECT A RESOURCE FILE
        ========================= */
+window.selectResourceFile =
+  function (
+    button,
+    url,
+    title,
+    type
+  ) {
 
-    window.selectResourceFile =
-      function (
+    if (!url || !button) {
+      return;
+    }
+
+    selectedResourceFile = {
+
+      url:
         url,
+
+      title:
         title,
+
+      type:
         type
-      ) {
 
-        if (!url) {
-          return;
-        }
+    };
 
+    document
+      .querySelectorAll(
+        ".resource-actions"
+      )
+      .forEach(
+        element => {
 
-        selectedResourceFile = {
-
-          url:
-            url,
-
-          title:
-            title,
-
-          type:
-            type
-
-        };
-
-
-        /*
-         * Hide all currently visible
-         * file action areas first.
-         */
-
-        document
-          .querySelectorAll(
-            ".file-actions"
-          )
-          .forEach(
-            element => {
-
-              const action =
-                element.nextElementSibling;
-
-              if (
-                action &&
-                action.classList.contains(
-                  "resource-actions"
-                )
-              ) {
-
-                action.classList.add(
-                  "hidden"
-                );
-
-              }
-
-            }
+          element.classList.add(
+            "hidden"
           );
+
+        }
+      );
+
+    const fileActions =
+      button
+        .parentElement
+        .nextElementSibling;
+
+    if (fileActions) {
+
+      fileActions.classList.remove(
+        "hidden"
+      );
+
+    }
+
+  };
 
 
         /*
