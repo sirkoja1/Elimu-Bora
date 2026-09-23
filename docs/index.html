@@ -3708,117 +3708,115 @@
     ========================== */
 
     function renderMemberFile(
-      file,
-      index
-    ) {
+  file,
+  index
+) {
 
-      const fileTitle =
-        file.title ||
-        file.name ||
-        "Document";
-
-
-      const fileType =
-        file.type ||
-        "Document";
+  const fileTitle =
+    file.title ||
+    file.name ||
+    "Document";
 
 
-      return `
-        <div class="file-box">
-
-          <strong>
-            ${escapeHtml(
-              fileTitle
-            )}
-          </strong>
+  const fileType =
+    file.type ||
+    "Document";
 
 
-          <div class="resource-meta">
+  return `
+    <div class="file-box">
 
-            ${escapeHtml(
-              fileType
-            )}
-
-            ${
-              file.name
-                ? " • " +
-                  escapeHtml(
-                    file.name
-                  )
-                : ""
-            }
-
-          </div>
+      <strong>
+        ${escapeHtml(
+          fileTitle
+        )}
+      </strong>
 
 
-          ${
-            file.description
-              ? `
-                <div class="file-description">
-                  ${escapeHtml(
-                    file.description
-                  )}
-                </div>
-              `
-              : ""
-          }
+      <div class="resource-meta">
+
+        ${escapeHtml(
+          fileType
+        )}
+
+        ${
+          file.name
+            ? " • " +
+              escapeHtml(
+                file.name
+              )
+            : ""
+        }
+
+      </div>
 
 
-          <div class="file-actions">
-
-            <button
-              type="button"
-              class="small"
-              onclick='selectResourceFile(this, ${JSON.stringify(
-                file.url
-              )}, ${JSON.stringify(
-                fileTitle
-              )}, ${JSON.stringify(
-                fileType
-              )})'
-            >
-              Select File
-            </button>
-
-          </div>
+      ${
+        file.description
+          ? `
+            <div class="file-description">
+              ${escapeHtml(
+                file.description
+              )}
+            </div>
+          `
+          : ""
+      }
 
 
-          <div
-            class="resource-actions hidden"
-          >
+      <div class="file-actions">
 
-            <button
-              type="button"
-              class="small"
-              onclick='openPreview(${JSON.stringify(
-                file.url
-              )}, ${JSON.stringify(
-                fileTitle
-              )})'
-            >
-              Preview
-            </button>
+        <button
+          type="button"
+          class="small"
+          onclick='selectResourceFile(this, ${JSON.stringify(
+            file.url
+          )}, ${JSON.stringify(
+            fileTitle
+          )}, ${JSON.stringify(
+            fileType
+          )})'
+        >
+          Select File
+        </button>
+
+      </div>
 
 
-            <a
-              class="small"
-              href="${escapeHtml(
-                file.url
-              )}"
-              target="_blank"
-              rel="noopener"
-              download
-            >
-              Download
-            </a>
+      <div
+        class="resource-actions hidden"
+      >
 
-          </div>
+        <button
+          type="button"
+          class="small"
+          onclick='openPreview(${JSON.stringify(
+            file.url
+          )}, ${JSON.stringify(
+            fileTitle
+          )})'
+        >
+          Preview
+        </button>
 
-        </div>
-      `;
 
-    }
+        <a
+          class="small"
+          href="${escapeHtml(
+            file.url
+          )}"
+          target="_blank"
+          rel="noopener"
+        >
+          Download
+        </a>
 
+      </div>
+
+    </div>
+  `;
+
+}
 
 
     /* =========================
