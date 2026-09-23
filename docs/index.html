@@ -2685,18 +2685,15 @@
 
       return `
         <a
-  class="small"
-  href="${escapeHtml(
-    url.replace(
-      "/upload/",
-      "/upload/fl_attachment/"
-    )
-  )}"
-  target="_blank"
-  rel="noopener"
->
-  Download
-</a>
+          class="download"
+          href="${safeUrl}"
+          target="_blank"
+          rel="noopener"
+          download
+        >
+          ⬇️ ${safeLabel}
+        </a>
+      `;
 
     }
 
@@ -4573,9 +4570,7 @@
      INITIAL EXAM FIELD STATE
      ========================================================== */
 
-  if (typeof toggleExamFields === "function") {
   toggleExamFields();
-  }
 
 </script>
 
