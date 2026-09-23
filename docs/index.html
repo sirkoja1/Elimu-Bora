@@ -4383,87 +4383,213 @@
                     JSON.parse(
                       xhr.responseText
                     );
+async function uploadToCloudinary(
+  file,
+  resourceId,
+  type,
+  progressCallback
+) {
 
-                  resolve(
-                    result
-                  );
+  if (!file) {
+    throw new Error(
+      "No file selected."
+    );
+  }
 
-                } catch (error) {
+  const formData =
+    new FormData();
 
-                  reject(
-                    new Error(
-                      "Invalid Cloudinary response."
-                    )
-                  );
+  formData.append(
+    "file",
+    file
+  );
 
-                }
+  formData.append(
+    "upload_preset",
+    CLOUDINARY_UPLOAD_PRESET
+  );
+
+  formData.append(
+    "context",
+    "resource_id=" +
+      resourceId +
+      "|document_type=" +
+      type +
+      "|original_name=" +
+      file.name
+  );
+
+  const xhr =
+    new XMLHttpRequest();
+
+  return new Promise(
+    (resolve, reject) => {
+
+      xhr.open(
+        "POST",
+        CLOUDINARY_UPLOAD_URL
+      );
+
+      xhr.upload.addEventListener(
+        "progress",
+        function(event) {
+
+          if (
+            event.lengthComputable &&
+            progressCallback
+          ) {
+
+            progressCallback(
+              Math.round(
+                (event.loaded /
+                  event.total) *
+                  100
+              )
+            );
+
+          }
+
+        }
+      );
+
+      xhr.onload =
+        function() {
+
+          if (
+            xhr.status >= 200 &&
+            xhr.status < 300
+          ) {
+
+            try {
+
+              const data =
+                JSON.parse(
+                  xhr.responseText
+                );
+
+              if (
+                data.secure_url
+              ) {
+
+                resolve({
+
+                  url:
+                    data.secure_url,
+
+                  publicId:
+                    data.public_id ||
+                    "",
+
+                  resourceId:
+                    resourceId,
+
+                  type:
+                    type,
+
+                  name:
+                    file.name,
+
+                  title:
+                    file.name,
+
+                  format:
+                    data.format ||
+                    getFileExtension(
+                      file.name
+                    ),
+
+                  bytes:
+                    data.bytes ||
+                    file.size
+
+                });
 
               } else {
 
-                let message =
-                  "Cloudinary upload failed.";
-
-                try {
-
-                  const errorResult =
-                    JSON.parse(
-                      xhr.responseText
-                    );
-
-                  if (
-                    errorResult.error &&
-                    errorResult.error.message
-                  ) {
-
-                    message =
-                      errorResult.error.message;
-
-                  }
-
-                } catch (error) {
-                  // Keep default message.
-                }
-
                 reject(
                   new Error(
-                    message
+                    "Cloudinary did not return a file URL."
                   )
                 );
 
               }
 
-            };
-
-          xhr.onerror =
-            function() {
+            } catch (error) {
 
               reject(
                 new Error(
-                  "Network error during file upload."
+                  "Invalid Cloudinary response."
                 )
               );
 
-            };
+            }
 
-          xhr.onabort =
-            function() {
+          } else {
 
-              reject(
-                new Error(
-                  "File upload was cancelled."
-                )
-              );
+            let message =
+              "Cloudinary upload failed.";
 
-            };
+            try {
 
-          xhr.send(
-            formData
+              const errorResult =
+                JSON.parse(
+                  xhr.responseText
+                );
+
+              if (
+                errorResult.error &&
+                errorResult.error.message
+              ) {
+
+                message =
+                  errorResult.error.message;
+
+              }
+
+            } catch (error) {
+              // Keep default message.
+            }
+
+            reject(
+              new Error(
+                message
+              )
+            );
+
+          }
+
+        };
+
+      xhr.onerror =
+        function() {
+
+          reject(
+            new Error(
+              "Network error during file upload."
+            )
           );
 
-        }
+        };
+
+      xhr.onabort =
+        function() {
+
+          reject(
+            new Error(
+              "File upload was cancelled."
+            )
+          );
+
+        };
+
+      xhr.send(
+        formData
       );
 
-  }
+    }
+  );
+}
+
         /* =========================
        RESOURCE FORM HELPERS
        ========================= */
