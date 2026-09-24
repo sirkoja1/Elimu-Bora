@@ -712,7 +712,7 @@
 
       <div class="welcome-actions">
 
-        <button onclick="loadResources()">
+        <button onclick="goToResourceSearch()">
           📚 Search Resources
         </button>
 
@@ -2674,14 +2674,17 @@
     return url;
   }
 
+  const nameWithoutExtension =
+    filename.replace(/\.[^/.]+$/, "");
+
   const safeFilename =
-    encodeURIComponent(filename);
+    encodeURIComponent(nameWithoutExtension);
 
   return url.replace(
     "/upload/",
     `/upload/fl_attachment:${safeFilename}/`
   );
- }
+}
   function createResourceLink(
     url,
     label,
@@ -2967,7 +2970,25 @@
   /* ==========================================================
      SEARCH
      ========================================================== */
+window.goToResourceSearch = function () {
 
+  const search =
+    document.getElementById(
+      "resourceSearch"
+    );
+
+  if (!search) return;
+
+  search.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+
+  setTimeout(() => {
+    search.focus();
+  }, 400);
+
+};
   window.filterResources = function () {
 
   const input =
