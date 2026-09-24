@@ -2796,25 +2796,7 @@ function toggleResourceActions(fileElement) {
 
   
 
-    const encodedUrl =
-      encodeURIComponent(url);
-
-    const encodedLabel =
-      encodeURIComponent(label);
-
-    return `
-      <a
-        href="#"
-        onclick="openPreview(
-          decodeURIComponent('${encodedUrl}'),
-          decodeURIComponent('${encodedLabel}')
-        ); return false;"
-      >
-        👁️ ${safeLabel}
-      </a>
-    `;
-
-  }
+    
 
 
   /* ==========================================================
