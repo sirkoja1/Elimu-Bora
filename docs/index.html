@@ -2666,6 +2666,22 @@
      RESOURCE LINK
      ========================================================== */
 
+ function createCloudinaryDownloadUrl(url, publicId, filename) {
+
+  if (!url) return "";
+
+  if (!publicId || !filename) {
+    return url;
+  }
+
+  const safeFilename =
+    encodeURIComponent(filename);
+
+  return url.replace(
+    "/upload/",
+    `/upload/fl_attachment:${safeFilename}/`
+  );
+ }
   function createResourceLink(
     url,
     label,
@@ -2873,15 +2889,19 @@
                   "Question Paper - Preview",
                   false
                 )}
-
-              <a
+<a
   class="download"
-  href="${resource.paperUrl}"
+  href="${createCloudinaryDownloadUrl(
+    resource.paperUrl,
+    resource.paperPublicId,
+    resource.paperName
+  )}"
   target="_blank"
   rel="noopener"
 >
   ⬇️ Question Paper - Download
 </a>
+            
 
               </div>
 
@@ -2913,14 +2933,16 @@
 
               <a
   class="download"
-  href="${resource.markingUrl}"
+  href="${createCloudinaryDownloadUrl(
+    resource.markingUrl,
+    resource.markingPublicId,
+    resource.markingName
+  )}"
   target="_blank"
   rel="noopener"
 >
   ⬇️ Marking Scheme - Download
 </a>
-                
-
               </div>
 
             </div>
@@ -2948,86 +2970,80 @@
 
   window.filterResources = function () {
 
-    const input =
-      document.getElementById(
-        "resourceSearch"
-      );
-
-    const term =
-      input.value
-        .toLowerCase()
-        .trim();
-
-    const message =
-      document.getElementById(
-        "resourceSearchMessage"
-      );
-
-    const list =
-      document.getElementById(
-        "resourcesList"
-      );
-
-    /*
-     * Empty search means no resources displayed.
-     */
-
-    if (!term) {
-
-      list.innerHTML =
-        "";
-
-      list.classList
-        .add("hidden");
-
-      message.classList
-        .remove("hidden");
-
-      message.textContent =
-        "🔎 Type something in the search box to find resources.";
-
-      return;
-
-    }
-
-    /*
-     * Search across all useful resource fields.
-     */
-
-    const filtered =
-      allResources.filter(
-        resource => {
-
-          const text = `
-
-            ${resource.title || ""}
-
-            ${resource.description || ""}
-
-            ${resource.category || ""}
-
-            ${resource.subject || ""}
-
-            ${resource.className || ""}
-
-            ${resource.examYear || ""}
-
-            ${resource.examType || ""}
-
-          `.toLowerCase();
-
-          return text.includes(
-            term
-          );
-
-        }
-      );
-
-    renderResources(
-      filtered
+  const input =
+    document.getElementById(
+      "resourceSearch"
     );
 
-  };
+  const term =
+    input.value
+      .toLowerCase()
+      .trim();
+
+  const message =
+    document.getElementById(
+      "resourceSearchMessage"
+    );
+
+  const list =
+    document.getElementById(
+      "resourcesList"
+    );
+
+  if (!term) {
+
+    list.innerHTML =
+      "";
+
+    list.classList
+      .add("hidden");
+
+    message.classList
+      .remove("hidden");
+
+    message.textContent =
+      "🔎 Type something in the search box to find resources.";
+
+    return;
+  }
+
+  const words =
+    term
+      .split(/\s+/)
+      .filter(Boolean);
+
+  const filtered =
+    allResources.filter(
+      resource => {
+
+        const text = `
+          ${resource.title || ""}
+          ${resource.description || ""}
+          ${resource.category || ""}
+          ${resource.subject || ""}
+          ${resource.className || ""}
+          ${resource.examYear || ""}
+          ${resource.examType || ""}
+          ${resource.paperName || ""}
+          ${resource.markingName || ""}
+        `
+          .toLowerCase()
+          .replace(/\s+/g, " ")
+          .trim();
+
+        return words.every(
+          word =>
+            text.includes(word)
+        );
+
+      }
+    );
+
+  renderResources(
+    filtered
+  );
+
+};
 
 
   /* ==========================================================
