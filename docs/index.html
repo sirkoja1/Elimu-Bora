@@ -2718,85 +2718,55 @@
   );
 }
   function createResourceLink(
-  url,
-  label,
-  download
-) {
+    url,
+    label,
+    download
+  ) {
 
-  if (!url)
-    return "";
+    if (!url)
+      return "";
 
-  const safeUrl =
-    escapeHtml(url);
+    const safeUrl =
+      escapeHtml(url);
 
-  const safeLabel =
-    escapeHtml(label);
+    const safeLabel =
+      escapeHtml(label);
 
-  if (download) {
+    if (download) {
+
+      return `
+        <a
+          class="download"
+          href="${safeUrl}"
+          target="_blank"
+          rel="noopener"
+          download
+        >
+          ⬇️ ${safeLabel}
+        </a>
+      `;
+
+    }
+
+    const encodedUrl =
+      encodeURIComponent(url);
+
+    const encodedLabel =
+      encodeURIComponent(label);
 
     return `
       <a
-        class="download"
-        href="${safeUrl}"
-        target="_blank"
-        rel="noopener"
-        download
+        href="#"
+        onclick="openPreview(
+          decodeURIComponent('${encodedUrl}'),
+          decodeURIComponent('${encodedLabel}')
+        ); return false;"
       >
-        Download
+        👁️ ${safeLabel}
       </a>
     `;
 
   }
-
-  return `
-    <div
-      class="resource-file"
-      onclick="toggleResourceActions(this)"
-    >
-      📄 ${safeLabel}
-
-      <div
-        class="resource-actions"
-        style="display:none;"
-      >
-        <a
-          href="${safeUrl}"
-          target="_blank"
-          rel="noopener"
-        >
-          Preview
-        </a>
-
-        <a
-          class="download"
-          href="${safeUrl}"
-          download
-        >
-          Download
-        </a>
-      </div>
-    </div>
-  `;
-}
-function toggleResourceActions(fileElement) {
-
-  const actions =
-    fileElement.querySelector(
-      ".resource-actions"
-    );
-
-  if (!actions)
-    return;
-
-  actions.style.display =
-    actions.style.display === "none"
-      ? "flex"
-      : "none";
-}
-
-  
-
-    
 
 
   /* ==========================================================
