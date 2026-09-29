@@ -4246,51 +4246,133 @@ window.goToResourceSearch = function () {
      ========================================================== */
 
   async function deleteResource(
-    resource
+  resource
+) {
+
+  if (!isAdmin())
+    return;
+
+  if (
+    !confirm(
+      "Delete this resource from Elimu Bora?"
+    )
   ) {
 
-    if (!isAdmin())
-      return;
-
-    if (
-      !confirm(
-        "Delete this resource from Elimu Bora?"
-      )
-    ) {
-
-      return;
-
-    }
-
-    try {
-
-      await deleteDoc(
-        doc(
-          db,
-          "resources",
-          resource.id
-        )
-      );
-
-      alert(
-        "Resource removed from Elimu Bora."
-      );
-
-      await loadAdminResources();
-
-      await loadResources();
-
-    } catch (error) {
-
-      alert(
-        "Delete error: " +
-        error.message
-      );
-
-    }
+    return;
 
   }
 
+  try {
+
+    const files = [];
+
+    if (resource.paperPublicId) {
+
+      const paperResourceType =
+        resource.paperUrl &&
+        resource.paperUrl.includes("/video/upload/")
+          ? "video"
+          : resource.paperUrl &&
+            resource.paperUrl.includes("/raw/upload/")
+              ? "raw"
+              : "image";
+
+      files.push({
+        publicId:
+          resource.paperPublicId,
+        resourceType:
+          paperResourceType
+      });
+
+    }
+
+    if (resource.markingPublicId) {
+
+      const markingResourceType =
+        resource.markingUrl &&
+        resource.markingUrl.includes("/video/upload/")
+          ? "video"
+          : resource.markingUrl &&
+            resource.markingUrl.includes("/raw/upload/")
+              ? "raw"
+              : "image";
+
+      files.push({
+        publicId:
+          resource.markingPublicId,
+        resourceType:
+          markingResourceType
+      });
+
+    }
+
+    if (files.length) {
+
+      const token =
+        await currentUser.getIdToken();
+
+      const cloudinaryResponse =
+        await fetch(
+          "https://elimu-bora-cloudinary-delete.kojasalim2015.workers.dev/",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              "Authorization":
+                `Bearer ${token}`
+            },
+
+            body:
+              JSON.stringify({
+                files
+              })
+          }
+        );
+
+      if (!cloudinaryResponse.ok) {
+
+        const errorText =
+          await cloudinaryResponse.text();
+
+        throw new Error(
+          "Cloudinary deletion failed: " +
+          (errorText ||
+            cloudinaryResponse.statusText)
+        );
+
+      }
+
+    }
+
+    await deleteDoc(
+      doc(
+        db,
+        "resources",
+        resource.id
+      )
+    );
+
+    alert(
+      "Resource removed from Elimu Bora and Cloudinary."
+    );
+
+    await loadAdminResources();
+
+    await loadResources();
+
+  } catch (error) {
+
+    alert(
+      "Delete error: " +
+      error.message
+    );
+
+  }
+
+}
 
   /* ==========================================================
      ADMIN MEMBER MANAGEMENT
