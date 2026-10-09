@@ -361,10 +361,36 @@
     }
 
     .resource-actions {
-      display: flex;
+      display: none;
       gap: 8px;
       flex-wrap: wrap;
       margin-top: 13px;
+    }
+
+    .paper-box.is-expanded .resource-actions,
+    .marking-box.is-expanded .resource-actions {
+      display: flex;
+    }
+
+    .paper-box > strong,
+    .marking-box > strong {
+      display: block;
+      cursor: pointer;
+      padding: 4px 0;
+      line-height: 1.6;
+    }
+
+    .paper-box > strong::after,
+    .marking-box > strong::after {
+      content: "  ＋ Tap to open options";
+      color: #52657a;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .paper-box.is-expanded > strong::after,
+    .marking-box.is-expanded > strong::after {
+      content: "  − Hide options";
     }
 
     .resource-actions a,
@@ -3051,6 +3077,30 @@
 
         div.innerHTML =
           html;
+
+        div.querySelectorAll(
+          ".paper-box > strong, .marking-box > strong"
+        ).forEach(fileHeading => {
+
+          fileHeading.setAttribute("role", "button");
+          fileHeading.setAttribute("tabindex", "0");
+          fileHeading.setAttribute("aria-expanded", "false");
+
+          const toggleFileOptions = () => {
+            const fileBox = fileHeading.parentElement;
+            const isExpanded = fileBox.classList.toggle("is-expanded");
+            fileHeading.setAttribute("aria-expanded", String(isExpanded));
+          };
+
+          fileHeading.addEventListener("click", toggleFileOptions);
+          fileHeading.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              toggleFileOptions();
+            }
+          });
+
+        });
 
         container.appendChild(
           div
