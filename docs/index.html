@@ -3078,6 +3078,44 @@
         div.innerHTML =
           html;
 
+        if (isAdmin()) {
+
+          const paperBox = div.querySelector(".paper-box");
+          if (paperBox) {
+            const actions = paperBox.querySelector(".resource-actions");
+            if (actions) {
+              const deleteButton = document.createElement("button");
+              deleteButton.type = "button";
+              deleteButton.className = "danger";
+              deleteButton.textContent = "🗑️ Delete";
+              deleteButton.setAttribute("aria-label", "Delete question paper only");
+              deleteButton.onclick = event => {
+                event.stopPropagation();
+                deleteResourceFile(resource, "paper");
+              };
+              actions.appendChild(deleteButton);
+            }
+          }
+
+          const markingBox = div.querySelector(".marking-box");
+          if (markingBox) {
+            const actions = markingBox.querySelector(".resource-actions");
+            if (actions) {
+              const deleteButton = document.createElement("button");
+              deleteButton.type = "button";
+              deleteButton.className = "danger";
+              deleteButton.textContent = "🗑️ Delete";
+              deleteButton.setAttribute("aria-label", "Delete marking scheme only");
+              deleteButton.onclick = event => {
+                event.stopPropagation();
+                deleteResourceFile(resource, "marking");
+              };
+              actions.appendChild(deleteButton);
+            }
+          }
+
+        }
+
         div.querySelectorAll(
           ".paper-box > strong, .marking-box > strong"
         ).forEach(fileHeading => {
@@ -4437,6 +4475,63 @@ window.goToResourceSearch = function () {
         error.message
       );
 
+    }
+
+  }
+
+
+  async function deleteResourceFile(resource, fileType) {
+
+    if (!isAdmin()) return;
+
+    const isPaper = fileType === "paper";
+    const fileLabel = isPaper ? "question paper" : "marking scheme";
+    const fileUrl = isPaper ? resource.paperUrl : resource.markingUrl;
+    const publicId = isPaper ? resource.paperPublicId : resource.markingPublicId;
+
+    if (!fileUrl) {
+      alert("This file is no longer attached to the resource.");
+      return;
+    }
+
+    if (!confirm("Delete only this " + fileLabel + " from Elimu Bora and Cloudinary?")) return;
+
+    try {
+      if (publicId) {
+        if (!auth.currentUser) throw new Error("Please sign in again.");
+        const cloudToken = await auth.currentUser.getIdToken();
+        const cloudResponse = await fetch(
+          "https://elimu-bora-cloudinary-delete.kojasalim2015.workers.dev/",
+          {
+            method: "POST",
+            headers: {
+              "Authorization": "Bearer " + cloudToken,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              files: [{ publicId, resourceType: cloudinaryResourceType(fileUrl) }]
+            })
+          }
+        );
+        const cloudResult = await cloudResponse.json().catch(() => ({}));
+        if (!cloudResponse.ok || cloudResult.success !== true) {
+          throw new Error("Cloudinary deletion failed: " + (cloudResult.message || "file was not removed"));
+        }
+      } else if (resource.storageProvider === "cloudinary") {
+        throw new Error("Cloudinary file ID is missing. Nothing was deleted.");
+      }
+
+      const fieldsToClear = isPaper
+        ? { paperUrl: null, paperPublicId: null, paperName: null }
+        : { markingUrl: null, markingPublicId: null, markingName: null };
+
+      await updateDoc(doc(db, "resources", resource.id), fieldsToClear);
+      alert("The " + fileLabel + " was deleted. Any other file in this resource was kept.");
+      await loadAdminResources();
+      await loadResources();
+
+    } catch (error) {
+      alert("Delete error: " + error.message);
     }
 
   }
