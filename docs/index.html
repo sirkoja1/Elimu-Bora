@@ -2466,6 +2466,10 @@
               item.id,
             ...item.data()
           })
+        ).filter(
+          resource =>
+            resource.uploadStatus !== "uploading" &&
+            resource.uploadStatus !== "failed"
         );
 
       allResources.sort(
@@ -3573,6 +3577,7 @@ window.goToResourceSearch = function () {
         examType: isExam ? examType : "",
         createdAt: serverTimestamp(),
         createdBy: ADMIN_EMAIL,
+        uploadStatus: "uploading",
         storageProvider: "cloudinary"
       });
       progressContainer.classList.remove("hidden");
@@ -3634,6 +3639,7 @@ window.goToResourceSearch = function () {
         markingUrl: firstMarking ? firstMarking.url : "",
         markingName: firstMarking ? firstMarking.name : "",
         markingPublicId: firstMarking ? firstMarking.publicId : "",
+        uploadStatus: "complete",
         storageProvider: "cloudinary"
       });
 
@@ -3659,7 +3665,17 @@ window.goToResourceSearch = function () {
       await loadAdminResources();
       await loadResources();
     } catch (error) {
-      showMessage("uploadMessage", "Upload error: " + error.message + (resourceRef ? " The resource record may need admin review if an upload stopped part-way through." : ""));
+      // Keep incomplete uploads out of member search. Completed legacy resources remain visible.
+      if (resourceRef) {
+        try {
+          await updateDoc(resourceRef, { uploadStatus: "failed" });
+        } catch (statusError) {
+          console.error("Could not mark incomplete resource as failed:", statusError);
+        }
+      }
+      showMessage("uploadMessage", "Upload failed: " + error.message + ". No files from this batch will appear in member search. Please check the connection and upload again.");
+      await loadAdminResources();
+      await loadResources();
     }
   };
 
