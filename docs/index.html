@@ -831,13 +831,8 @@
         <h3>Subscription Plans</h3>
 
         <p>
-          Pay through
-          <strong>M-Pesa Buy Goods and Services</strong>.
+          Choose a subscription plan, enter your M-Pesa phone number, then approve the STK Push prompt on your phone.
         </p>
-
-        <div class="status">
-          <strong>💰 Till Number:1793901 </strong>
-        </div>
 
         <div class="plans-grid">
 
@@ -846,7 +841,7 @@
             <h3>7 Days</h3>
 
             <div class="plan-price">
-              KSh 50
+              KSh 55
             </div>
 
             <p>
@@ -854,7 +849,7 @@
             </p>
 
             <button
-              onclick="selectPlan(50, 7, '7 Days')"
+              onclick="selectPlan(55, 7, '7 Days')"
             >
               Select Plan
             </button>
@@ -914,28 +909,24 @@
   <ol style="line-height:1.8; padding-left:22px; text-align:left;">
     <li>
       <strong>Choose your subscription</strong><br>
-      7 Days — KSh 50<br>
+      7 Days — KSh 55<br>
       30 Days — KSh 200<br>
       365 Days — KSh 1,000
     </li>
 
     <li>
-      <strong>Go to M-Pesa</strong><br>
-      Open M-Pesa → select <strong>Lipa na M-Pesa</strong> →
-      <strong>Buy Goods and Services</strong> → enter the Till Number
-      1793901 → enter the amount → enter your M-Pesa PIN
-      and complete the payment.
+      <strong>Approve the STK Push</strong><br>
+      Check your phone for the M-Pesa payment prompt and enter your M-Pesa PIN to complete the payment.
     </li>
 
     <li>
-      <strong>Keep your M-Pesa confirmation message</strong><br>
-      Copy the M-Pesa transaction code from the confirmation SMS.
+      <strong>Wait for automatic confirmation</strong><br>
+      Elimu Bora will verify the payment and activate your subscription automatically. Please do not send another payment while the first request is pending.
     </li>
 
     <li>
-      <strong>Submit the transaction code on Elimu Bora</strong><br>
-      Enter your M-Pesa transaction code below and submit your payment request.
-      Your subscription will be activated after the payment is verified.
+      <strong>Check your membership status</strong><br>
+      Once PayHero confirms your payment, your subscription and expiry date will update automatically.
     </li>
   </ol>
 
@@ -960,24 +951,23 @@
             KSh <span id="selectedAmount"></span>
           </p>
 
-          <p>
-            <strong>Till Number:</strong>
-            9511521
-          </p>
+          
 
         </div>
 
         <input
-          id="transactionCode"
-          type="text"
-          placeholder="Enter M-Pesa Transaction Code"
+          id="paymentPhone"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          placeholder="M-Pesa phone number (e.g. 0712345678)"
         >
 
         <button
           class="success"
           onclick="submitPayment()"
         >
-          Submit Payment
+          Send M-Pesa STK Push
         </button>
 
         <div
@@ -1461,7 +1451,7 @@
 
     7: {
       name: "7 Days",
-      amount: 50,
+      amount: 55,
       days: 7
     },
 
@@ -2178,151 +2168,77 @@
   window.submitPayment = async function () {
 
     if (!currentUser) {
-
-      showMessage(
-        "paymentMessage",
-        "Please log in first."
-      );
-
+      showMessage("paymentMessage", "Please log in first.");
       return;
-
     }
 
     if (!selectedPayment) {
-
-      showMessage(
-        "paymentMessage",
-        "Please select a membership plan."
-      );
-
+      showMessage("paymentMessage", "Please select a membership plan.");
       return;
-
     }
 
-    const transactionCode =
-      document
-        .getElementById("transactionCode")
-        .value
-        .trim()
-        .toUpperCase();
+    const phone = document
+      .getElementById("paymentPhone")
+      .value
+      .trim();
 
-    if (!transactionCode) {
-
-      showMessage(
-        "paymentMessage",
-        "Please enter the M-Pesa transaction code."
-      );
-
+    if (!phone) {
+      showMessage("paymentMessage", "Enter the M-Pesa phone number to receive the STK Push.");
       return;
-
     }
 
-    if (
-      transactionCode.length < 6
-    ) {
+    const planKey =
+      selectedPayment.days === 7 ? "weekly" :
+      selectedPayment.days === 30 ? "monthly" : "yearly";
 
-      showMessage(
-        "paymentMessage",
-        "Please enter a valid transaction code."
-      );
-
-      return;
-
+    const button = document.querySelector('#paymentForm button[onclick="submitPayment()"]');
+    if (button) {
+      button.disabled = true;
+      button.textContent = "Sending STK Push...";
     }
+
+    showMessage("paymentMessage", "Sending the M-Pesa payment prompt. Please wait...");
 
     try {
+      const idToken = await currentUser.getIdToken();
 
-      const existingQuery =
-        query(
-          collection(
-            db,
-            "paymentRequests"
-          ),
-          where(
-            "uid",
-            "==",
-            currentUser.uid
-          ),
-          where(
-            "transactionCode",
-            "==",
-            transactionCode
-          )
-        );
-
-      const existing =
-        await getDocs(
-          existingQuery
-        );
-
-      if (!existing.empty) {
-
-        showMessage(
-          "paymentMessage",
-          "This transaction code has already been submitted."
-        );
-
-        return;
-
-      }
-
-      await addDoc(
-        collection(
-          db,
-          "paymentRequests"
-        ),
+      const response = await fetch(
+        "https://elimu-bora-payhero.kojasalim2015.workers.dev/stk",
         {
-          uid:
-            currentUser.uid,
-
-          name:
-            currentUser.displayName ||
-            "Member",
-
-          email:
-            currentUser.email,
-
-          amount:
-            selectedPayment.amount,
-
-          days:
-            selectedPayment.days,
-
-          plan:
-            selectedPayment.name,
-
-          transactionCode:
-            transactionCode,
-
-          status:
-            "pending",
-
-          createdAt:
-            serverTimestamp()
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + idToken
+          },
+          body: JSON.stringify({
+            plan: planKey,
+            phone_number: phone
+          })
         }
       );
 
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Could not start the M-Pesa payment. Please try again.");
+      }
+
       showMessage(
         "paymentMessage",
-        "Payment submitted successfully. Status: Pending approval."
+        "STK Push sent to your phone. Enter your M-Pesa PIN, then wait for PayHero to confirm your payment. Your subscription will activate automatically after verification."
       );
 
-      document
-        .getElementById("transactionCode")
-        .value = "";
-
+      document.getElementById("paymentPhone").value = "";
       await loadMyPayments();
 
     } catch (error) {
-
-      showMessage(
-        "paymentMessage",
-        "Payment submission error: " +
-        error.message
-      );
-
+      showMessage("paymentMessage", "Payment error: " + error.message);
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = "Send M-Pesa STK Push";
+      }
     }
-
   };
 
 
@@ -2415,9 +2331,9 @@
             )}
             <br>
 
-            Transaction Code:
+            Payment Reference:
             ${escapeHtml(
-              payment.transactionCode || ""
+              payment.providerReference || payment.id || ""
             )}
             <br>
 
@@ -2429,10 +2345,10 @@
 
             Status:
             <span class="${escapeHtml(
-              payment.status || ""
+              payment.status || payment.paymentStatus || "pending"
             )}">
               ${escapeHtml(
-                payment.status || ""
+                payment.status || payment.paymentStatus || "pending"
               )}
             </span>
           `;
@@ -3255,10 +3171,9 @@ window.goToResourceSearch = function () {
             )}
             <br>
 
-            Transaction Code:
+            Payment Reference:
             ${escapeHtml(
-              payment.transactionCode ||
-              ""
+              payment.transactionCode || payment.providerReference || payment.id || ""
             )}
             <br>
 
@@ -3271,16 +3186,15 @@ window.goToResourceSearch = function () {
             Status:
             <strong>
               ${escapeHtml(
-                payment.status ||
-                ""
+                payment.status || payment.paymentStatus || "pending"
               )}
             </strong>
             <br><br>
           `;
 
           if (
-            payment.status ===
-            "pending"
+            payment.status === "pending" &&
+            !payment.paymentStatus
           ) {
 
             const approve =
