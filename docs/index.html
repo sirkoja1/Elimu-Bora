@@ -715,8 +715,8 @@
 
     <input
       id="emailInput"
-      type="text"
-      placeholder="Email address or phone number"
+      type="email"
+      placeholder="Email address"
       autocomplete="username"
     >
 
@@ -745,8 +745,8 @@
 
       <input
         id="registerEmailInput"
-        type="text"
-        placeholder="Email address or phone number"
+        type="email"
+        placeholder="Email address"
         autocomplete="username"
       >
 
@@ -1498,7 +1498,6 @@
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
-    signInWithCustomToken,
     sendPasswordResetEmail,
     signOut,
     onAuthStateChanged,
@@ -1793,39 +1792,21 @@
      ========================================================== */
 
   window.registerUser = async function () {
-    const identifier = document.getElementById("registerEmailInput").value.trim();
+    const email = document.getElementById("registerEmailInput").value.trim().toLowerCase();
     const password = document.getElementById("registerPasswordInput").value;
-    if (!identifier || !password) {
-      showMessage("authMessage", "Enter an email address or phone number and a password.");
+    if (!email || !password) {
+      showMessage("authMessage", "Enter your email address and password.");
       return;
     }
     try {
-      if (identifier.includes("@")) {
-        const email = identifier.toLowerCase();
-        const credential = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, "members", credential.user.uid), {
-          uid: credential.user.uid, email,
-          subscriptionStatus: "inactive", subscriptionExpiry: null,
-          createdAt: serverTimestamp()
-        });
-      } else {
-        if (password.length < 10) {
-          showMessage("authMessage", "For phone-number accounts, use a password of at least 10 characters.");
-          return;
-        }
-        const result = await fetch("https://elimu-bora-phone-auth.kojasalim2015.workers.dev/register", {
-          method: "POST", headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({phone: identifier, password})
-        });
-        const data = await result.json();
-        if (!result.ok) throw new Error(data.error || "Phone registration failed.");
-        const credential = await signInWithCustomToken(auth, data.customToken);
-        await setDoc(doc(db, "members", credential.user.uid), {
-          uid: credential.user.uid, email: "",
-          phoneLogin: true, subscriptionStatus: "inactive",
-          subscriptionExpiry: null, createdAt: serverTimestamp()
-        });
-      }
+      const credential = await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, "members", credential.user.uid), {
+        uid: credential.user.uid,
+        email,
+        subscriptionStatus: "inactive",
+        subscriptionExpiry: null,
+        createdAt: serverTimestamp()
+      });
       showMessage("authMessage", "Account created successfully. You are now logged in.");
       document.getElementById("registerEmailInput").value = "";
       document.getElementById("registerPasswordInput").value = "";
@@ -1837,24 +1818,14 @@
 
 
   window.loginUser = async function () {
-    const identifier = document.getElementById("emailInput").value.trim();
+    const email = document.getElementById("emailInput").value.trim().toLowerCase();
     const password = document.getElementById("passwordInput").value;
-    if (!identifier || !password) {
-      showMessage("authMessage", "Enter your email address or phone number and password.");
+    if (!email || !password) {
+      showMessage("authMessage", "Enter your email address and password.");
       return;
     }
     try {
-      if (identifier.includes("@")) {
-        await signInWithEmailAndPassword(auth, identifier.toLowerCase(), password);
-      } else {
-        const result = await fetch("https://elimu-bora-phone-auth.kojasalim2015.workers.dev/login", {
-          method: "POST", headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({phone: identifier, password})
-        });
-        const data = await result.json();
-        if (!result.ok) throw new Error(data.error || "Phone login failed.");
-        await signInWithCustomToken(auth, data.customToken);
-      }
+      await signInWithEmailAndPassword(auth, email, password);
       showMessage("authMessage", "Login successful.");
     } catch (error) {
       showMessage("authMessage", "Login error: " + error.message);
@@ -1963,12 +1934,6 @@
         .getElementById("userSection")
         .classList
         .remove("hidden");
-
-      document
-        .getElementById("displayName")
-        .textContent =
-        user.displayName ||
-        "Member";
 
       document
         .getElementById("displayEmail")
