@@ -3801,14 +3801,19 @@ window.goToResourceSearch = function () {
       if (cloudFiles.length) {
         if (!auth.currentUser) throw new Error("Please sign in again.");
         const cloudToken = await auth.currentUser.getIdToken();
-        const cloudResponse = await fetch("https://elimu-bora-cloudinary-delete.kojasalim2015.workers.dev/", {
-          method: "POST",
-          headers: { "Authorization": "Bearer " + cloudToken, "Content-Type": "application/json" },
-          body: JSON.stringify({ files: cloudFiles })
-        });
-        const cloudResult = await cloudResponse.json().catch(() => ({}));
-        if (!cloudResponse.ok || cloudResult.success !== true) {
-          throw new Error("Cloudinary deletion failed: " + (cloudResult.message || "resource kept in Elimu Bora"));
+        // The Cloudinary Worker accepts at most 20 files per request.
+        // Delete in batches so large resources can also be removed safely.
+        for (let start = 0; start < cloudFiles.length; start += 20) {
+          const batch = cloudFiles.slice(start, start + 20);
+          const cloudResponse = await fetch("https://elimu-bora-cloudinary-delete.kojasalim2015.workers.dev/", {
+            method: "POST",
+            headers: { "Authorization": "Bearer " + cloudToken, "Content-Type": "application/json" },
+            body: JSON.stringify({ files: batch })
+          });
+          const cloudResult = await cloudResponse.json().catch(() => ({}));
+          if (!cloudResponse.ok || cloudResult.success !== true) {
+            throw new Error("Cloudinary deletion failed: " + (cloudResult.message || "resource kept in Elimu Bora. Retry deletion if some files were already removed."));
+          }
         }
       }
       await deleteDoc(doc(db, "resources", resource.id));
