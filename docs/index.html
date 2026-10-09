@@ -1332,6 +1332,7 @@
         <input
           id="paperFile"
           type="file"
+          multiple
         >
 
         <label>
@@ -1343,6 +1344,7 @@
         <input
           id="markingFile"
           type="file"
+          multiple
         >
 
         <p class="small">
@@ -2711,291 +2713,112 @@
      RENDER RESOURCES
      ========================================================== */
 
-  function renderResources(
-    resources
-  ) {
-
-    const container =
-      document.getElementById(
-        "resourcesList"
-      );
-
-    const message =
-      document.getElementById(
-        "resourceSearchMessage"
-      );
-
-    container.innerHTML =
-      "";
-
-    if (!resources.length) {
-
-      container.classList
-        .remove("hidden");
-
-      message.classList
-        .add("hidden");
-
-      container.innerHTML = `
-        <div class="status">
-          No resources found for your search.
-        </div>
-      `;
-
-      return;
-
+  function getResourceFiles(resource, type) {
+    const isPaper = type === "paper";
+    const arrayField = isPaper ? resource.paperFiles : resource.markingFiles;
+    if (Array.isArray(arrayField) && arrayField.length) {
+      return arrayField.map((file, index) => ({
+        url: file.url || file.secure_url || "",
+        name: file.name || file.originalFilename || (isPaper ? "Question Paper / Main Document" : "Marking Scheme"),
+        publicId: file.publicId || file.public_id || "",
+        index
+      })).filter(file => file.url);
     }
+    const url = isPaper ? resource.paperUrl : resource.markingUrl;
+    if (!url) return [];
+    return [{
+      url,
+      name: (isPaper ? resource.paperName : resource.markingName) || (isPaper ? "Question Paper / Main Document" : "Marking Scheme"),
+      publicId: (isPaper ? resource.paperPublicId : resource.markingPublicId) || "",
+      index: 0
+    }];
+  }
 
-    message.classList
-      .add("hidden");
+  function renderResources(resources) {
+    const container = document.getElementById("resourcesList");
+    const message = document.getElementById("resourceSearchMessage");
+    container.innerHTML = "";
+    if (!resources.length) {
+      container.classList.remove("hidden");
+      message.classList.add("hidden");
+      container.innerHTML = '<div class="status">No resources found for your search.</div>';
+      return;
+    }
+    message.classList.add("hidden");
+    container.classList.remove("hidden");
 
-    container.classList
-      .remove("hidden");
+    resources.forEach(resource => {
+      const div = document.createElement("div");
+      div.className = "resource";
+      const isExam = String(resource.category || "").toLowerCase().includes("examination");
+      let html = `
+        <h3 class="resource-title">${isExam ? "📝 " : "📚 "}${escapeHtml(resource.title || "Untitled")}</h3>
+        <p class="resource-description">${escapeHtml(resource.description || "")}</p>
+        <div class="resource-meta">
+          <span class="badge ${isExam ? "exam" : ""}">${escapeHtml(resource.category || "Learning Resources")}</span>
+          ${resource.subject ? `<span class="badge">📖 ${escapeHtml(resource.subject)}</span>` : ""}
+          ${resource.className ? `<span class="badge">🎓 ${escapeHtml(resource.className)}</span>` : ""}
+          ${resource.examYear ? `<span class="badge">📅 ${escapeHtml(resource.examYear)}</span>` : ""}
+          ${resource.examType ? `<span class="badge exam">${escapeHtml(resource.examType)}</span>` : ""}
+        </div>`;
 
-    resources.forEach(
-      resource => {
-
-        const div =
-          document.createElement(
-            "div"
-          );
-
-        div.className =
-          "resource";
-
-        const isExam =
-          String(
-            resource.category || ""
-          )
-            .toLowerCase()
-            .includes(
-              "examination"
-            );
-
-        let html = `
-
-          <h3 class="resource-title">
-            ${isExam ? "📝 " : "📚 "}
-            ${escapeHtml(
-              resource.title ||
-              "Untitled"
-            )}
-          </h3>
-
-          <p class="resource-description">
-            ${escapeHtml(
-              resource.description ||
-              ""
-            )}
-          </p>
-
-          <div class="resource-meta">
-
-            <span class="badge ${
-              isExam ? "exam" : ""
-            }">
-              ${escapeHtml(
-                resource.category ||
-                "Learning Resources"
-              )}
-            </span>
-
-            ${
-              resource.subject
-                ? `<span class="badge">
-                    📖 ${escapeHtml(
-                      resource.subject
-                    )}
-                  </span>`
-                : ""
-            }
-
-            ${
-              resource.className
-                ? `<span class="badge">
-                    🎓 ${escapeHtml(
-                      resource.className
-                    )}
-                  </span>`
-                : ""
-            }
-
-            ${
-              resource.examYear
-                ? `<span class="badge">
-                    📅 ${escapeHtml(
-                      resource.examYear
-                    )}
-                  </span>`
-                : ""
-            }
-
-            ${
-              resource.examType
-                ? `<span class="badge exam">
-                    ${escapeHtml(
-                      resource.examType
-                    )}
-                  </span>`
-                : ""
-            }
-
-          </div>
-        `;
-
-        if (
-          resource.paperUrl
-        ) {
-
+      const addFileBoxes = (type, files) => {
+        files.forEach(file => {
+          const boxClass = type === "paper" ? "paper-box" : "marking-box";
+          const icon = type === "paper" ? "📄 " : "✅ ";
+          const fallback = type === "paper" ? "Question Paper / Main Document" : "Marking Scheme";
+          const downloadUrl = createCloudinaryDownloadUrl(file.url, file.publicId, file.name);
           html += `
-
-            <div class="paper-box">
-
-              <strong>
-                📄 ${escapeHtml(resource.paperName || "Question Paper / Main Document")}
-              </strong>
-
+            <div class="${boxClass}" data-file-type="${type}" data-file-index="${file.index}">
+              <strong>${icon}${escapeHtml(file.name || fallback)}</strong>
               <div class="resource-actions">
-
-                ${createResourceLink(
-                  resource.paperUrl,
-                  "Preview",
-                  false
-                )}
-<a
-  class="download"
-  href="${createCloudinaryDownloadUrl(
-    resource.paperUrl,
-    resource.paperPublicId,
-    resource.paperName
-  )}"
-  target="_blank"
-  rel="noopener"
->
-  ⬇️ Download
-</a>
-            
-
+                ${createResourceLink(file.url, "Preview", false)}
+                <a class="download" href="${escapeHtml(downloadUrl)}" target="_blank" rel="noopener">⬇️ Download</a>
               </div>
-
-            </div>
-
-          `;
-
-        }
-
-        if (
-          resource.markingUrl
-        ) {
-
-          html += `
-
-            <div class="marking-box">
-
-              <strong>
-                ✅ ${escapeHtml(resource.markingName || "Matching Marking Scheme")}
-              </strong>
-
-              <div class="resource-actions">
-
-                ${createResourceLink(
-                  resource.markingUrl,
-                  "Preview",
-                  false
-                )}
-
-              <a
-  class="download"
-  href="${createCloudinaryDownloadUrl(
-    resource.markingUrl,
-    resource.markingPublicId,
-    resource.markingName
-  )}"
-  target="_blank"
-  rel="noopener"
->
-  ⬇️ Download
-</a>
-              </div>
-
-            </div>
-
-          `;
-
-        }
-
-        div.innerHTML =
-          html;
-
-        if (isAdmin()) {
-
-          const paperBox = div.querySelector(".paper-box");
-          if (paperBox) {
-            const actions = paperBox.querySelector(".resource-actions");
-            if (actions) {
-              const deleteButton = document.createElement("button");
-              deleteButton.type = "button";
-              deleteButton.className = "danger";
-              deleteButton.textContent = "🗑️ Delete";
-              deleteButton.setAttribute("aria-label", "Delete question paper only");
-              deleteButton.onclick = event => {
-                event.stopPropagation();
-                deleteResourceFile(resource, "paper");
-              };
-              actions.appendChild(deleteButton);
-            }
-          }
-
-          const markingBox = div.querySelector(".marking-box");
-          if (markingBox) {
-            const actions = markingBox.querySelector(".resource-actions");
-            if (actions) {
-              const deleteButton = document.createElement("button");
-              deleteButton.type = "button";
-              deleteButton.className = "danger";
-              deleteButton.textContent = "🗑️ Delete";
-              deleteButton.setAttribute("aria-label", "Delete marking scheme only");
-              deleteButton.onclick = event => {
-                event.stopPropagation();
-                deleteResourceFile(resource, "marking");
-              };
-              actions.appendChild(deleteButton);
-            }
-          }
-
-        }
-
-        div.querySelectorAll(
-          ".paper-box > strong, .marking-box > strong"
-        ).forEach(fileHeading => {
-
-          fileHeading.setAttribute("role", "button");
-          fileHeading.setAttribute("tabindex", "0");
-          fileHeading.setAttribute("aria-expanded", "false");
-
-          const toggleFileOptions = () => {
-            const fileBox = fileHeading.parentElement;
-            const isExpanded = fileBox.classList.toggle("is-expanded");
-            fileHeading.setAttribute("aria-expanded", String(isExpanded));
-          };
-
-          fileHeading.addEventListener("click", toggleFileOptions);
-          fileHeading.addEventListener("keydown", event => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              toggleFileOptions();
-            }
-          });
-
+            </div>`;
         });
+      };
+      addFileBoxes("paper", getResourceFiles(resource, "paper"));
+      addFileBoxes("marking", getResourceFiles(resource, "marking"));
 
-        container.appendChild(
-          div
-        );
-
+      div.innerHTML = html;
+      if (isAdmin()) {
+        div.querySelectorAll(".paper-box, .marking-box").forEach(box => {
+          const actions = box.querySelector(".resource-actions");
+          if (!actions) return;
+          const type = box.getAttribute("data-file-type");
+          const index = Number(box.getAttribute("data-file-index"));
+          const deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "danger";
+          deleteButton.textContent = "🗑️ Delete";
+          deleteButton.setAttribute("aria-label", "Delete this file only");
+          deleteButton.onclick = event => {
+            event.stopPropagation();
+            deleteResourceFile(resource, type, index);
+          };
+          actions.appendChild(deleteButton);
+        });
       }
-    );
-
+      div.querySelectorAll(".paper-box > strong, .marking-box > strong").forEach(fileHeading => {
+        fileHeading.setAttribute("role", "button");
+        fileHeading.setAttribute("tabindex", "0");
+        fileHeading.setAttribute("aria-expanded", "false");
+        const toggleFileOptions = () => {
+          const box = fileHeading.parentElement;
+          const expanded = box.classList.toggle("is-expanded");
+          fileHeading.setAttribute("aria-expanded", String(expanded));
+        };
+        fileHeading.addEventListener("click", toggleFileOptions);
+        fileHeading.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            toggleFileOptions();
+          }
+        });
+      });
+      container.appendChild(div);
+    });
   }
 
 
@@ -3653,426 +3476,118 @@ window.goToResourceSearch = function () {
      ADMIN RESOURCE UPLOAD
      ========================================================== */
 
-  window.uploadResource =
-    async function () {
+  window.uploadResource = async function () {
+    if (!isAdmin()) {
+      alert("Administrator access required.");
+      return;
+    }
 
-      if (!isAdmin()) {
+    const value = id => document.getElementById(id).value.trim();
+    const title = value("resourceTitle");
+    const description = value("resourceDescription");
+    const category = value("resourceCategory");
+    const subject = value("resourceSubject");
+    const className = value("resourceClass");
+    const examYear = value("examYear");
+    const examType = value("examType");
+    const papers = Array.from(document.getElementById("paperFile").files || []);
+    const markings = Array.from(document.getElementById("markingFile").files || []);
+    const isExam = category === "Examinations";
 
-        alert(
-          "Administrator access required."
-        );
+    if (!title || papers.length === 0) {
+      showMessage("uploadMessage", "Title and at least one Question Paper / Main Document are required.");
+      return;
+    }
+    if (isExam && markings.length === 0) {
+      showMessage("uploadMessage", "For an Examination, upload at least one Question Paper and one Marking Scheme.");
+      return;
+    }
+    if (isExam && !examYear) {
+      showMessage("uploadMessage", "Please enter the examination year.");
+      return;
+    }
 
-        return;
+    const maxSize = 25 * 1024 * 1024;
+    const allFiles = [...papers.map(file => ({ file, label: "Question Paper" })), ...markings.map(file => ({ file, label: "Marking Scheme" }))];
+    const oversized = allFiles.find(item => item.file.size > maxSize);
+    if (oversized) {
+      showMessage("uploadMessage", oversized.label + ' "' + oversized.file.name + '" is larger than 25 MB.');
+      return;
+    }
 
+    let resourceRef = null;
+    const progressContainer = document.getElementById("uploadProgressContainer");
+    const progressBar = document.getElementById("uploadProgressBar");
+    try {
+      showMessage("uploadMessage", "Creating resource...");
+      resourceRef = await addDoc(collection(db, "resources"), {
+        title, description, category, subject, className,
+        resourceType: isExam ? "examination" : "learning_resource",
+        examYear: isExam ? examYear : "",
+        examType: isExam ? examType : "",
+        createdAt: serverTimestamp(),
+        createdBy: ADMIN_EMAIL,
+        storageProvider: "cloudinary"
+      });
+      progressContainer.classList.remove("hidden");
+
+      const paperFiles = [];
+      const markingFiles = [];
+      const total = allFiles.length;
+      let completed = 0;
+
+      for (const file of papers) {
+        showMessage("uploadMessage", "Uploading question paper " + (paperFiles.length + 1) + " of " + papers.length + "...");
+        const result = await uploadToCloudinary(file, resourceRef.id, "question_paper", progress => {
+          progressBar.style.width = Math.round(((completed + progress) / total) * 100) + "%";
+        });
+        paperFiles.push({ url: result.secure_url, name: file.name, publicId: result.public_id || "" });
+        completed++;
+        progressBar.style.width = Math.round((completed / total) * 100) + "%";
       }
 
-      const title =
-        document
-          .getElementById(
-            "resourceTitle"
-          )
-          .value
-          .trim();
-
-      const description =
-        document
-          .getElementById(
-            "resourceDescription"
-          )
-          .value
-          .trim();
-
-      const category =
-        document
-          .getElementById(
-            "resourceCategory"
-          )
-          .value
-          .trim();
-
-      const subject =
-        document
-          .getElementById(
-            "resourceSubject"
-          )
-          .value
-          .trim();
-
-      const className =
-        document
-          .getElementById(
-            "resourceClass"
-          )
-          .value
-          .trim();
-
-      const examYear =
-        document
-          .getElementById(
-            "examYear"
-          )
-          .value
-          .trim();
-
-      const examType =
-        document
-          .getElementById(
-            "examType"
-          )
-          .value
-          .trim();
-
-      const paper =
-        document
-          .getElementById(
-            "paperFile"
-          )
-          .files[0];
-
-      const marking =
-        document
-          .getElementById(
-            "markingFile"
-          )
-          .files[0];
-
-      if (
-        !title ||
-        !paper
-      ) {
-
-        showMessage(
-          "uploadMessage",
-          "Title and Question Paper are required."
-        );
-
-        return;
-
+      for (const file of markings) {
+        showMessage("uploadMessage", "Uploading marking scheme " + (markingFiles.length + 1) + " of " + markings.length + "...");
+        const result = await uploadToCloudinary(file, resourceRef.id, "marking_scheme", progress => {
+          progressBar.style.width = Math.round(((completed + progress) / total) * 100) + "%";
+        });
+        markingFiles.push({ url: result.secure_url, name: file.name, publicId: result.public_id || "" });
+        completed++;
+        progressBar.style.width = Math.round((completed / total) * 100) + "%";
       }
 
-      if (
-        category ===
-          "Examinations" &&
-        !marking
-      ) {
-
-        showMessage(
-          "uploadMessage",
-          "For an Examination, please upload both the Question Paper and Marking Scheme."
-        );
-
-        return;
-
-      }
-
-      if (
-        category ===
-          "Examinations" &&
-        !examYear
-      ) {
-
-        showMessage(
-          "uploadMessage",
-          "Please enter the examination year."
-        );
-
-        return;
-
-      }
-
-      const MAX_SIZE =
-        25 *
-        1024 *
-        1024;
-
-      if (
-        paper.size >
-        MAX_SIZE
-      ) {
-
-        showMessage(
-          "uploadMessage",
-          "Question Paper is larger than 25 MB."
-        );
-
-        return;
-
-      }
-
-      if (
-        marking &&
-        marking.size >
-        MAX_SIZE
-      ) {
-
-        showMessage(
-          "uploadMessage",
-          "Marking Scheme is larger than 25 MB."
-        );
-
-        return;
-
-      }
-
-      try {
-
-        showMessage(
-          "uploadMessage",
-          "Creating resource..."
-        );
-
-        const resourceRef =
-          await addDoc(
-            collection(
-              db,
-              "resources"
-            ),
-            {
-              title,
-              description,
-              category,
-              subject,
-              className,
-
-              resourceType:
-                category ===
-                "Examinations"
-                  ? "examination"
-                  : "learning_resource",
-
-              examYear:
-                category ===
-                "Examinations"
-                  ? examYear
-                  : "",
-
-              examType:
-                category ===
-                "Examinations"
-                  ? examType
-                  : "",
-
-              createdAt:
-                serverTimestamp(),
-
-              createdBy:
-                ADMIN_EMAIL,
-
-              storageProvider:
-                "cloudinary"
-
-            }
-          );
-
-        const resourceId =
-          resourceRef.id;
-
-        const progressContainer =
-          document.getElementById(
-            "uploadProgressContainer"
-          );
-
-        const progressBar =
-          document.getElementById(
-            "uploadProgressBar"
-          );
-
-        progressContainer.classList
-          .remove("hidden");
-
-        showMessage(
-          "uploadMessage",
-          "Uploading question paper..."
-        );
-
-        const paperResult =
-          await uploadToCloudinary(
-            paper,
-            resourceId,
-            "question_paper",
-            progress => {
-
-              progressBar.style.width =
-                Math.round(
-                  progress * 50
-                ) +
-                "%";
-
-            }
-          );
-
-        const paperUrl =
-          paperResult.secure_url;
-
-        const paperPublicId =
-          paperResult.public_id ||
-          "";
-
-        let markingUrl =
-          "";
-
-        let markingPublicId =
-          "";
-
-        if (marking) {
-
-          showMessage(
-            "uploadMessage",
-            "Uploading marking scheme..."
-          );
-
-          const markingResult =
-            await uploadToCloudinary(
-              marking,
-              resourceId,
-              "marking_scheme",
-              progress => {
-
-                progressBar.style.width =
-                  (
-                    50 +
-                    Math.round(
-                      progress * 50
-                    )
-                  ) +
-                  "%";
-
-              }
-            );
-
-          markingUrl =
-            markingResult.secure_url;
-
-          markingPublicId =
-            markingResult.public_id ||
-            "";
-
-        }
-
-        await updateDoc(
-          resourceRef,
-          {
-            paperUrl,
-
-            markingUrl,
-
-            paperName:
-              paper.name,
-
-            markingName:
-              marking
-                ? marking.name
-                : "",
-
-            paperPublicId,
-
-            markingPublicId,
-
-            storageProvider:
-              "cloudinary"
-
-          }
-        );
-
-        progressBar.style.width =
-          "100%";
-
-        showMessage(
-          "uploadMessage",
-          "Resource uploaded successfully."
-        );
-
-        document
-          .getElementById(
-            "resourceTitle"
-          )
-          .value = "";
-
-        document
-          .getElementById(
-            "resourceDescription"
-          )
-          .value = "";
-
-        document
-          .getElementById(
-            "resourceCategory"
-          )
-          .value =
-          "Learning Resources";
-
-        document
-          .getElementById(
-            "resourceSubject"
-          )
-          .value = "";
-
-        document
-          .getElementById(
-            "resourceClass"
-          )
-          .value = "";
-
-        document
-          .getElementById(
-            "examYear"
-          )
-          .value = "";
-
-        document
-          .getElementById(
-            "examType"
-          )
-          .value = "";
-
-        document
-          .getElementById(
-            "paperFile"
-          )
-          .value = "";
-
-        document
-          .getElementById(
-            "markingFile"
-          )
-          .value = "";
-
-        document
-          .getElementById(
-            "examFields"
-          )
-          .classList
-          .add("hidden");
-
-        setTimeout(
-          () => {
-
-            progressContainer
-              .classList
-              .add("hidden");
-
-            progressBar.style.width =
-              "0%";
-
-          },
-          1500
-        );
-
-        await loadAdminResources();
-
-        await loadResources();
-
-      } catch (error) {
-
-        showMessage(
-          "uploadMessage",
-          "Upload error: " +
-          error.message
-        );
-
-      }
-
-    };
+      const firstPaper = paperFiles[0];
+      const firstMarking = markingFiles[0] || null;
+      await updateDoc(resourceRef, {
+        paperFiles,
+        markingFiles,
+        // Keep legacy first-file fields so older records and existing features remain compatible.
+        paperUrl: firstPaper.url,
+        paperName: firstPaper.name,
+        paperPublicId: firstPaper.publicId,
+        markingUrl: firstMarking ? firstMarking.url : "",
+        markingName: firstMarking ? firstMarking.name : "",
+        markingPublicId: firstMarking ? firstMarking.publicId : "",
+        storageProvider: "cloudinary"
+      });
+
+      progressBar.style.width = "100%";
+      showMessage("uploadMessage", "Resource uploaded successfully. " + total + " file(s) added to one resource block.");
+      ["resourceTitle", "resourceDescription", "resourceSubject", "resourceClass", "examYear", "examType", "paperFile", "markingFile"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+      document.getElementById("resourceCategory").value = "Learning Resources";
+      document.getElementById("examFields").classList.add("hidden");
+      setTimeout(() => {
+        progressContainer.classList.add("hidden");
+        progressBar.style.width = "0%";
+      }, 1500);
+      await loadAdminResources();
+      await loadResources();
+    } catch (error) {
+      showMessage("uploadMessage", "Upload error: " + error.message + (resourceRef ? " The resource record may need admin review if an upload stopped part-way through." : ""));
+    }
+  };
 
 
   /* ==========================================================
@@ -4248,120 +3763,62 @@ window.goToResourceSearch = function () {
     return match ? match[1] : "raw";
   }
 
-  async function deleteResource(
-    resource
-  ) {
-
-    if (!isAdmin())
-      return;
-
-    if (
-      !confirm(
-        "Delete this resource from Elimu Bora and Cloudinary?"
-      )
-    ) {
-
-      return;
-
-    }
-
+  async function deleteResource(resource) {
+    if (!isAdmin()) return;
+    if (!confirm("Delete this resource from Elimu Bora and Cloudinary?")) return;
     try {
-
-      const cloudFiles = [];
-      if (resource.paperPublicId) cloudFiles.push({
-        publicId: resource.paperPublicId,
-        resourceType: cloudinaryResourceType(resource.paperUrl)
-      });
-      if (resource.markingPublicId) cloudFiles.push({
-        publicId: resource.markingPublicId,
-        resourceType: cloudinaryResourceType(resource.markingUrl)
-      });
-
-      if (resource.storageProvider === "cloudinary" && !cloudFiles.length) {
-        throw new Error("Cloudinary file IDs are missing. Nothing was deleted.");
+      const paperFiles = getResourceFiles(resource, "paper");
+      const markingFiles = getResourceFiles(resource, "marking");
+      const cloudFiles = [...paperFiles, ...markingFiles].filter(file => file.publicId).map(file => ({
+        publicId: file.publicId,
+        resourceType: cloudinaryResourceType(file.url)
+      }));
+      if (resource.storageProvider === "cloudinary" && [...paperFiles, ...markingFiles].some(file => !file.publicId)) {
+        throw new Error("One or more Cloudinary file IDs are missing. Nothing was deleted.");
       }
-
       if (cloudFiles.length) {
         if (!auth.currentUser) throw new Error("Please sign in again.");
         const cloudToken = await auth.currentUser.getIdToken();
-        const cloudResponse = await fetch(
-          "https://elimu-bora-cloudinary-delete.kojasalim2015.workers.dev/",
-          {
-            method: "POST",
-            headers: {
-              "Authorization": "Bearer " + cloudToken,
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ files: cloudFiles })
-          }
-        );
+        const cloudResponse = await fetch("https://elimu-bora-cloudinary-delete.kojasalim2015.workers.dev/", {
+          method: "POST",
+          headers: { "Authorization": "Bearer " + cloudToken, "Content-Type": "application/json" },
+          body: JSON.stringify({ files: cloudFiles })
+        });
         const cloudResult = await cloudResponse.json().catch(() => ({}));
         if (!cloudResponse.ok || cloudResult.success !== true) {
           throw new Error("Cloudinary deletion failed: " + (cloudResult.message || "resource kept in Elimu Bora"));
         }
       }
-
-      await deleteDoc(
-        doc(
-          db,
-          "resources",
-          resource.id
-        )
-      );
-
-      alert(
-        "Resource removed from Elimu Bora and Cloudinary."
-      );
-
+      await deleteDoc(doc(db, "resources", resource.id));
+      alert("Resource removed from Elimu Bora and Cloudinary.");
       await loadAdminResources();
-
       await loadResources();
-
     } catch (error) {
-
-      alert(
-        "Delete error: " +
-        error.message
-      );
-
+      alert("Delete error: " + error.message);
     }
-
   }
 
 
-  async function deleteResourceFile(resource, fileType) {
-
+  async function deleteResourceFile(resource, fileType, fileIndex = 0) {
     if (!isAdmin()) return;
-
     const isPaper = fileType === "paper";
     const fileLabel = isPaper ? "question paper" : "marking scheme";
-    const fileUrl = isPaper ? resource.paperUrl : resource.markingUrl;
-    const publicId = isPaper ? resource.paperPublicId : resource.markingPublicId;
-
-    if (!fileUrl) {
+    const files = getResourceFiles(resource, fileType);
+    const selected = files.find(file => file.index === fileIndex) || files[fileIndex];
+    if (!selected || !selected.url) {
       alert("This file is no longer attached to the resource.");
       return;
     }
-
-    if (!confirm("Delete only this " + fileLabel + " from Elimu Bora and Cloudinary?")) return;
-
+    if (!confirm("Delete only this file (" + selected.name + ") from Elimu Bora and Cloudinary?")) return;
     try {
-      if (publicId) {
+      if (selected.publicId) {
         if (!auth.currentUser) throw new Error("Please sign in again.");
         const cloudToken = await auth.currentUser.getIdToken();
-        const cloudResponse = await fetch(
-          "https://elimu-bora-cloudinary-delete.kojasalim2015.workers.dev/",
-          {
-            method: "POST",
-            headers: {
-              "Authorization": "Bearer " + cloudToken,
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              files: [{ publicId, resourceType: cloudinaryResourceType(fileUrl) }]
-            })
-          }
-        );
+        const cloudResponse = await fetch("https://elimu-bora-cloudinary-delete.kojasalim2015.workers.dev/", {
+          method: "POST",
+          headers: { "Authorization": "Bearer " + cloudToken, "Content-Type": "application/json" },
+          body: JSON.stringify({ files: [{ publicId: selected.publicId, resourceType: cloudinaryResourceType(selected.url) }] })
+        });
         const cloudResult = await cloudResponse.json().catch(() => ({}));
         if (!cloudResponse.ok || cloudResult.success !== true) {
           throw new Error("Cloudinary deletion failed: " + (cloudResult.message || "file was not removed"));
@@ -4370,19 +3827,33 @@ window.goToResourceSearch = function () {
         throw new Error("Cloudinary file ID is missing. Nothing was deleted.");
       }
 
-      const fieldsToClear = isPaper
-        ? { paperUrl: null, paperPublicId: null, paperName: null }
-        : { markingUrl: null, markingPublicId: null, markingName: null };
-
-      await updateDoc(doc(db, "resources", resource.id), fieldsToClear);
-      alert("The " + fileLabel + " was deleted. Any other file in this resource was kept.");
+      const arrayField = isPaper ? "paperFiles" : "markingFiles";
+      const filesNow = getResourceFiles(resource, fileType).filter(file => file.index !== selected.index);
+      const update = {};
+      if (Array.isArray(resource[arrayField]) && resource[arrayField].length) {
+        const remaining = resource[arrayField].filter((file, index) => index !== selected.index);
+        update[arrayField] = remaining;
+        const first = remaining[0] || null;
+        if (isPaper) {
+          update.paperUrl = first ? (first.url || first.secure_url || "") : "";
+          update.paperName = first ? (first.name || first.originalFilename || "") : "";
+          update.paperPublicId = first ? (first.publicId || first.public_id || "") : "";
+        } else {
+          update.markingUrl = first ? (first.url || first.secure_url || "") : "";
+          update.markingName = first ? (first.name || first.originalFilename || "") : "";
+          update.markingPublicId = first ? (first.publicId || first.public_id || "") : "";
+        }
+      } else {
+        if (isPaper) Object.assign(update, { paperUrl: null, paperPublicId: null, paperName: null });
+        else Object.assign(update, { markingUrl: null, markingPublicId: null, markingName: null });
+      }
+      await updateDoc(doc(db, "resources", resource.id), update);
+      alert("The selected " + fileLabel + " was deleted. Other files in this resource were kept.");
       await loadAdminResources();
       await loadResources();
-
     } catch (error) {
       alert("Delete error: " + error.message);
     }
-
   }
 
 
