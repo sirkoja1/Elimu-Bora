@@ -715,9 +715,9 @@
 
     <input
       id="emailInput"
-      type="email"
-      placeholder="Email Address"
-      autocomplete="email"
+      type="text"
+      placeholder="Email address or phone number"
+      autocomplete="username"
     >
 
     <input
@@ -745,9 +745,9 @@
 
       <input
         id="registerEmailInput"
-        type="email"
-        placeholder="Email Address"
-        autocomplete="email"
+        type="text"
+        placeholder="Email address or phone number"
+        autocomplete="username"
       >
 
       <input
@@ -1498,6 +1498,7 @@
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    signInWithCustomToken,
     sendPasswordResetEmail,
     signOut,
     onAuthStateChanged,
@@ -1792,159 +1793,74 @@
      ========================================================== */
 
   window.registerUser = async function () {
-
-    const email =
-      document
-        .getElementById("registerEmailInput")
-        .value
-        .trim()
-        .toLowerCase();
-
-    const password =
-      document
-        .getElementById("registerPasswordInput")
-        .value;
-
-    if (
-      !email ||
-      !password
-    ) {
-
-      showMessage(
-        "authMessage",
-        "Please enter your email and password."
-      );
-
+    const identifier = document.getElementById("registerEmailInput").value.trim();
+    const password = document.getElementById("registerPasswordInput").value;
+    if (!identifier || !password) {
+      showMessage("authMessage", "Enter an email address or phone number and a password.");
       return;
-
     }
-
-    if (
-      password.length < 6
-    ) {
-
-      showMessage(
-        "authMessage",
-        "Password must be at least 6 characters."
-      );
-
-      return;
-
-    }
-
     try {
-
-      const credential =
-        await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-      await setDoc(
-        doc(
-          db,
-          "members",
-          credential.user.uid
-        ),
-        {
-          uid: credential.user.uid,
-          email: email,
-          subscriptionStatus: "inactive",
-          subscriptionExpiry: null,
+      if (identifier.includes("@")) {
+        const email = identifier.toLowerCase();
+        const credential = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, "members", credential.user.uid), {
+          uid: credential.user.uid, email,
+          subscriptionStatus: "inactive", subscriptionExpiry: null,
           createdAt: serverTimestamp()
+        });
+      } else {
+        if (password.length < 10) {
+          showMessage("authMessage", "For phone-number accounts, use a password of at least 10 characters.");
+          return;
         }
-      );
-
-      showMessage(
-        "authMessage",
-        "Account created successfully. You are now logged in."
-      );
-
-      document
-        .getElementById("registerEmailInput")
-        .value = "";
-
-      document
-        .getElementById("registerPasswordInput")
-        .value = "";
-
+        const result = await fetch("https://elimu-bora-phone-auth.kojasalim2015.workers.dev/register", {
+          method: "POST", headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({phone: identifier, password})
+        });
+        const data = await result.json();
+        if (!result.ok) throw new Error(data.error || "Phone registration failed.");
+        const credential = await signInWithCustomToken(auth, data.customToken);
+        await setDoc(doc(db, "members", credential.user.uid), {
+          uid: credential.user.uid, email: "",
+          phoneLogin: true, subscriptionStatus: "inactive",
+          subscriptionExpiry: null, createdAt: serverTimestamp()
+        });
+      }
+      showMessage("authMessage", "Account created successfully. You are now logged in.");
+      document.getElementById("registerEmailInput").value = "";
+      document.getElementById("registerPasswordInput").value = "";
       hideRegistration();
-
     } catch (error) {
-
-      showMessage(
-        "authMessage",
-        "Registration error: " +
-        error.message
-      );
-
+      showMessage("authMessage", "Registration error: " + error.message);
     }
-
   };
 
-
-  /* ==========================================================
-     LOGIN
-     ========================================================== */
 
   window.loginUser = async function () {
-
-    const email =
-      document
-        .getElementById("emailInput")
-        .value
-        .trim()
-        .toLowerCase();
-
-    const password =
-      document
-        .getElementById("passwordInput")
-        .value;
-
-    if (
-      !email ||
-      !password
-    ) {
-
-      showMessage(
-        "authMessage",
-        "Please enter your email and password."
-      );
-
+    const identifier = document.getElementById("emailInput").value.trim();
+    const password = document.getElementById("passwordInput").value;
+    if (!identifier || !password) {
+      showMessage("authMessage", "Enter your email address or phone number and password.");
       return;
-
     }
-
     try {
-
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      showMessage(
-        "authMessage",
-        "Login successful."
-      );
-
+      if (identifier.includes("@")) {
+        await signInWithEmailAndPassword(auth, identifier.toLowerCase(), password);
+      } else {
+        const result = await fetch("https://elimu-bora-phone-auth.kojasalim2015.workers.dev/login", {
+          method: "POST", headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({phone: identifier, password})
+        });
+        const data = await result.json();
+        if (!result.ok) throw new Error(data.error || "Phone login failed.");
+        await signInWithCustomToken(auth, data.customToken);
+      }
+      showMessage("authMessage", "Login successful.");
     } catch (error) {
-
-      showMessage(
-        "authMessage",
-        "Login error: " +
-        error.message
-      );
-
+      showMessage("authMessage", "Login error: " + error.message);
     }
-
   };
 
-
-  /* ==========================================================
-     PASSWORD RESET
-     ========================================================== */
 
   window.resetPassword = async function () {
 
