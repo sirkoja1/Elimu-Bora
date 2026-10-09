@@ -2469,7 +2469,11 @@
         ).filter(
           resource =>
             resource.uploadStatus !== "uploading" &&
-            resource.uploadStatus !== "failed"
+            resource.uploadStatus !== "failed" &&
+            (
+              getResourceFiles(resource, "paper").length > 0 ||
+              getResourceFiles(resource, "marking").length > 0
+            )
         );
 
       allResources.sort(
@@ -2735,7 +2739,9 @@
   function getResourceFiles(resource, type) {
     const isPaper = type === "paper";
     const arrayField = isPaper ? resource.paperFiles : resource.markingFiles;
-    if (Array.isArray(arrayField) && arrayField.length) {
+    // If the array exists, it is authoritative even when empty.
+    // Do not resurrect deleted file names from legacy fields.
+    if (Array.isArray(arrayField)) {
       return arrayField.map((file, index) => ({
         url: file.url || file.secure_url || "",
         name: file.name || file.originalFilename || (isPaper ? "Question Paper / Main Document" : "Marking Scheme"),
@@ -2919,10 +2925,8 @@ window.goToResourceSearch = function () {
           ${resource.className || ""}
           ${resource.examYear || ""}
           ${resource.examType || ""}
-          ${resource.paperName || ""}
-          ${resource.markingName || ""}
-          ${(Array.isArray(resource.paperFiles) ? resource.paperFiles : []).map(file => file.name || "").join(" ")}
-          ${(Array.isArray(resource.markingFiles) ? resource.markingFiles : []).map(file => file.name || "").join(" ")}
+          ${getResourceFiles(resource, "paper").map(file => file.name || "").join(" ")}
+          ${getResourceFiles(resource, "marking").map(file => file.name || "").join(" ")}
         `
           .toLowerCase()
           .replace(/\s+/g, " ")
@@ -3923,9 +3927,8 @@ window.goToResourceSearch = function () {
       }
 
       const arrayField = isPaper ? "paperFiles" : "markingFiles";
-      const filesNow = getResourceFiles(resource, fileType).filter(file => file.index !== selected.index);
       const update = {};
-      if (Array.isArray(resource[arrayField]) && resource[arrayField].length) {
+      if (Array.isArray(resource[arrayField])) {
         const remaining = resource[arrayField].filter((file, index) => index !== selected.index);
         update[arrayField] = remaining;
         const first = remaining[0] || null;
@@ -3942,8 +3945,16 @@ window.goToResourceSearch = function () {
         if (isPaper) Object.assign(update, { paperUrl: null, paperPublicId: null, paperName: null });
         else Object.assign(update, { markingUrl: null, markingPublicId: null, markingName: null });
       }
-      await updateDoc(doc(db, "resources", resource.id), update);
-      alert("The selected " + fileLabel + " was deleted. Other files in this resource were kept.");
+      const updatedResource = { ...resource, ...update };
+      const remainingPaperFiles = getResourceFiles(updatedResource, "paper");
+      const remainingMarkingFiles = getResourceFiles(updatedResource, "marking");
+      if (remainingPaperFiles.length === 0 && remainingMarkingFiles.length === 0) {
+        await deleteDoc(doc(db, "resources", resource.id));
+        alert("The selected file was deleted. This resource heading was also removed because no files remain.");
+      } else {
+        await updateDoc(doc(db, "resources", resource.id), update);
+        alert("The selected " + fileLabel + " was deleted. Other files in this resource were kept.");
+      }
       await loadAdminResources();
       await loadResources();
     } catch (error) {
