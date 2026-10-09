@@ -4191,6 +4191,11 @@ window.goToResourceSearch = function () {
      DELETE RESOURCE
      ========================================================== */
 
+  function cloudinaryResourceType(url) {
+    const match = String(url || "").match(/cloudinary\.com\/[^/]+\/(image|video|raw)\/upload\//);
+    return match ? match[1] : "raw";
+  }
+
   async function deleteResource(
     resource
   ) {
@@ -4200,7 +4205,7 @@ window.goToResourceSearch = function () {
 
     if (
       !confirm(
-        "Delete this resource from Elimu Bora?"
+        "Delete this resource from Elimu Bora and Cloudinary?"
       )
     ) {
 
@@ -4209,6 +4214,40 @@ window.goToResourceSearch = function () {
     }
 
     try {
+
+      const cloudFiles = [];
+      if (resource.paperPublicId) cloudFiles.push({
+        publicId: resource.paperPublicId,
+        resourceType: cloudinaryResourceType(resource.paperUrl)
+      });
+      if (resource.markingPublicId) cloudFiles.push({
+        publicId: resource.markingPublicId,
+        resourceType: cloudinaryResourceType(resource.markingUrl)
+      });
+
+      if (resource.storageProvider === "cloudinary" && !cloudFiles.length) {
+        throw new Error("Cloudinary file IDs are missing. Nothing was deleted.");
+      }
+
+      if (cloudFiles.length) {
+        if (!auth.currentUser) throw new Error("Please sign in again.");
+        const cloudToken = await auth.currentUser.getIdToken();
+        const cloudResponse = await fetch(
+          "https://elimu-bora-cloudinary-delete.kojasalim2015.workers.dev/",
+          {
+            method: "POST",
+            headers: {
+              "Authorization": "Bearer " + cloudToken,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ files: cloudFiles })
+          }
+        );
+        const cloudResult = await cloudResponse.json().catch(() => ({}));
+        if (!cloudResponse.ok || cloudResult.success !== true) {
+          throw new Error("Cloudinary deletion failed: " + (cloudResult.message || "resource kept in Elimu Bora"));
+        }
+      }
 
       await deleteDoc(
         doc(
@@ -4219,7 +4258,7 @@ window.goToResourceSearch = function () {
       );
 
       alert(
-        "Resource removed from Elimu Bora."
+        "Resource removed from Elimu Bora and Cloudinary."
       );
 
       await loadAdminResources();
