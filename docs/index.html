@@ -3538,12 +3538,31 @@ window.goToResourceSearch = function () {
       const total = allFiles.length;
       let completed = 0;
 
+      // Save each completed upload immediately, so a later failed file does not
+      // leave already-uploaded Cloudinary files untracked by the resource record.
+      const saveUploadedFiles = async () => {
+        const firstPaper = paperFiles[0] || null;
+        const firstMarking = markingFiles[0] || null;
+        await updateDoc(resourceRef, {
+          paperFiles: [...paperFiles],
+          markingFiles: [...markingFiles],
+          paperUrl: firstPaper ? firstPaper.url : "",
+          paperName: firstPaper ? firstPaper.name : "",
+          paperPublicId: firstPaper ? firstPaper.publicId : "",
+          markingUrl: firstMarking ? firstMarking.url : "",
+          markingName: firstMarking ? firstMarking.name : "",
+          markingPublicId: firstMarking ? firstMarking.publicId : "",
+          storageProvider: "cloudinary"
+        });
+      };
+
       for (const file of papers) {
         showMessage("uploadMessage", "Uploading question paper " + (paperFiles.length + 1) + " of " + papers.length + "...");
         const result = await uploadToCloudinary(file, resourceRef.id, "question_paper", progress => {
           progressBar.style.width = Math.round(((completed + progress) / total) * 100) + "%";
         });
         paperFiles.push({ url: result.secure_url, name: file.name, publicId: result.public_id || "" });
+        await saveUploadedFiles();
         completed++;
         progressBar.style.width = Math.round((completed / total) * 100) + "%";
       }
@@ -3554,6 +3573,7 @@ window.goToResourceSearch = function () {
           progressBar.style.width = Math.round(((completed + progress) / total) * 100) + "%";
         });
         markingFiles.push({ url: result.secure_url, name: file.name, publicId: result.public_id || "" });
+        await saveUploadedFiles();
         completed++;
         progressBar.style.width = Math.round((completed / total) * 100) + "%";
       }
