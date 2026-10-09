@@ -1329,12 +1329,17 @@
           </strong>
         </label>
 
-        <input
-          id="paperFile"
-          type="file"
-          multiple
-          onchange="updateSelectedUploadCount()"
-        >
+        <div id="paperFileInputs">
+          <input
+            id="paperFile"
+            type="file"
+            multiple
+            onchange="updateSelectedUploadCount()"
+          >
+        </div>
+        <button type="button" class="secondary" onclick="addMoreUploadFiles('paper')">
+          ➕ Add More Question Papers
+        </button>
 
         <label>
           <strong>
@@ -1342,12 +1347,17 @@
           </strong>
         </label>
 
-        <input
-          id="markingFile"
-          type="file"
-          multiple
-          onchange="updateSelectedUploadCount()"
-        >
+        <div id="markingFileInputs">
+          <input
+            id="markingFile"
+            type="file"
+            multiple
+            onchange="updateSelectedUploadCount()"
+          >
+        </div>
+        <button type="button" class="secondary" onclick="addMoreUploadFiles('marking')">
+          ➕ Add More Marking Schemes
+        </button>
 
         <p class="small">
           Select multiple files in either field — more than two files are supported.
@@ -3483,9 +3493,25 @@ window.goToResourceSearch = function () {
      ADMIN RESOURCE UPLOAD
      ========================================================== */
 
+  window.addMoreUploadFiles = function (kind) {
+    const isPaper = kind === "paper";
+    const container = document.getElementById(isPaper ? "paperFileInputs" : "markingFileInputs");
+    if (!container) return;
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = true;
+    input.className = "additional-upload-input";
+    input.setAttribute("aria-label", isPaper ? "Additional question papers" : "Additional marking schemes");
+    input.onchange = window.updateSelectedUploadCount;
+    container.appendChild(input);
+    input.click();
+  };
+
   window.updateSelectedUploadCount = function () {
-      const papers = Array.from(document.getElementById("paperFile").files || []);
-      const markings = Array.from(document.getElementById("markingFile").files || []);
+      const papers = Array.from(document.querySelectorAll("#paperFileInputs input[type='file']"))
+        .flatMap(input => Array.from(input.files || []));
+      const markings = Array.from(document.querySelectorAll("#markingFileInputs input[type='file']"))
+        .flatMap(input => Array.from(input.files || []));
       const countBox = document.getElementById("selectedUploadCount");
       const total = papers.length + markings.length;
       if (!countBox) return;
@@ -3508,8 +3534,10 @@ window.goToResourceSearch = function () {
     const className = value("resourceClass");
     const examYear = value("examYear");
     const examType = value("examType");
-    const papers = Array.from(document.getElementById("paperFile").files || []);
-    const markings = Array.from(document.getElementById("markingFile").files || []);
+    const papers = Array.from(document.querySelectorAll("#paperFileInputs input[type='file']"))
+      .flatMap(input => Array.from(input.files || []));
+    const markings = Array.from(document.querySelectorAll("#markingFileInputs input[type='file']"))
+      .flatMap(input => Array.from(input.files || []));
     const isExam = category === "Examinations";
 
     if (!title || papers.length === 0) {
@@ -3611,9 +3639,17 @@ window.goToResourceSearch = function () {
 
       progressBar.style.width = "100%";
       showMessage("uploadMessage", "Resource uploaded successfully. " + total + " file(s) added to one resource block.");
-      ["resourceTitle", "resourceDescription", "resourceSubject", "resourceClass", "examYear", "examType", "paperFile", "markingFile"].forEach(id => {
+      ["resourceTitle", "resourceDescription", "resourceSubject", "resourceClass", "examYear", "examType"].forEach(id => {
         document.getElementById(id).value = "";
       });
+      document.querySelectorAll("#paperFileInputs input[type='file'], #markingFileInputs input[type='file']").forEach(input => {
+        if (input.id === "paperFile" || input.id === "markingFile") {
+          input.value = "";
+        } else {
+          input.remove();
+        }
+      });
+      window.updateSelectedUploadCount();
       document.getElementById("resourceCategory").value = "Learning Resources";
       document.getElementById("examFields").classList.add("hidden");
       setTimeout(() => {
