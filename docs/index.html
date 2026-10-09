@@ -1333,6 +1333,7 @@
           id="paperFile"
           type="file"
           multiple
+          onchange="updateSelectedUploadCount()"
         >
 
         <label>
@@ -1345,14 +1346,18 @@
           id="markingFile"
           type="file"
           multiple
+          onchange="updateSelectedUploadCount()"
         >
 
         <p class="small">
-          Common document types can be uploaded, including PDF,
-          DOC, DOCX, PPT, PPTX, XLS, XLSX and images.
-          For examinations, the question paper and marking scheme
-          are stored together as one resource.
+          Select multiple files in either field — more than two files are supported.
+          You can select many question papers and many marking schemes for one resource.
+          Each file may be up to 100 MB. Common types include PDF, DOC, DOCX,
+          PPT, PPTX, XLS, XLSX and images.
         </p>
+        <div id="selectedUploadCount" class="status" aria-live="polite">
+          No files selected yet.
+        </div>
 
         <button
           class="success"
@@ -3478,7 +3483,18 @@ window.goToResourceSearch = function () {
      ADMIN RESOURCE UPLOAD
      ========================================================== */
 
-  window.uploadResource = async function () {
+  window.updateSelectedUploadCount = function () {
+      const papers = Array.from(document.getElementById("paperFile").files || []);
+      const markings = Array.from(document.getElementById("markingFile").files || []);
+      const countBox = document.getElementById("selectedUploadCount");
+      const total = papers.length + markings.length;
+      if (!countBox) return;
+      countBox.textContent = total === 0
+        ? "No files selected yet."
+        : total + " file(s) selected: " + papers.length + " question paper/main document(s), " + markings.length + " marking scheme(s).";
+    };
+
+    window.uploadResource = async function () {
     if (!isAdmin()) {
       alert("Administrator access required.");
       return;
