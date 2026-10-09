@@ -3509,11 +3509,11 @@ window.goToResourceSearch = function () {
       return;
     }
 
-    const maxSize = 25 * 1024 * 1024;
+    const maxSize = 100 * 1024 * 1024;
     const allFiles = [...papers.map(file => ({ file, label: "Question Paper" })), ...markings.map(file => ({ file, label: "Marking Scheme" }))];
     const oversized = allFiles.find(item => item.file.size > maxSize);
     if (oversized) {
-      showMessage("uploadMessage", oversized.label + ' "' + oversized.file.name + '" is larger than 25 MB.');
+      showMessage("uploadMessage", oversized.label + ' "' + oversized.file.name + '" is larger than 100 MB.');
       return;
     }
 
