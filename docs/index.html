@@ -68,6 +68,72 @@
       border: 1px solid #e7edf4;
     }
 
+    .learning-banner {
+      position: relative;
+      min-height: 300px;
+      margin: 0 0 22px;
+      overflow: hidden;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(90deg, rgba(4, 30, 66, 0.94) 0%, rgba(4, 45, 88, 0.78) 48%, rgba(4, 45, 88, 0.15) 100%), url('https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=1600&q=85') center 45% / cover;
+      box-shadow: 0 12px 28px rgba(10, 40, 80, 0.18);
+    }
+
+    .learning-banner-content {
+      position: relative;
+      z-index: 1;
+      width: min(650px, 100%);
+      padding: 34px 30px;
+      color: #fff;
+    }
+
+    .learning-banner-kicker {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 7px 12px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .learning-banner h2 {
+      margin: 0 0 12px;
+      max-width: 560px;
+      color: #fff;
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.08;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .learning-banner p {
+      max-width: 520px;
+      margin: 0;
+      color: #f1f7ff;
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    .learning-banner-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .learning-banner-points span {
+      padding: 8px 11px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      backdrop-filter: blur(4px);
+    }
+
     .hero-card {
       text-align: center;
       border-top: 5px solid #0b5ed7;
@@ -511,6 +577,19 @@
     }
 
     @media (max-width: 700px) {
+      .learning-banner {
+        min-height: 340px;
+        background-position: 58% center;
+      }
+
+      .learning-banner-content {
+        padding: 28px 20px;
+      }
+
+      .learning-banner p {
+        font-size: 15px;
+      }
+
       header h1 {
         font-size: 28px;
       }
@@ -559,6 +638,19 @@
 </header>
 
 <div class="container">
+
+  <section class="learning-banner" aria-label="Elimu Bora learning resources">
+    <div class="learning-banner-content">
+      <div class="learning-banner-kicker">YOUR FUTURE STARTS HERE</div>
+      <h2>Learn More. Prepare Better. Shine Brighter.</h2>
+      <p>Get ready for success with exam papers, marking schemes and CBC learning materials—all in one place.</p>
+      <div class="learning-banner-points">
+        <span>📘 Exam Papers</span>
+        <span>✅ Marking Schemes</span>
+        <span>🎓 CBC Materials</span>
+      </div>
+    </div>
+  </section>
 
   <!-- =====================================================
        AUTHENTICATION
