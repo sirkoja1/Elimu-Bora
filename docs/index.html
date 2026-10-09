@@ -2902,6 +2902,8 @@ window.goToResourceSearch = function () {
           ${resource.examType || ""}
           ${resource.paperName || ""}
           ${resource.markingName || ""}
+          ${(Array.isArray(resource.paperFiles) ? resource.paperFiles : []).map(file => file.name || "").join(" ")}
+          ${(Array.isArray(resource.markingFiles) ? resource.markingFiles : []).map(file => file.name || "").join(" ")}
         `
           .toLowerCase()
           .replace(/\s+/g, " ")
