@@ -1362,6 +1362,9 @@
         <div id="selectedUploadCount" class="status" aria-live="polite">
           No files selected yet.
         </div>
+        <div id="savedDraftFiles" class="status" aria-live="polite">
+          No previously saved draft files.
+        </div>
 
         <button
           type="button"
@@ -3568,6 +3571,46 @@ window.goToResourceSearch = function () {
         : total + " file(s) selected: " + papers.length + " question paper/main document(s), " + markings.length + " marking scheme(s).";
     };
 
+    window.renderSavedDraftFiles = function (draft) {
+      const container = document.getElementById("savedDraftFiles");
+      if (!container) return;
+      container.innerHTML = "";
+      const papers = getResourceFiles(draft || {}, "paper");
+      const markings = getResourceFiles(draft || {}, "marking");
+      if (!papers.length && !markings.length) {
+        container.textContent = "No previously saved files in this draft yet.";
+        return;
+      }
+
+      const heading = document.createElement("strong");
+      heading.textContent = "Files already saved to this draft (you do not need to select them again):";
+      container.appendChild(heading);
+
+      const addGroup = (label, files) => {
+        if (!files.length) return;
+        const group = document.createElement("div");
+        group.style.marginTop = "8px";
+        const title = document.createElement("strong");
+        title.textContent = label;
+        group.appendChild(title);
+        const list = document.createElement("ul");
+        files.forEach(file => {
+          const item = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = file.url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = file.name || label;
+          item.appendChild(link);
+          list.appendChild(item);
+        });
+        group.appendChild(list);
+        container.appendChild(group);
+      };
+      addGroup("Question papers / main documents", papers);
+      addGroup("Marking schemes", markings);
+    };
+
     window.saveResourceDraft = async function () {
       if (!isAdmin()) {
         alert("Administrator access required.");
@@ -3676,6 +3719,7 @@ window.goToResourceSearch = function () {
           if (total) progressBar.style.width = Math.round((completed / total) * 100) + "%";
         }
 
+        window.renderSavedDraftFiles({ paperFiles, markingFiles });
         showMessage("uploadMessage", "Draft saved with " + paperFiles.length + " question paper/main document(s) and " + markingFiles.length + " marking scheme(s). Files are kept out of member search until you publish.");
         await loadAdminDrafts();
         if (total) {
@@ -3778,6 +3822,7 @@ window.goToResourceSearch = function () {
           else input.remove();
         });
         window.updateSelectedUploadCount();
+        window.renderSavedDraftFiles(draft);
         showMessage("uploadMessage", "Draft loaded with " + getResourceFiles(draft, "paper").length + " question paper/main document(s) and " + getResourceFiles(draft, "marking").length + " marking scheme(s) already saved. Add more files if needed, then click Upload Resource to publish.");
         document.getElementById("adminUploadArea").scrollIntoView({ behavior: "smooth", block: "start" });
       } catch (error) {
