@@ -1367,6 +1367,13 @@
         </div>
 
         <button
+          class="success"
+          onclick="uploadResource()"
+        >
+          ☁️ Upload Resource
+        </button>
+
+        <button
           type="button"
           class="warning"
           onclick="saveResourceDraft()"
@@ -1385,17 +1392,6 @@
         <div id="adminDrafts" class="status">
           Saved drafts will appear here.
         </div>
-
-        <p class="small">
-          Drafts save the resource details to your administrator account. For security and browser limitations, selected files are not stored in a draft; when you resume, select the files again before uploading.
-        </p>
-
-        <button
-          class="success"
-          onclick="uploadResource()"
-        >
-          ☁️ Upload Resource
-        </button>
 
         <div
           class="upload-progress hidden"
@@ -2830,7 +2826,7 @@
               <strong>${icon}${escapeHtml(file.name || fallback)}</strong>
               <div class="resource-actions">
                 ${createResourceLink(file.url, "Preview", false)}
-                <a class="download" href="${escapeHtml(downloadUrl)}" target="_blank" rel="noopener">⬇️ Download</a>
+                <a class="download" href="${escapeHtml(downloadUrl)}" target="_blank" rel="noopener">Download</a>
               </div>
             </div>`;
         });
