@@ -1364,6 +1364,30 @@
         </div>
 
         <button
+          type="button"
+          class="warning"
+          onclick="saveResourceDraft()"
+        >
+          💾 Save Draft
+        </button>
+
+        <button
+          type="button"
+          class="secondary"
+          onclick="loadAdminDrafts()"
+        >
+          📂 View Saved Drafts
+        </button>
+
+        <div id="adminDrafts" class="status">
+          Saved drafts will appear here.
+        </div>
+
+        <p class="small">
+          Drafts save the resource details to your administrator account. For security and browser limitations, selected files are not stored in a draft; when you resume, select the files again before uploading.
+        </p>
+
+        <button
           class="success"
           onclick="uploadResource()"
         >
@@ -1584,6 +1608,7 @@
   let currentUser = null;
   let selectedPayment = null;
   let allResources = [];
+  let activeDraftId = null;
 
 
   /* ==========================================================
@@ -1971,6 +1996,8 @@
         await loadAdminPayments();
 
         await loadAdminResources();
+
+        await loadAdminDrafts();
 
         await loadAdminMembers();
 
@@ -3540,6 +3567,146 @@ window.goToResourceSearch = function () {
         : total + " file(s) selected: " + papers.length + " question paper/main document(s), " + markings.length + " marking scheme(s).";
     };
 
+    window.saveResourceDraft = async function () {
+      if (!isAdmin()) {
+        alert("Administrator access required.");
+        return;
+      }
+
+      const value = id => document.getElementById(id).value.trim();
+      const title = value("resourceTitle");
+      if (!title) {
+        showMessage("uploadMessage", "Enter a Resource Title before saving a draft.");
+        return;
+      }
+
+      const draft = {
+        title,
+        description: value("resourceDescription"),
+        category: value("resourceCategory"),
+        subject: value("resourceSubject"),
+        className: value("resourceClass"),
+        resourceType: value("resourceCategory") === "Examinations" ? "examination" : "learning_resource",
+        examYear: value("resourceCategory") === "Examinations" ? value("examYear") : "",
+        examType: value("resourceCategory") === "Examinations" ? value("examType") : "",
+        uploadStatus: "draft",
+        paperFiles: [],
+        markingFiles: [],
+        paperUrl: "",
+        paperName: "",
+        paperPublicId: "",
+        markingUrl: "",
+        markingName: "",
+        markingPublicId: "",
+        createdBy: ADMIN_EMAIL,
+        updatedAt: serverTimestamp()
+      };
+
+      try {
+        if (activeDraftId) {
+          await updateDoc(doc(db, "resources", activeDraftId), draft);
+        } else {
+          draft.createdAt = serverTimestamp();
+          const draftRef = await addDoc(collection(db, "resources"), draft);
+          activeDraftId = draftRef.id;
+        }
+        showMessage("uploadMessage", "Draft saved. You can return to it from Saved Drafts.");
+        await loadAdminDrafts();
+      } catch (error) {
+        showMessage("uploadMessage", "Could not save draft: " + error.message);
+      }
+    };
+
+    window.loadAdminDrafts = async function () {
+      if (!isAdmin()) return;
+      const container = document.getElementById("adminDrafts");
+      if (!container) return;
+      container.textContent = "Loading saved drafts...";
+
+      try {
+        const snapshot = await getDocs(collection(db, "resources"));
+        const drafts = snapshot.docs
+          .map(item => ({ id: item.id, ...item.data() }))
+          .filter(resource => resource.uploadStatus === "draft")
+          .sort((a, b) => getMillis(b.updatedAt || b.createdAt) - getMillis(a.updatedAt || a.createdAt));
+
+        container.innerHTML = "";
+        if (!drafts.length) {
+          container.textContent = "No saved drafts yet.";
+          return;
+        }
+
+        drafts.forEach(draft => {
+          const card = document.createElement("div");
+          card.className = "resource";
+          const heading = document.createElement("strong");
+          heading.textContent = draft.title || "Untitled draft";
+          card.appendChild(heading);
+
+          const details = document.createElement("p");
+          details.className = "small";
+          details.textContent = [draft.category, draft.subject, draft.className, draft.examYear].filter(Boolean).join(" • ");
+          card.appendChild(details);
+
+          const resume = document.createElement("button");
+          resume.textContent = "Resume Draft";
+          resume.onclick = () => window.loadResourceDraft(draft.id);
+          card.appendChild(resume);
+
+          const remove = document.createElement("button");
+          remove.textContent = "Delete Draft";
+          remove.className = "danger";
+          remove.onclick = async () => {
+            if (!confirm("Delete this saved draft?")) return;
+            try {
+              await deleteDoc(doc(db, "resources", draft.id));
+              if (activeDraftId === draft.id) activeDraftId = null;
+              await loadAdminDrafts();
+            } catch (error) {
+              alert("Could not delete draft: " + error.message);
+            }
+          };
+          card.appendChild(remove);
+          container.appendChild(card);
+        });
+      } catch (error) {
+        container.textContent = "Could not load drafts: " + error.message;
+      }
+    };
+
+    window.loadResourceDraft = async function (draftId) {
+      if (!isAdmin()) return;
+      try {
+        const draftSnap = await getDoc(doc(db, "resources", draftId));
+        if (!draftSnap.exists() || draftSnap.data().uploadStatus !== "draft") {
+          alert("That draft is no longer available.");
+          await loadAdminDrafts();
+          return;
+        }
+
+        const draft = draftSnap.data();
+        activeDraftId = draftId;
+        document.getElementById("resourceTitle").value = draft.title || "";
+        document.getElementById("resourceDescription").value = draft.description || "";
+        document.getElementById("resourceCategory").value = draft.category || "Learning Resources";
+        document.getElementById("resourceSubject").value = draft.subject || "";
+        document.getElementById("resourceClass").value = draft.className || "";
+        document.getElementById("examYear").value = draft.examYear || "";
+        document.getElementById("examType").value = draft.examType || "";
+        window.toggleExamFields();
+
+        document.querySelectorAll("#paperFileInputs input[type='file'], #markingFileInputs input[type='file']").forEach(input => {
+          if (input.id === "paperFile" || input.id === "markingFile") input.value = "";
+          else input.remove();
+        });
+        window.updateSelectedUploadCount();
+        showMessage("uploadMessage", "Draft loaded. Select the question papers and marking schemes again, then upload.");
+        document.getElementById("adminUploadArea").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        alert("Could not open draft: " + error.message);
+      }
+    };
+
     window.uploadResource = async function () {
     if (!isAdmin()) {
       alert("Administrator access required.");
@@ -3661,6 +3828,15 @@ window.goToResourceSearch = function () {
 
       progressBar.style.width = "100%";
       showMessage("uploadMessage", "Resource uploaded successfully. " + total + " file(s) added to one resource block.");
+      if (activeDraftId) {
+        try {
+          await deleteDoc(doc(db, "resources", activeDraftId));
+          activeDraftId = null;
+          await loadAdminDrafts();
+        } catch (draftError) {
+          console.error("Resource uploaded, but the saved draft could not be removed:", draftError);
+        }
+      }
       ["resourceTitle", "resourceDescription", "resourceSubject", "resourceClass", "examYear", "examType"].forEach(id => {
         document.getElementById(id).value = "";
       });
@@ -3727,6 +3903,8 @@ window.goToResourceSearch = function () {
               item.id,
             ...item.data()
           })
+        ).filter(
+          resource => resource.uploadStatus !== "draft"
         );
 
       resources.sort(
