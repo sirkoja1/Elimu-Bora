@@ -1073,9 +1073,9 @@
       </div>
 
 
-      <h3>My Payment Requests</h3>
+      <h3 style="display:none">My Payment Requests</h3>
 
-      <div id="myPayments">
+      <div id="myPayments" style="display:none">
         No payment requests yet.
       </div>
 
@@ -2807,6 +2807,17 @@
           if (!actions) return;
           const type = box.getAttribute("data-file-type");
           const index = Number(box.getAttribute("data-file-index"));
+          const editButton = document.createElement("button");
+          editButton.type = "button";
+          editButton.className = "warning";
+          editButton.textContent = "✏️ Edit";
+          editButton.setAttribute("aria-label", "Replace this file");
+          editButton.onclick = event => {
+            event.stopPropagation();
+            replaceResourceFile(resource, type, index);
+          };
+          actions.appendChild(editButton);
+
           const deleteButton = document.createElement("button");
           deleteButton.type = "button";
           deleteButton.className = "danger";
@@ -3889,6 +3900,101 @@ window.goToResourceSearch = function () {
     } catch (error) {
       alert("Delete error: " + error.message);
     }
+  }
+
+
+  async function replaceResourceFile(resource, fileType, fileIndex = 0) {
+    if (!isAdmin()) return;
+
+    const files = getResourceFiles(resource, fileType);
+    const selected = files.find(file => file.index === fileIndex) || files[fileIndex];
+    if (!selected || !selected.url) {
+      alert("This file is no longer attached to the resource. Refresh and try again.");
+      return;
+    }
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png";
+    input.style.display = "none";
+    document.body.appendChild(input);
+
+    input.onchange = async () => {
+      const newFile = input.files && input.files[0];
+      input.remove();
+      if (!newFile) return;
+      if (newFile.size > 100 * 1024 * 1024) {
+        alert("The replacement file must be 100 MB or smaller.");
+        return;
+      }
+      if (!confirm("Replace \"" + selected.name + "\" with \"" + newFile.name + "\"? The old file will no longer appear on Elimu Bora.")) return;
+
+      try {
+        if (!auth.currentUser) throw new Error("Please sign in again.");
+        const uploadType = fileType === "paper" ? "question_paper" : "marking_scheme";
+        alert("Uploading the replacement file. Please wait and do not close the page.");
+        const uploaded = await uploadToCloudinary(newFile, resource.id, uploadType + "_replacement");
+        if (!uploaded || !uploaded.secure_url || !uploaded.public_id) {
+          throw new Error("Cloudinary did not return the new file details. The old file has been kept.");
+        }
+
+        const arrayField = fileType === "paper" ? "paperFiles" : "markingFiles";
+        const currentArray = Array.isArray(resource[arrayField])
+          ? resource[arrayField].map(file => ({ ...file }))
+          : files.map(file => ({ url: file.url, name: file.name, publicId: file.publicId }));
+        const position = currentArray.findIndex((file, index) => index === selected.index);
+        if (position < 0) throw new Error("The original file could not be matched. The new upload is not attached; please contact support.");
+
+        currentArray[position] = {
+          url: uploaded.secure_url,
+          name: newFile.name,
+          publicId: uploaded.public_id
+        };
+
+        const first = currentArray[0] || null;
+        const update = { [arrayField]: currentArray };
+        if (fileType === "paper") {
+          update.paperUrl = first ? first.url : "";
+          update.paperName = first ? first.name : "";
+          update.paperPublicId = first ? first.publicId : "";
+        } else {
+          update.markingUrl = first ? first.url : "";
+          update.markingName = first ? first.name : "";
+          update.markingPublicId = first ? first.publicId : "";
+        }
+
+        await updateDoc(doc(db, "resources", resource.id), update);
+
+        // Only remove the old Cloudinary file after the replacement is safely saved.
+        if (selected.publicId) {
+          try {
+            const cloudToken = await auth.currentUser.getIdToken();
+            const response = await fetch("https://elimu-bora-cloudinary-delete.kojasalim2015.workers.dev/", {
+              method: "POST",
+              headers: { "Authorization": "Bearer " + cloudToken, "Content-Type": "application/json" },
+              body: JSON.stringify({ files: [{ publicId: selected.publicId, resourceType: cloudinaryResourceType(selected.url) }] })
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok || result.success !== true) {
+              alert("Replacement saved successfully, but the old Cloudinary copy could not be deleted. It is no longer shown on Elimu Bora.");
+            } else {
+              alert("File replaced successfully. The old file was removed.");
+            }
+          } catch (cleanupError) {
+            alert("Replacement saved successfully, but cleanup of the old Cloudinary copy failed. It is no longer shown on Elimu Bora.");
+          }
+        } else {
+          alert("File replaced successfully.");
+        }
+
+        await loadAdminResources();
+        await loadResources();
+      } catch (error) {
+        alert("Replacement failed: " + error.message);
+      }
+    };
+
+    input.click();
   }
 
 
