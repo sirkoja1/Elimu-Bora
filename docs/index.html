@@ -3913,6 +3913,67 @@ window.goToResourceSearch = function () {
       return;
     }
 
+    // First let the administrator correct the resource heading and displayed file name.
+    const newTitle = prompt("Edit the resource title:", resource.title || "");
+    if (newTitle === null) return;
+    if (!newTitle.trim()) {
+      alert("The resource title cannot be empty.");
+      return;
+    }
+
+    const newFileName = prompt("Edit the file name shown to members:", selected.name || "");
+    if (newFileName === null) return;
+    if (!newFileName.trim()) {
+      alert("The file name cannot be empty.");
+      return;
+    }
+
+    const shouldReplaceFile = confirm(
+      "Save the title and file name changes?\n\nPress OK to also upload a corrected document.\nPress Cancel to save the names only."
+    );
+
+    const saveMetadataOnly = async () => {
+      const arrayField = fileType === "paper" ? "paperFiles" : "markingFiles";
+      const update = { title: newTitle.trim() };
+      const currentArray = Array.isArray(resource[arrayField])
+        ? resource[arrayField].map(file => ({ ...file }))
+        : files.map(file => ({ url: file.url, name: file.name, publicId: file.publicId }));
+      const position = currentArray.findIndex((file, index) => index === selected.index);
+      if (position < 0) throw new Error("The original file could not be matched. Refresh and try again.");
+      currentArray[position] = {
+        ...currentArray[position],
+        url: currentArray[position].url || currentArray[position].secure_url || selected.url,
+        publicId: currentArray[position].publicId || currentArray[position].public_id || selected.publicId,
+        name: newFileName.trim()
+      };
+      update[arrayField] = currentArray;
+
+      const first = currentArray[0] || null;
+      if (fileType === "paper") {
+        update.paperUrl = first ? (first.url || first.secure_url || "") : "";
+        update.paperName = first ? (first.name || first.originalFilename || "") : "";
+        update.paperPublicId = first ? (first.publicId || first.public_id || "") : "";
+      } else {
+        update.markingUrl = first ? (first.url || first.secure_url || "") : "";
+        update.markingName = first ? (first.name || first.originalFilename || "") : "";
+        update.markingPublicId = first ? (first.publicId || first.public_id || "") : "";
+      }
+
+      await updateDoc(doc(db, "resources", resource.id), update);
+    };
+
+    if (!shouldReplaceFile) {
+      try {
+        await saveMetadataOnly();
+        alert("Resource title and file name updated. The existing document was not changed.");
+        await loadAdminResources();
+        await loadResources();
+      } catch (error) {
+        alert("Could not save the changes: " + error.message);
+      }
+      return;
+    }
+
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png";
@@ -3927,7 +3988,6 @@ window.goToResourceSearch = function () {
         alert("The replacement file must be 100 MB or smaller.");
         return;
       }
-      if (!confirm("Replace \"" + selected.name + "\" with \"" + newFile.name + "\"? The old file will no longer appear on Elimu Bora.")) return;
 
       try {
         if (!auth.currentUser) throw new Error("Please sign in again.");
@@ -3947,25 +4007,25 @@ window.goToResourceSearch = function () {
 
         currentArray[position] = {
           url: uploaded.secure_url,
-          name: newFile.name,
+          name: newFileName.trim(),
           publicId: uploaded.public_id
         };
 
         const first = currentArray[0] || null;
-        const update = { [arrayField]: currentArray };
+        const update = { title: newTitle.trim(), [arrayField]: currentArray };
         if (fileType === "paper") {
-          update.paperUrl = first ? first.url : "";
-          update.paperName = first ? first.name : "";
-          update.paperPublicId = first ? first.publicId : "";
+          update.paperUrl = first ? (first.url || first.secure_url || "") : "";
+          update.paperName = first ? (first.name || first.originalFilename || "") : "";
+          update.paperPublicId = first ? (first.publicId || first.public_id || "") : "";
         } else {
-          update.markingUrl = first ? first.url : "";
-          update.markingName = first ? first.name : "";
-          update.markingPublicId = first ? first.publicId : "";
+          update.markingUrl = first ? (first.url || first.secure_url || "") : "";
+          update.markingName = first ? (first.name || first.originalFilename || "") : "";
+          update.markingPublicId = first ? (first.publicId || first.public_id || "") : "";
         }
 
         await updateDoc(doc(db, "resources", resource.id), update);
 
-        // Only remove the old Cloudinary file after the replacement is safely saved.
+        // Remove the previous Cloudinary file only after the new file is saved.
         if (selected.publicId) {
           try {
             const cloudToken = await auth.currentUser.getIdToken();
@@ -3976,15 +4036,15 @@ window.goToResourceSearch = function () {
             });
             const result = await response.json().catch(() => ({}));
             if (!response.ok || result.success !== true) {
-              alert("Replacement saved successfully, but the old Cloudinary copy could not be deleted. It is no longer shown on Elimu Bora.");
+              alert("The title and replacement were saved, but the old Cloudinary copy could not be deleted. It is no longer shown on Elimu Bora.");
             } else {
-              alert("File replaced successfully. The old file was removed.");
+              alert("Resource title and file name updated, and the document was replaced successfully.");
             }
           } catch (cleanupError) {
-            alert("Replacement saved successfully, but cleanup of the old Cloudinary copy failed. It is no longer shown on Elimu Bora.");
+            alert("The title and replacement were saved, but cleanup of the old Cloudinary copy failed. It is no longer shown on Elimu Bora.");
           }
         } else {
-          alert("File replaced successfully.");
+          alert("Resource title and file name updated, and the document was replaced successfully.");
         }
 
         await loadAdminResources();
