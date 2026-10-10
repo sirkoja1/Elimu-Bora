@@ -669,6 +669,224 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* PROFESSIONAL DASHBOARD POLISH — visual-only overrides */
+    :root {
+      --eb-navy: #12345a;
+      --eb-blue: #1769aa;
+      --eb-teal: #087f73;
+      --eb-ink: #18283d;
+      --eb-muted: #65758b;
+      --eb-line: #e2eaf2;
+      --eb-surface: #ffffff;
+    }
+
+    body {
+      background: #f4f7fb;
+      color: var(--eb-ink);
+      line-height: 1.55;
+    }
+
+    header {
+      padding: 30px 18px 34px;
+      background: linear-gradient(125deg, #102e50 0%, #145c91 58%, #087f73 100%);
+    }
+
+    header h1 {
+      letter-spacing: -0.7px;
+      line-height: 1.15;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin-top: 26px;
+    }
+
+    .card {
+      padding: 25px;
+      border: 1px solid var(--eb-line);
+      border-radius: 18px;
+      box-shadow: 0 8px 26px rgba(23, 48, 78, 0.055);
+      margin-bottom: 22px;
+    }
+
+    .card h2 {
+      color: var(--eb-navy);
+      letter-spacing: -0.35px;
+      line-height: 1.25;
+      margin-top: 0;
+    }
+
+    .section-intro {
+      color: var(--eb-muted);
+      line-height: 1.65;
+    }
+
+    .admin-top-panel {
+      border: 1px solid #dce7f1;
+      border-top: 4px solid var(--eb-teal);
+      background: linear-gradient(145deg, #ffffff, #f7fbff);
+    }
+
+    .admin-top-title {
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .admin-top-title h2 {
+      font-size: 25px;
+    }
+
+    .admin-badge {
+      background: #e0f5f0;
+      color: #086b61;
+      letter-spacing: 0.45px;
+      padding: 7px 11px;
+    }
+
+    .admin-top-panel > .status {
+      background: #f0f7fc;
+      border-color: #dceaf5;
+      color: #40546b;
+      border-radius: 12px;
+    }
+
+    .admin-buttons {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    button {
+      border-radius: 10px;
+      min-height: 44px;
+      font-weight: 700;
+      letter-spacing: 0.05px;
+      box-shadow: 0 2px 5px rgba(20, 48, 76, 0.07);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    button:hover {
+      filter: brightness(1.03);
+      box-shadow: 0 5px 12px rgba(20, 48, 76, 0.12);
+      transform: translateY(-1px);
+    }
+
+    input, select, textarea {
+      border: 1px solid #d5e0eb;
+      border-radius: 10px;
+      background: #fbfdff;
+      padding: 13px 14px;
+      color: var(--eb-ink);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #3182bd;
+      box-shadow: 0 0 0 3px rgba(49, 130, 189, 0.13);
+      background: #ffffff;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+      border-left: 4px solid var(--eb-blue);
+    }
+
+    .hero-card h2 {
+      font-size: 26px;
+    }
+
+    .welcome-actions {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #resourcesSection {
+      border-top: 3px solid #1769aa;
+    }
+
+    #membershipSection {
+      border-top: 3px solid var(--eb-teal);
+    }
+
+    .plans-grid {
+      gap: 14px;
+    }
+
+    .plan {
+      border: 1px solid #dce7f1;
+      border-radius: 15px;
+      padding: 19px;
+      box-shadow: 0 4px 15px rgba(23, 48, 78, 0.045);
+      background: #fff;
+    }
+
+    .plan h3 {
+      color: var(--eb-navy);
+    }
+
+    .plan-price {
+      color: var(--eb-teal);
+      font-weight: 800;
+    }
+
+    .resource {
+      border: 1px solid var(--eb-line);
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(23, 48, 78, 0.035);
+    }
+
+    .resource:hover {
+      border-color: #b5cce1;
+      box-shadow: 0 6px 18px rgba(23, 48, 78, 0.07);
+    }
+
+    .status, .locked {
+      border-radius: 12px;
+    }
+
+    footer {
+      padding: 24px 16px;
+      color: #607187;
+      background: #edf3f8;
+      border-top: 1px solid #dfe8f0;
+    }
+
+    @media (max-width: 680px) {
+      .container {
+        width: 94%;
+        margin-top: 16px;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 15px;
+      }
+
+      header {
+        padding: 25px 16px 28px;
+      }
+
+      header h1 {
+        font-size: 29px;
+      }
+
+      .admin-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .admin-top-title {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .welcome-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .plan {
+        padding: 16px;
+      }
+    }
   </style>
 </head>
 
