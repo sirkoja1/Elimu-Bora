@@ -1364,6 +1364,30 @@
         </div>
 
         <button
+          type="button"
+          class="warning"
+          onclick="saveResourceDraft()"
+        >
+          💾 Save Draft
+        </button>
+
+        <button
+          type="button"
+          class="secondary"
+          onclick="loadAdminDrafts()"
+        >
+          📂 View Saved Drafts
+        </button>
+
+        <div id="adminDrafts" class="status">
+          Saved drafts will appear here.
+        </div>
+
+        <p class="small">
+          Drafts save the resource details to your administrator account. For security and browser limitations, selected files are not stored in a draft; when you resume, select the files again before uploading.
+        </p>
+
+        <button
           class="success"
           onclick="uploadResource()"
         >
@@ -1584,6 +1608,7 @@
   let currentUser = null;
   let selectedPayment = null;
   let allResources = [];
+  let activeDraftId = null;
 
 
   /* ==========================================================
@@ -1971,6 +1996,8 @@
         await loadAdminPayments();
 
         await loadAdminResources();
+
+        await loadAdminDrafts();
 
         await loadAdminMembers();
 
@@ -2466,6 +2493,7 @@
           })
         ).filter(
           resource =>
+            resource.uploadStatus !== "draft" &&
             resource.uploadStatus !== "uploading" &&
             resource.uploadStatus !== "failed" &&
             (
@@ -3540,6 +3568,223 @@ window.goToResourceSearch = function () {
         : total + " file(s) selected: " + papers.length + " question paper/main document(s), " + markings.length + " marking scheme(s).";
     };
 
+    window.saveResourceDraft = async function () {
+      if (!isAdmin()) {
+        alert("Administrator access required.");
+        return;
+      }
+
+      const value = id => document.getElementById(id).value.trim();
+      const title = value("resourceTitle");
+      if (!title) {
+        showMessage("uploadMessage", "Enter a Resource Title before saving a draft.");
+        return;
+      }
+
+      const papers = Array.from(document.querySelectorAll("#paperFileInputs input[type='file']"))
+        .flatMap(input => Array.from(input.files || []));
+      const markings = Array.from(document.querySelectorAll("#markingFileInputs input[type='file']"))
+        .flatMap(input => Array.from(input.files || []));
+      const allFiles = [...papers.map(file => ({ file, type: "paper", label: "question paper" })), ...markings.map(file => ({ file, type: "marking", label: "marking scheme" }))];
+      const oversized = allFiles.find(item => item.file.size > 100 * 1024 * 1024);
+      if (oversized) {
+        showMessage("uploadMessage", oversized.label + ' "' + oversized.file.name + '" is larger than 100 MB.');
+        return;
+      }
+
+      const draft = {
+        title,
+        description: value("resourceDescription"),
+        category: value("resourceCategory"),
+        subject: value("resourceSubject"),
+        className: value("resourceClass"),
+        resourceType: value("resourceCategory") === "Examinations" ? "examination" : "learning_resource",
+        examYear: value("resourceCategory") === "Examinations" ? value("examYear") : "",
+        examType: value("resourceCategory") === "Examinations" ? value("examType") : "",
+        uploadStatus: "draft",
+        createdBy: ADMIN_EMAIL,
+        storageProvider: "cloudinary",
+        updatedAt: serverTimestamp()
+      };
+
+      try {
+        let draftRef;
+        let existingPaperFiles = [];
+        let existingMarkingFiles = [];
+        if (activeDraftId) {
+          draftRef = doc(db, "resources", activeDraftId);
+          const current = await getDoc(draftRef);
+          if (current.exists() && current.data().uploadStatus === "draft") {
+            existingPaperFiles = getResourceFiles(current.data(), "paper");
+            existingMarkingFiles = getResourceFiles(current.data(), "marking");
+            await updateDoc(draftRef, draft);
+          } else {
+            activeDraftId = null;
+          }
+        }
+        if (!activeDraftId) {
+          draft.createdAt = serverTimestamp();
+          draft.paperFiles = [];
+          draft.markingFiles = [];
+          draft.paperUrl = "";
+          draft.paperName = "";
+          draft.paperPublicId = "";
+          draft.markingUrl = "";
+          draft.markingName = "";
+          draft.markingPublicId = "";
+          draftRef = await addDoc(collection(db, "resources"), draft);
+          activeDraftId = draftRef.id;
+          existingPaperFiles = [];
+          existingMarkingFiles = [];
+        }
+
+        const paperFiles = [...existingPaperFiles];
+        const markingFiles = [...existingMarkingFiles];
+        const total = allFiles.length;
+        let completed = 0;
+        const progressContainer = document.getElementById("uploadProgressContainer");
+        const progressBar = document.getElementById("uploadProgressBar");
+        if (total) progressContainer.classList.remove("hidden");
+
+        const saveDraftFiles = async () => {
+          const firstPaper = paperFiles[0] || null;
+          const firstMarking = markingFiles[0] || null;
+          await updateDoc(draftRef, {
+            paperFiles: [...paperFiles],
+            markingFiles: [...markingFiles],
+            paperUrl: firstPaper ? firstPaper.url : "",
+            paperName: firstPaper ? firstPaper.name : "",
+            paperPublicId: firstPaper ? firstPaper.publicId : "",
+            markingUrl: firstMarking ? firstMarking.url : "",
+            markingName: firstMarking ? firstMarking.name : "",
+            markingPublicId: firstMarking ? firstMarking.publicId : "",
+            uploadStatus: "draft",
+            updatedAt: serverTimestamp()
+          });
+        };
+
+        for (const item of allFiles) {
+          showMessage("uploadMessage", "Saving draft file " + (completed + 1) + " of " + total + "...");
+          const result = await uploadToCloudinary(item.file, activeDraftId, item.type === "paper" ? "question_paper" : "marking_scheme", progress => {
+            if (total) progressBar.style.width = Math.round(((completed + progress) / total) * 100) + "%";
+          });
+          const stored = { url: result.secure_url, name: item.file.name, publicId: result.public_id || "" };
+          if (item.type === "paper") paperFiles.push(stored);
+          else markingFiles.push(stored);
+          await saveDraftFiles();
+          completed++;
+          if (total) progressBar.style.width = Math.round((completed / total) * 100) + "%";
+        }
+
+        showMessage("uploadMessage", "Draft saved with " + paperFiles.length + " question paper/main document(s) and " + markingFiles.length + " marking scheme(s). Files are kept out of member search until you publish.");
+        await loadAdminDrafts();
+        if (total) {
+          setTimeout(() => {
+            progressContainer.classList.add("hidden");
+            progressBar.style.width = "0%";
+          }, 1200);
+        }
+      } catch (error) {
+        showMessage("uploadMessage", "Draft details were saved where possible, but a file could not be saved: " + error.message);
+        await loadAdminDrafts();
+      }
+    };
+
+    window.loadAdminDrafts = async function () {
+      if (!isAdmin()) return;
+      const container = document.getElementById("adminDrafts");
+      if (!container) return;
+      container.textContent = "Loading saved drafts...";
+
+      try {
+        const snapshot = await getDocs(collection(db, "resources"));
+        const drafts = snapshot.docs
+          .map(item => ({ id: item.id, ...item.data() }))
+          .filter(resource => resource.uploadStatus === "draft")
+          .sort((a, b) => getMillis(b.updatedAt || b.createdAt) - getMillis(a.updatedAt || a.createdAt));
+
+        container.innerHTML = "";
+        if (!drafts.length) {
+          container.textContent = "No saved drafts yet.";
+          return;
+        }
+
+        drafts.forEach(draft => {
+          const card = document.createElement("div");
+          card.className = "resource";
+          const heading = document.createElement("strong");
+          heading.textContent = draft.title || "Untitled draft";
+          card.appendChild(heading);
+
+          const details = document.createElement("p");
+          details.className = "small";
+          details.textContent = [draft.category, draft.subject, draft.className, draft.examYear].filter(Boolean).join(" • ");
+          card.appendChild(details);
+
+          const fileDetails = document.createElement("p");
+          fileDetails.className = "small";
+          fileDetails.textContent = getResourceFiles(draft, "paper").length + " question paper/main document(s), " + getResourceFiles(draft, "marking").length + " marking scheme(s) saved";
+          card.appendChild(fileDetails);
+
+          const resume = document.createElement("button");
+          resume.textContent = "Resume Draft";
+          resume.onclick = () => window.loadResourceDraft(draft.id);
+          card.appendChild(resume);
+
+          const remove = document.createElement("button");
+          remove.textContent = "Delete Draft";
+          remove.className = "danger";
+          remove.onclick = async () => {
+            if (!confirm("Delete this saved draft?")) return;
+            try {
+              await deleteDoc(doc(db, "resources", draft.id));
+              if (activeDraftId === draft.id) activeDraftId = null;
+              await loadAdminDrafts();
+            } catch (error) {
+              alert("Could not delete draft: " + error.message);
+            }
+          };
+          card.appendChild(remove);
+          container.appendChild(card);
+        });
+      } catch (error) {
+        container.textContent = "Could not load drafts: " + error.message;
+      }
+    };
+
+    window.loadResourceDraft = async function (draftId) {
+      if (!isAdmin()) return;
+      try {
+        const draftSnap = await getDoc(doc(db, "resources", draftId));
+        if (!draftSnap.exists() || draftSnap.data().uploadStatus !== "draft") {
+          alert("That draft is no longer available.");
+          await loadAdminDrafts();
+          return;
+        }
+
+        const draft = draftSnap.data();
+        activeDraftId = draftId;
+        document.getElementById("resourceTitle").value = draft.title || "";
+        document.getElementById("resourceDescription").value = draft.description || "";
+        document.getElementById("resourceCategory").value = draft.category || "Learning Resources";
+        document.getElementById("resourceSubject").value = draft.subject || "";
+        document.getElementById("resourceClass").value = draft.className || "";
+        document.getElementById("examYear").value = draft.examYear || "";
+        document.getElementById("examType").value = draft.examType || "";
+        window.toggleExamFields();
+
+        document.querySelectorAll("#paperFileInputs input[type='file'], #markingFileInputs input[type='file']").forEach(input => {
+          if (input.id === "paperFile" || input.id === "markingFile") input.value = "";
+          else input.remove();
+        });
+        window.updateSelectedUploadCount();
+        showMessage("uploadMessage", "Draft loaded with " + getResourceFiles(draft, "paper").length + " question paper/main document(s) and " + getResourceFiles(draft, "marking").length + " marking scheme(s) already saved. Add more files if needed, then click Upload Resource to publish.");
+        document.getElementById("adminUploadArea").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        alert("Could not open draft: " + error.message);
+      }
+    };
+
     window.uploadResource = async function () {
     if (!isAdmin()) {
       alert("Administrator access required.");
@@ -3560,12 +3805,25 @@ window.goToResourceSearch = function () {
       .flatMap(input => Array.from(input.files || []));
     const isExam = category === "Examinations";
 
-    if (!title || papers.length === 0) {
-      showMessage("uploadMessage", "Title and at least one Question Paper / Main Document are required.");
+    let existingDraft = null;
+    if (activeDraftId) {
+      try {
+        const draftSnapshot = await getDoc(doc(db, "resources", activeDraftId));
+        if (draftSnapshot.exists() && draftSnapshot.data().uploadStatus === "draft") existingDraft = draftSnapshot.data();
+      } catch (error) {
+        showMessage("uploadMessage", "Could not read saved draft files: " + error.message);
+        return;
+      }
+    }
+    const existingPapers = existingDraft ? getResourceFiles(existingDraft, "paper") : [];
+    const existingMarkings = existingDraft ? getResourceFiles(existingDraft, "marking") : [];
+
+    if (!title || (papers.length === 0 && existingPapers.length === 0)) {
+      showMessage("uploadMessage", "Title and at least one saved or newly selected Question Paper / Main Document are required.");
       return;
     }
-    if (isExam && markings.length === 0) {
-      showMessage("uploadMessage", "For an Examination, upload at least one Question Paper and one Marking Scheme.");
+    if (isExam && markings.length === 0 && existingMarkings.length === 0) {
+      showMessage("uploadMessage", "For an Examination, save or select at least one Marking Scheme.");
       return;
     }
     if (isExam && !examYear) {
@@ -3586,20 +3844,33 @@ window.goToResourceSearch = function () {
     const progressBar = document.getElementById("uploadProgressBar");
     try {
       showMessage("uploadMessage", "Creating resource...");
-      resourceRef = await addDoc(collection(db, "resources"), {
-        title, description, category, subject, className,
-        resourceType: isExam ? "examination" : "learning_resource",
-        examYear: isExam ? examYear : "",
-        examType: isExam ? examType : "",
-        createdAt: serverTimestamp(),
-        createdBy: ADMIN_EMAIL,
-        uploadStatus: "uploading",
-        storageProvider: "cloudinary"
-      });
+      if (activeDraftId && existingDraft) {
+        resourceRef = doc(db, "resources", activeDraftId);
+        await updateDoc(resourceRef, {
+          title, description, category, subject, className,
+          resourceType: isExam ? "examination" : "learning_resource",
+          examYear: isExam ? examYear : "",
+          examType: isExam ? examType : "",
+          updatedAt: serverTimestamp(),
+          uploadStatus: "draft",
+          storageProvider: "cloudinary"
+        });
+      } else {
+        resourceRef = await addDoc(collection(db, "resources"), {
+          title, description, category, subject, className,
+          resourceType: isExam ? "examination" : "learning_resource",
+          examYear: isExam ? examYear : "",
+          examType: isExam ? examType : "",
+          createdAt: serverTimestamp(),
+          createdBy: ADMIN_EMAIL,
+          uploadStatus: "uploading",
+          storageProvider: "cloudinary"
+        });
+      }
       progressContainer.classList.remove("hidden");
 
-      const paperFiles = [];
-      const markingFiles = [];
+      const paperFiles = [...existingPapers];
+      const markingFiles = [...existingMarkings];
       const total = allFiles.length;
       let completed = 0;
 
@@ -3661,6 +3932,10 @@ window.goToResourceSearch = function () {
 
       progressBar.style.width = "100%";
       showMessage("uploadMessage", "Resource uploaded successfully. " + total + " file(s) added to one resource block.");
+      if (activeDraftId) {
+        activeDraftId = null;
+        await loadAdminDrafts();
+      }
       ["resourceTitle", "resourceDescription", "resourceSubject", "resourceClass", "examYear", "examType"].forEach(id => {
         document.getElementById(id).value = "";
       });
@@ -3681,15 +3956,17 @@ window.goToResourceSearch = function () {
       await loadAdminResources();
       await loadResources();
     } catch (error) {
-      // Keep incomplete uploads out of member search. Completed legacy resources remain visible.
+      // Keep a resumed draft as a draft if publishing fails; never expose it to members.
       if (resourceRef) {
         try {
-          await updateDoc(resourceRef, { uploadStatus: "failed" });
+          await updateDoc(resourceRef, {
+            uploadStatus: activeDraftId && resourceRef.id === activeDraftId ? "draft" : "failed"
+          });
         } catch (statusError) {
-          console.error("Could not mark incomplete resource as failed:", statusError);
+          console.error("Could not update incomplete resource status:", statusError);
         }
       }
-      showMessage("uploadMessage", "Upload failed: " + error.message + ". No files from this batch will appear in member search. Please check the connection and upload again.");
+      showMessage("uploadMessage", "Upload failed: " + error.message + ". Your saved draft remains unpublished. Please check the connection and try again.");
       await loadAdminResources();
       await loadResources();
     }
@@ -3727,6 +4004,8 @@ window.goToResourceSearch = function () {
               item.id,
             ...item.data()
           })
+        ).filter(
+          resource => resource.uploadStatus !== "draft"
         );
 
       resources.sort(
