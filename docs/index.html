@@ -2922,11 +2922,17 @@
     const extension =
       getFileExtension(url);
 
-    // Use Google's document renderer for PDFs and Office files.
-    // This avoids relying on the phone's built-in PDF renderer, which can
-    // display some documents with overlapping or repeated text.
+    // Render PDFs with Mozilla's PDF.js viewer to avoid text-layer
+    // overlap seen in some built-in and Google PDF preview renderers.
+    if (extension === "pdf") {
+      return (
+        "https://mozilla.github.io/pdf.js/web/viewer.html?file=" +
+        encodeURIComponent(url)
+      );
+    }
+
+    // Google Docs Viewer remains the previewer for Office documents.
     const officeExtensions = [
-      "pdf",
       "doc",
       "docx",
       "ppt",
@@ -2940,14 +2946,13 @@
         extension
       )
     ) {
-
       return (
         "https://docs.google.com/gview?embedded=true&url=" +
         encodeURIComponent(url)
       );
-
     }
 
+    // Images and other browser-supported formats are displayed directly.
     return url;
 
   }
