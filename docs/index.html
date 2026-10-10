@@ -851,6 +851,71 @@
       border-top: 1px solid #dfe8f0;
     }
 
+    .public-plans-banner {
+      margin: 18px 0 22px;
+      padding: 15px 16px;
+      border: 1px solid #cfe4f2;
+      border-left: 4px solid var(--eb-teal);
+      border-radius: 13px;
+      background: linear-gradient(120deg, #f0f8ff, #effaf7);
+    }
+
+    .public-plans-heading {
+      margin-bottom: 10px;
+      color: var(--eb-navy);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .public-plans-prices {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .public-plans-prices span {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 9px 7px;
+      border: 1px solid #dce9f2;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.88);
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .public-plans-prices strong {
+      color: var(--eb-muted);
+      font-weight: 600;
+    }
+
+    .public-plans-prices b {
+      color: var(--eb-teal);
+      font-size: 15px;
+    }
+
+    .public-plans-banner p {
+      margin: 10px 0 0;
+      color: #40546b;
+      font-size: 12px;
+    }
+
+    @media (max-width: 420px) {
+      .public-plans-prices {
+        gap: 5px;
+      }
+
+      .public-plans-prices span {
+        padding: 8px 3px;
+        font-size: 11px;
+      }
+
+      .public-plans-prices b {
+        font-size: 13px;
+      }
+    }
+
     @media (max-width: 680px) {
       .container {
         width: 94%;
@@ -930,6 +995,16 @@
     <p class="section-intro">
       Log in to access your approved learning resources.
     </p>
+
+    <div class="public-plans-banner" aria-label="Subscription plan prices">
+      <div class="public-plans-heading">Affordable subscription plans</div>
+      <div class="public-plans-prices">
+        <span><strong>7 Days</strong><b>KSh 55</b></span>
+        <span><strong>30 Days</strong><b>KSh 200</b></span>
+        <span><strong>365 Days</strong><b>KSh 1,000</b></span>
+      </div>
+      <p>Log in or create an account to subscribe and access learning resources.</p>
+    </div>
 
     <input
       id="emailInput"
