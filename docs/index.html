@@ -3176,17 +3176,11 @@ function createCloudinaryDownloadUrl(url, publicId, filename) {
           const fallback = type === "paper" ? "Question Paper / Main Document" : "Marking Scheme";
           const downloadUrl = createCloudinaryDownloadUrl(file.url, file.publicId, file.name);
           const fileTitle = `${icon}${escapeHtml(file.name || fallback)}`;
-          const inlineUrl = createCloudinaryInlineUrl(file.url);
-          const fileOpenLink = `<a class="member-file-open" href="${escapeHtml(inlineUrl)}" target="_blank" rel="noopener noreferrer">${fileTitle}</a>`;
-          const fileHeading = isAdmin()
-            ? `<strong>${fileTitle}</strong>`
-            : fileOpenLink;
-          const fileActions = isAdmin()
-            ? `<div class="resource-actions">
-                ${createResourceLink(file.url, "Preview", false)}
-                <a class="download" href="${escapeHtml(downloadUrl)}" target="_blank" rel="noopener">Download</a>
-              </div>`
-            : "";
+          const fileHeading = `<strong>${fileTitle}</strong>`;
+          const fileActions = `<div class="resource-actions">
+              ${createResourceLink(file.url, "Preview", false)}
+              <a class="download" href="${escapeHtml(downloadUrl)}" target="_blank" rel="noopener">Download</a>
+            </div>`;
 
           html += `
             <div class="${boxClass}" data-file-type="${type}" data-file-index="${file.index}">
