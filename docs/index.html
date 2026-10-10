@@ -2407,7 +2407,11 @@
      LOAD RESOURCES
      ========================================================== */
 
-  window.loadResources = async function () {
+  window.loadResources = async function (preserveSearch = false) {
+
+    const previousSearch = preserveSearch
+      ? (document.getElementById("resourceSearch")?.value || "")
+      : "";
 
     if (!currentUser)
       return;
@@ -2511,7 +2515,10 @@
       message.textContent =
         "🔎 Type something in the search box to find resources.";
 
-      search.value = "";
+      search.value = previousSearch;
+      if (preserveSearch && previousSearch.trim()) {
+        filterResources();
+      }
 
     } catch (error) {
 
@@ -3967,7 +3974,7 @@ window.goToResourceSearch = function () {
         await saveMetadataOnly();
         alert("Resource title and file name updated. The existing document was not changed.");
         await loadAdminResources();
-        await loadResources();
+        await loadResources(true);
       } catch (error) {
         alert("Could not save the changes: " + error.message);
       }
@@ -4055,7 +4062,7 @@ window.goToResourceSearch = function () {
         }
 
         await loadAdminResources();
-        await loadResources();
+        await loadResources(true);
       } catch (error) {
         alert("Replacement failed: " + error.message);
       }
