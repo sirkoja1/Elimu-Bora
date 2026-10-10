@@ -410,6 +410,16 @@
       margin: 0;
     }
 
+    .download-notice {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: #eaf6ee;
+      color: #176534;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
     .resource-actions a.download {
       background: #198754;
     }
@@ -3075,6 +3085,12 @@ function createCloudinaryDownloadUrl(url, publicId, filename) {
     `/upload/fl_attachment:${safeFilename}/`
   );
 }
+  window.showDownloadNotice = function (link) {
+    const box = link.closest(".paper-box, .marking-box");
+    const notice = box ? box.querySelector(".download-notice") : null;
+    if (notice) notice.hidden = false;
+  };
+
   function createResourceLink(
     url,
     label,
@@ -3192,8 +3208,9 @@ function createCloudinaryDownloadUrl(url, publicId, filename) {
           const fileHeading = `<strong>${fileTitle}</strong>`;
           const fileActions = `<div class="resource-actions">
               ${createResourceLink(file.url, "Preview", false)}
-              <a class="download" href="${escapeHtml(downloadUrl)}" target="_blank" rel="noopener">Download</a>
-            </div>`;
+              <a class="download" href="${escapeHtml(downloadUrl)}" target="_blank" rel="noopener" onclick="showDownloadNotice(this)">Download</a>
+            </div>
+            <div class="download-notice" role="status" hidden>Download started. If you cannot find the file, check your phone's Downloads folder.</div>`;
 
           html += `
             <div class="${boxClass}" data-file-type="${type}" data-file-index="${file.index}">
