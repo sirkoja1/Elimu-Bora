@@ -3977,7 +3977,14 @@ window.goToResourceSearch = function () {
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png";
-    input.style.display = "none";
+    // Keep the file input attached and off-screen; some mobile browsers block clicks on display:none inputs.
+    input.style.position = "fixed";
+    input.style.left = "-10000px";
+    input.style.top = "0";
+    input.style.width = "1px";
+    input.style.height = "1px";
+    input.style.opacity = "0";
+    input.style.pointerEvents = "none";
     document.body.appendChild(input);
 
     input.onchange = async () => {
