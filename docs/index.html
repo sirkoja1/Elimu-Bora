@@ -585,18 +585,75 @@
       white-space: nowrap;
     }
 
+    .preview-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .preview-header-actions a {
+      display: inline-block;
+      color: #073b7a;
+      background: #fff;
+      border-radius: 7px;
+      padding: 9px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
     .preview-header button {
       width: auto;
       margin: 0;
       padding: 9px 14px;
       background: #dc3545;
+      white-space: nowrap;
     }
 
     #previewFrame {
+      display: block;
       width: 100%;
-      flex: 1;
+      height: 1px;
+      min-height: 0;
+      flex: 1 1 auto;
       border: none;
-      background: #eef2f6;
+      background: #fff;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @media (max-width: 600px) {
+      #previewModal {
+        padding: 0;
+      }
+
+      .preview-box {
+        height: 100dvh;
+        max-width: none;
+        border-radius: 0;
+      }
+
+      .preview-header {
+        min-height: 54px;
+        gap: 6px;
+        padding: 7px;
+      }
+
+      .preview-header strong {
+        font-size: 13px;
+        min-width: 0;
+      }
+
+      .preview-header-actions {
+        gap: 5px;
+      }
+
+      .preview-header-actions a,
+      .preview-header button {
+        padding: 8px 9px;
+        font-size: 12px;
+      }
     }
 
     footer {
@@ -1763,9 +1820,14 @@
         Document Preview
       </strong>
 
-      <button onclick="closePreview()">
-        ✕ Close
-      </button>
+      <div class="preview-header-actions">
+        <a id="previewOriginalLink" href="#" target="_blank" rel="noopener noreferrer">
+          Open original / Zoom
+        </a>
+        <button type="button" onclick="closePreview()">
+          ✕ Close
+        </button>
+      </div>
 
     </div>
 
@@ -2938,9 +3000,18 @@
         "previewTitle"
       );
 
+    const originalLink =
+      document.getElementById(
+        "previewOriginalLink"
+      );
+
     previewTitle.textContent =
       title ||
       "Document Preview";
+
+    // Keep the original file available for full-resolution viewing and zoom.
+    originalLink.href = url;
+    originalLink.style.display = "inline-block";
 
     frame.src =
       getPreviewUrl(url);
@@ -2968,6 +3039,15 @@
 
     frame.src =
       "";
+
+    const originalLink =
+      document.getElementById(
+        "previewOriginalLink"
+      );
+
+    if (originalLink) {
+      originalLink.href = "#";
+    }
 
     modal.classList
       .add("hidden");
