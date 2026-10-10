@@ -3035,7 +3035,15 @@
      RESOURCE LINK
      ========================================================== */
 
- function createCloudinaryDownloadUrl(url, publicId, filename) {
+ function createCloudinaryInlineUrl(url) {
+  if (!url) return "";
+
+  // Ask Cloudinary to serve the file inline where the browser supports it,
+  // instead of forcing an immediate download.
+  return url.replace("/upload/", "/upload/fl_inline/");
+}
+
+function createCloudinaryDownloadUrl(url, publicId, filename) {
 
   if (!url) return "";
 
@@ -3168,7 +3176,8 @@
           const fallback = type === "paper" ? "Question Paper / Main Document" : "Marking Scheme";
           const downloadUrl = createCloudinaryDownloadUrl(file.url, file.publicId, file.name);
           const fileTitle = `${icon}${escapeHtml(file.name || fallback)}`;
-          const fileOpenLink = `<a class="member-file-open" href="${escapeHtml(file.url)}" target="_blank" rel="noopener noreferrer">${fileTitle}</a>`;
+          const inlineUrl = createCloudinaryInlineUrl(file.url);
+          const fileOpenLink = `<a class="member-file-open" href="${escapeHtml(inlineUrl)}" target="_blank" rel="noopener noreferrer">${fileTitle}</a>`;
           const fileHeading = isAdmin()
             ? `<strong>${fileTitle}</strong>`
             : fileOpenLink;
