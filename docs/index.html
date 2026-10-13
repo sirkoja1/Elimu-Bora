@@ -333,6 +333,37 @@
       color: #073b7a;
     }
 
+    /* Keep uploaded files hidden until the member opens the resource title. */
+    .resource-toggle {
+      cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #f0f6fc;
+      line-height: 1.45;
+    }
+
+    .resource-toggle::after {
+      content: "  ＋ Tap to show files";
+      display: block;
+      margin-top: 4px;
+      color: #52657a;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .resource.files-expanded .resource-toggle::after {
+      content: "  − Hide files";
+    }
+
+    .resource-files {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .resource.files-expanded .resource-files {
+      display: block;
+    }
+
     .resource-description {
       color: #596579;
       line-height: 1.6;
@@ -3188,7 +3219,7 @@ function createCloudinaryDownloadUrl(url, publicId, filename) {
       div.className = "resource";
       const isExam = String(resource.category || "").toLowerCase().includes("examination");
       let html = `
-        <h3 class="resource-title">${isExam ? "📝 " : "📚 "}${escapeHtml(resource.title || "Untitled")}</h3>
+        <h3 class="resource-title resource-toggle" role="button" tabindex="0" aria-expanded="false">${isExam ? "📝 " : "📚 "}${escapeHtml(resource.title || "Untitled")}</h3>
         <p class="resource-description">${escapeHtml(resource.description || "")}</p>
         <div class="resource-meta">
           <span class="badge ${isExam ? "exam" : ""}">${escapeHtml(resource.category || "Learning Resources")}</span>
@@ -3196,7 +3227,8 @@ function createCloudinaryDownloadUrl(url, publicId, filename) {
           ${resource.className ? `<span class="badge">🎓 ${escapeHtml(resource.className)}</span>` : ""}
           ${resource.examYear ? `<span class="badge">📅 ${escapeHtml(resource.examYear)}</span>` : ""}
           ${resource.examType ? `<span class="badge exam">${escapeHtml(resource.examType)}</span>` : ""}
-        </div>`;
+        </div>
+        <div class="resource-files">`;
 
       const addFileBoxes = (type, files) => {
         files.forEach(file => {
@@ -3221,6 +3253,7 @@ function createCloudinaryDownloadUrl(url, publicId, filename) {
       };
       addFileBoxes("paper", getResourceFiles(resource, "paper"));
       addFileBoxes("marking", getResourceFiles(resource, "marking"));
+      html += `</div>`;
 
       div.innerHTML = html;
       if (isAdmin()) {
@@ -3269,6 +3302,19 @@ function createCloudinaryDownloadUrl(url, publicId, filename) {
           }
         });
       });
+      const resourceHeading = div.querySelector(".resource-toggle");
+      const toggleResourceFiles = () => {
+        const expanded = div.classList.toggle("files-expanded");
+        resourceHeading.setAttribute("aria-expanded", String(expanded));
+      };
+      resourceHeading.addEventListener("click", toggleResourceFiles);
+      resourceHeading.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          toggleResourceFiles();
+        }
+      });
+
       container.appendChild(div);
     });
   }
