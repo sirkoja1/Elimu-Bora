@@ -2671,7 +2671,7 @@
       );
 
       document.getElementById("paymentPhone").value = "";
-      await loadMyPayments();
+      await loadMemberData();
 
     } catch (error) {
       showMessage("paymentMessage", "Payment error: " + error.message);
