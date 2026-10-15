@@ -583,6 +583,38 @@
       line-height: 1.5;
     }
 
+    .selected-upload-file {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 8px;
+      padding: 8px 10px;
+      border: 1px solid #dce5ee;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .selected-upload-name {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      color: #26364a;
+      font-size: 14px;
+    }
+
+    button.selected-upload-remove {
+      flex: 0 0 38px;
+      width: 38px;
+      min-width: 38px;
+      min-height: 38px;
+      margin: 0;
+      padding: 6px;
+      border-radius: 8px;
+      background: #dc3545;
+      color: #fff;
+      font-size: 16px;
+    }
+
     .section-intro {
       color: #667085;
       line-height: 1.6;
@@ -4013,18 +4045,67 @@ window.goToResourceSearch = function () {
     input.click();
   };
 
+  window.removeSelectedUploadFile = function (kind, inputIndex, fileIndex) {
+    const isPaper = kind === "paper";
+    const selector = isPaper
+      ? "#paperFileInputs input[type='file']"
+      : "#markingFileInputs input[type='file']";
+    const inputs = Array.from(document.querySelectorAll(selector));
+    const input = inputs[inputIndex];
+    if (!input || !input.files || !input.files[fileIndex]) return;
+
+    try {
+      const transfer = new DataTransfer();
+      Array.from(input.files).forEach((file, index) => {
+        if (index !== fileIndex) transfer.items.add(file);
+      });
+      input.files = transfer.files;
+      window.updateSelectedUploadCount();
+    } catch (error) {
+      alert("This browser could not remove just one selected file. Please use the file picker to reselect the files you want.");
+    }
+  };
+
   window.updateSelectedUploadCount = function () {
-      const papers = Array.from(document.querySelectorAll("#paperFileInputs input[type='file']"))
-        .flatMap(input => Array.from(input.files || []));
-      const markings = Array.from(document.querySelectorAll("#markingFileInputs input[type='file']"))
-        .flatMap(input => Array.from(input.files || []));
-      const countBox = document.getElementById("selectedUploadCount");
-      const total = papers.length + markings.length;
-      if (!countBox) return;
-      countBox.textContent = total === 0
-        ? "No files selected yet."
-        : total + " file(s) selected: " + papers.length + " question paper/main document(s), " + markings.length + " marking scheme(s).";
+    const paperInputs = Array.from(document.querySelectorAll("#paperFileInputs input[type='file']"));
+    const markingInputs = Array.from(document.querySelectorAll("#markingFileInputs input[type='file']"));
+    const papers = paperInputs.flatMap(input => Array.from(input.files || []));
+    const markings = markingInputs.flatMap(input => Array.from(input.files || []));
+    const countBox = document.getElementById("selectedUploadCount");
+    const total = papers.length + markings.length;
+    if (!countBox) return;
+
+    countBox.innerHTML = "";
+    const summary = document.createElement("div");
+    summary.textContent = total === 0
+      ? "No files selected yet."
+      : total + " file(s) selected: " + papers.length + " question paper/main document(s), " + markings.length + " marking scheme(s).";
+    countBox.appendChild(summary);
+    if (!total) return;
+
+    const addFileList = (label, kind, inputs) => {
+      inputs.forEach((input, inputIndex) => {
+        Array.from(input.files || []).forEach((file, fileIndex) => {
+          const row = document.createElement("div");
+          row.className = "selected-upload-file";
+          const name = document.createElement("span");
+          name.className = "selected-upload-name";
+          name.textContent = label + ": " + file.name;
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "selected-upload-remove";
+          remove.textContent = "✕";
+          remove.setAttribute("aria-label", "Remove " + file.name + " from selection");
+          remove.title = "Remove this file before uploading";
+          remove.onclick = () => window.removeSelectedUploadFile(kind, inputIndex, fileIndex);
+          row.append(name, remove);
+          countBox.appendChild(row);
+        });
+      });
     };
+    addFileList("Question paper", "paper", paperInputs);
+    addFileList("Marking scheme", "marking", markingInputs);
+  };
 
     window.renderSavedDraftFiles = function (draft) {
       const container = document.getElementById("savedDraftFiles");
