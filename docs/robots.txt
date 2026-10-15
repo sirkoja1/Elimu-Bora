@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sirkoja1.github.io/Elimu-Bora/sitemap.xml
