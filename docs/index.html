@@ -392,16 +392,13 @@
       color: #087f5b;
     }
 
+    /* Show Preview/Download and admin file controls for every file
+       as soon as the shared resource title is expanded. */
     .resource-actions {
-      display: none;
+      display: flex;
       gap: 8px;
       flex-wrap: wrap;
       margin-top: 13px;
-    }
-
-    .paper-box.is-expanded .resource-actions,
-    .marking-box.is-expanded .resource-actions {
-      display: flex;
     }
 
     .paper-box > strong,
@@ -414,15 +411,7 @@
 
     .paper-box > strong::after,
     .marking-box > strong::after {
-      content: "  ＋ Tap to open options";
-      color: #52657a;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .paper-box.is-expanded > strong::after,
-    .marking-box.is-expanded > strong::after {
-      content: "  − Hide options";
+      content: "";
     }
 
     .resource-actions a,
