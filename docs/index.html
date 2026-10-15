@@ -2001,6 +2001,61 @@
   let allResources = [];
   let activeDraftId = null;
 
+  // Short in-memory caches reduce duplicate Firestore reads without persisting data.
+  const RESOURCE_CACHE_MS = 60 * 1000;
+  const MEMBER_CACHE_MS = 10 * 1000;
+  let resourceDataCache = null;
+  const memberDataCache = new Map();
+
+  async function getCachedResourceData(forceRefresh = false) {
+    if (
+      !forceRefresh &&
+      resourceDataCache &&
+      Date.now() - resourceDataCache.cachedAt < RESOURCE_CACHE_MS
+    ) {
+      return resourceDataCache.data;
+    }
+
+    const snapshot = await getDocs(collection(db, "resources"));
+    const data = snapshot.docs.map(item => ({
+      id: item.id,
+      ...item.data()
+    }));
+
+    resourceDataCache = {
+      data,
+      cachedAt: Date.now()
+    };
+
+    return data;
+  }
+
+  async function getCachedMemberData(uid, forceRefresh = false) {
+    if (!uid) return null;
+
+    const cached = memberDataCache.get(uid);
+    if (
+      !forceRefresh &&
+      cached &&
+      Date.now() - cached.cachedAt < MEMBER_CACHE_MS
+    ) {
+      return cached.data;
+    }
+
+    const snapshot = await getDoc(doc(db, "members", uid));
+    const data = snapshot.exists() ? snapshot.data() : null;
+    memberDataCache.set(uid, {
+      data,
+      cachedAt: Date.now()
+    });
+
+    return data;
+  }
+
+  function invalidateMemberCache(uid) {
+    if (uid) memberDataCache.delete(uid);
+  }
+
 
   /* ==========================================================
      REGISTRATION UI
@@ -2324,7 +2379,12 @@
     auth,
     async user => {
 
+      const previousUid = currentUser?.uid || null;
       currentUser = user;
+
+      if (previousUid !== (user?.uid || null)) {
+        memberDataCache.clear();
+      }
 
       if (!user) {
 
@@ -2422,17 +2482,10 @@
 
     if (!currentUser) return;
 
-    const memberRef =
-      doc(
-        db,
-        "members",
-        currentUser.uid
-      );
+    const data =
+      await getCachedMemberData(currentUser.uid);
 
-    const snapshot =
-      await getDoc(memberRef);
-
-    if (!snapshot.exists()) {
+    if (!data) {
 
       document
         .getElementById("subscriptionStatus")
@@ -2447,9 +2500,6 @@
       return;
 
     }
-
-    const data =
-      snapshot.data();
 
     let active = false;
 
@@ -2776,23 +2826,11 @@
     if (isAdmin())
       return true;
 
-    const memberRef =
-      doc(
-        db,
-        "members",
-        currentUser.uid
-      );
-
-    const snapshot =
-      await getDoc(
-        memberRef
-      );
-
-    if (!snapshot.exists())
-      return false;
-
     const data =
-      snapshot.data();
+      await getCachedMemberData(currentUser.uid);
+
+    if (!data)
+      return false;
 
     if (
       data.subscriptionStatus !==
@@ -2867,22 +2905,8 @@
 
     try {
 
-      const snapshot =
-        await getDocs(
-          collection(
-            db,
-            "resources"
-          )
-        );
-
       allResources =
-        snapshot.docs.map(
-          item => ({
-            id:
-              item.id,
-            ...item.data()
-          })
-        ).filter(
+        (await getCachedResourceData()).filter(
           resource =>
             resource.uploadStatus !== "draft" &&
             resource.uploadStatus !== "uploading" &&
@@ -4465,22 +4489,12 @@ window.goToResourceSearch = function () {
 
     try {
 
-      const snapshot =
-        await getDocs(
-          collection(
-            db,
-            "resources"
-          )
-        );
+      // Admin refreshes the shared cache so edits and uploads appear immediately.
+      const cachedResources =
+        await getCachedResourceData(true);
 
       const resources =
-        snapshot.docs.map(
-          item => ({
-            id:
-              item.id,
-            ...item.data()
-          })
-        ).filter(
+        cachedResources.filter(
           resource => resource.uploadStatus !== "draft"
         );
 
@@ -5158,6 +5172,8 @@ window.goToResourceSearch = function () {
         }
       );
 
+      invalidateMemberCache(uid);
+
       alert(
         `Subscription extended by ${days} days.`
       );
@@ -5228,6 +5244,7 @@ window.goToResourceSearch = function () {
         }
       );
 
+      invalidateMemberCache(uid);
       await loadAdminMembers();
 
     } catch (error) {
