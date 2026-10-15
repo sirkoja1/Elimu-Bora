@@ -2068,8 +2068,41 @@
       return cached.data;
     }
 
-    const snapshot = await getDoc(doc(db, "members", uid));
-    const data = snapshot.exists() ? snapshot.data() : null;
+    // D1 is the planned source of truth for subscription fields.
+    // Keep Firestore as a fallback until the migration is fully verified.
+    let data = null;
+    let d1ReadSucceeded = false;
+
+    try {
+      if (currentUser && currentUser.uid === uid) {
+        const token = await currentUser.getIdToken();
+        const response = await fetch(
+          "https://elimu-bora-payhero.kojasalim2015.workers.dev/subscription",
+          { headers: { Authorization: "Bearer " + token } }
+        );
+
+        if (response.ok) {
+          const subscription = await response.json();
+          const expiryValue = subscription.subscriptionExpiry || null;
+          data = {
+            subscriptionStatus: subscription.subscriptionStatus || "inactive",
+            subscriptionExpiry: expiryValue
+              ? { toDate: () => new Date(expiryValue) }
+              : null,
+            subscriptionPlan: subscription.subscriptionPlan || null
+          };
+          d1ReadSucceeded = true;
+        }
+      }
+    } catch (error) {
+      console.warn("D1 subscription lookup unavailable; using the existing member record.", error);
+    }
+
+    if (!d1ReadSucceeded) {
+      const snapshot = await getDoc(doc(db, "members", uid));
+      data = snapshot.exists() ? snapshot.data() : null;
+    }
+
     memberDataCache.set(uid, {
       data,
       cachedAt: Date.now()
