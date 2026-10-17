@@ -4968,6 +4968,42 @@ window.goToResourceSearch = function () {
           })
         );
 
+      // Prefer D1 subscription records for admin status and expiry.
+      // Keep Firebase member details and existing admin controls unchanged.
+      try {
+        if (currentUser && members.length) {
+          const token = await currentUser.getIdToken();
+          const response = await fetch(
+            "https://elimu-bora-payhero.kojasalim2015.workers.dev/admin/subscriptions",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+              },
+              body: JSON.stringify({
+                uids: members.map(member => member.id)
+              })
+            }
+          );
+          if (response.ok) {
+            const result = await response.json();
+            const subscriptions = new Map(
+              (result.subscriptions || []).map(item => [item.uid, item])
+            );
+            members.forEach(member => {
+              const subscription = subscriptions.get(member.id);
+              if (subscription) {
+                member.subscriptionStatus = subscription.subscriptionStatus;
+                member.subscriptionExpiry = subscription.subscriptionExpiry;
+              }
+            });
+          }
+        }
+      } catch (syncError) {
+        console.warn("Could not refresh admin subscription display from D1.", syncError);
+      }
+
       container.innerHTML =
         "";
 
