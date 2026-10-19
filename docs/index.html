@@ -2511,8 +2511,9 @@
       document
         .getElementById("displayEmail")
         .textContent =
-        user.email ||
-        "";
+        user.email && user.email.endsWith("@members.elimubora.invalid")
+          ? "Phone login"
+          : (user.email || "");
 
       await loadMemberData();
 
