@@ -1,0 +1,87 @@
+name: Phone login browser smoke test
+
+on:
+  push:
+    branches:
+      - test-phone-login-2026-10-19
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out test branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install browser test tools
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Start local preview server
+        run: |
+          python3 -m http.server 4173 --directory docs > /tmp/elimu-bora-preview.log 2>&1 &
+          echo $! > /tmp/elimu-bora-preview.pid
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/index.html > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/elimu-bora-preview.log
+          exit 1
+
+      - name: Verify login and registration UI without creating accounts
+        run: |
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          const page = await browser.newPage();
+          const errors = [];
+          page.on('pageerror', error => errors.push(error.message));
+
+          try {
+            await page.goto('http://127.0.0.1:4173/index.html', { waitUntil: 'networkidle', timeout: 60000 });
+            await page.waitForFunction(() => typeof window.loginUser === 'function' && typeof window.registerUser === 'function', { timeout: 30000 });
+
+            const login = page.locator('#emailInput');
+            const register = page.locator('#registerEmailInput');
+            const question = page.locator('#securityQuestionInput');
+            const answer = page.locator('#securityAnswerInput');
+
+            if (!(await login.isVisible())) throw new Error('Login identifier field is not visible');
+            if (!(await register.isVisible())) throw new Error('Registration identifier field is not visible');
+            if (!(await question.count())) throw new Error('Phone recovery question field is missing');
+            if (!(await answer.count())) throw new Error('Phone recovery answer field is missing');
+
+            await login.fill('');
+            await page.evaluate(() => window.loginUser());
+            const loginMessage = await page.locator('#authMessage').innerText();
+            if (!loginMessage.includes('Enter your email address or phone number')) throw new Error('Empty-login validation did not appear');
+
+            await register.fill('0712345678');
+            await page.locator('#registerPasswordInput').fill('short');
+            await question.selectOption('school');
+            await answer.fill('test answer');
+            await page.evaluate(() => window.registerUser());
+            const registerMessage = await page.locator('#authMessage').innerText();
+            if (!registerMessage.includes('at least 10 characters')) throw new Error('Phone password validation did not appear');
+
+            if (errors.length) throw new Error('Browser JavaScript errors: ' + errors.join(' | '));
+            console.log('PASS Login and registration functions loaded in Chromium');
+            console.log('PASS Phone recovery question and answer fields are present');
+            console.log('PASS Empty-login validation works');
+            console.log('PASS Phone registration password validation works');
+            console.log('NOTE No account was created; this test does not submit credentials.');
+          } finally {
+            await browser.close();
+          }
+          NODE
