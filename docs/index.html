@@ -1173,6 +1173,18 @@
         autocomplete="new-password"
       >
 
+      <div id="phoneRecoverySetup" class="hidden">
+        <label for="securityQuestionInput">Choose ONE security question (phone accounts only)</label>
+        <select id="securityQuestionInput">
+          <option value="">Choose a security question</option>
+          <option value="school">What was the name of your first school?</option>
+          <option value="friend">What is the name of your childhood friend?</option>
+          <option value="nickname">What was your childhood nickname?</option>
+        </select>
+        <input id="securityAnswerInput" type="text" placeholder="Your answer (remember it exactly)" autocomplete="off">
+        <small>Use an answer you can remember. It will be stored as a secure hash.</small>
+      </div>
+
       <button class="success" onclick="registerUser()">
         Create Account
       </button>
@@ -2316,18 +2328,22 @@
     return { email: null, phone, isPhone: true };
   }
 
-  async function phoneWorkerRequest(action, phone, password) {
+  async function phoneWorkerRequest(action, phone, password, extra = {}) {
     const response = await fetch(PHONE_AUTH_WORKER + "/" + action, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone, password })
+      body: JSON.stringify({ phone, password, ...extra })
     });
     let result = {};
     try { result = await response.json(); } catch (_) {}
-    if (!response.ok || !result.customToken) {
+    if (!response.ok) {
       throw new Error(result.error || "Phone authentication is temporarily unavailable. Please try again later.");
     }
-    return result.customToken;
+    if (action === "register" || action === "login") {
+      if (!result.customToken) throw new Error("Phone authentication is temporarily unavailable. Please try again later.");
+      return result.customToken;
+    }
+    return result;
   }
 
   /* ==========================================================
@@ -2347,8 +2363,14 @@
       showMessage("authMessage", "Enter a valid email address or Kenyan mobile number, such as 0712345678.");
       return;
     }
-    if (identity.isPhone && (password.length < 6 || password.length > 128)) {
-      showMessage("authMessage", "For phone-number accounts, use a password with at least 6 characters (maximum 128).");
+    if (identity.isPhone && (password.length < 10 || password.length > 128)) {
+      showMessage("authMessage", "For phone-number accounts, use a password with at least 10 characters (maximum 128).");
+      return;
+    }
+    const securityQuestion = identity.isPhone ? document.getElementById("securityQuestionInput").value : "";
+    const securityAnswer = identity.isPhone ? document.getElementById("securityAnswerInput").value.trim() : "";
+    if (identity.isPhone && (!securityQuestion || securityAnswer.length < 2)) {
+      showMessage("authMessage", "Choose one security question and enter its answer for phone-account recovery.");
       return;
     }
     if (!identity.isPhone && password.length < 6) {
@@ -2359,7 +2381,7 @@
     try {
       let credential;
       if (identity.isPhone) {
-        const customToken = await phoneWorkerRequest("register", identity.phone, password);
+        const customToken = await phoneWorkerRequest("register", identity.phone, password, { securityQuestion, securityAnswer });
         const { user } = await signInWithCustomToken(auth, customToken);
         credential = { user };
       } else {
@@ -2378,6 +2400,8 @@
       showMessage("authMessage", "Account created successfully. You are now logged in.");
       document.getElementById("registerEmailInput").value = "";
       document.getElementById("registerPasswordInput").value = "";
+      const q = document.getElementById("securityQuestionInput"); if (q) q.value = "";
+      const a = document.getElementById("securityAnswerInput"); if (a) a.value = "";
       hideRegistration();
     } catch (error) {
       showMessage("authMessage", "Registration error: " + (error.message || "Please try again."));
@@ -2415,14 +2439,32 @@
     const identifier = document.getElementById("emailInput").value.trim().toLowerCase();
 
     if (identifier && !identifier.includes("@")) {
-      showMessage("authMessage", "Phone-account recovery is not ready yet. Please use your registered email or contact the Elimu Bora administrator until security-question recovery is completed.");
+      const identity = getLoginIdentity(identifier);
+      if (!identity || !identity.isPhone) {
+        showMessage("authMessage", "Enter a valid Kenyan phone number.");
+        return;
+      }
+      try {
+        const questionResult = await phoneWorkerRequest("recovery-question", identity.phone, "");
+        const answer = window.prompt("Security question:\n" + questionResult.question + "\n\nEnter your answer:");
+        if (answer === null) return;
+        const newPassword = window.prompt("Enter a new password (at least 10 characters):");
+        if (newPassword === null) return;
+        if (newPassword.length < 10 || newPassword.length > 128) {
+          showMessage("authMessage", "The new password must be 10–128 characters.");
+          return;
+        }
+        await phoneWorkerRequest("reset-password", identity.phone, "", { securityAnswer: answer, newPassword });
+        showMessage("authMessage", "Password reset successful. You can now log in with your phone number and new password.");
+      } catch (error) {
+        showMessage("authMessage", "Phone recovery: " + (error.message || "Please check your details and try again."));
+      }
       return;
     }
     if (!identifier) {
-      showMessage("authMessage", "Enter your email address first, then press Forgot Password.");
+      showMessage("authMessage", "Enter your email address or phone number first, then press Forgot Password.");
       return;
     }
-
     try {
       await sendPasswordResetEmail(auth, identifier);
       showMessage("authMessage", "Password reset email sent. Check your email inbox.");
