@@ -3,6 +3,11 @@ name: Phone auth end-to-end test
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - test-phone-login-2026-10-19
+    paths:
+      - .github/workflows/phone-auth-e2e.yml
 
 concurrency:
   group: phone-auth-e2e-dedicated-test-number
@@ -49,7 +54,17 @@ jobs:
             return { status: res.status, data };
           }
           async function verifyFirebaseToken(customToken, label) {
-            const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=' + encodeURIComponent(process.env.FIREBASE_API_KEY || ''), {
+            let apiKey = process.env.FIREBASE_API_KEY || '';
+            if (!apiKey) {
+              // Firebase web API keys are public client configuration. Read the key from the public site
+              // so the test does not depend on a separately configured Actions secret.
+              const page = await fetch('https://sirkoja1.github.io/Elimu-Bora/', { signal: AbortSignal.timeout(20000) });
+              const html = await page.text();
+              const match = html.match(/apiKey\\s*:\\s*["']([^"']+)["']/);
+              if (!page.ok || !match) throw new Error('Could not read the public Firebase web API key from the live site.');
+              apiKey = match[1];
+            }
+            const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=' + encodeURIComponent(apiKey), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ token: customToken, returnSecureToken: true }),
