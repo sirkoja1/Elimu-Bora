@@ -69,6 +69,10 @@ jobs:
             });
             check(registered.status === 200 && typeof registered.data.customToken === 'string',
               'Registration returns Firebase custom token', 'HTTP ' + registered.status);
+            if (registered.status !== 200) {
+              // Worker error text is generic and must not contain credentials; do not log request data.
+              console.log('Registration error response:', JSON.stringify(registered.data));
+            }
             if (registered.status !== 200 || typeof registered.data.customToken !== 'string') {
               throw new Error('Registration did not succeed; stopping before further tests.');
             }
