@@ -2,6 +2,9 @@ name: Phone auth end-to-end test
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - test-phone-login-2026-10-19
 
 permissions:
   contents: read
