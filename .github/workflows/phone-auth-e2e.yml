@@ -1,0 +1,133 @@
+# Manual-only because the test uses one dedicated phone number and creates a persistent test account.
+name: Phone auth end-to-end test
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: phone-auth-e2e-dedicated-test-number
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  phone-auth-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Test registration, login, and security-question recovery
+        env:
+          WORKER_URL: https://elimu-bora-phone-auth.kojasalim2015.workers.dev
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
+          TEST_PHONE: ${{ secrets.PHONE_AUTH_TEST_PHONE }}
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const base = process.env.WORKER_URL;
+          const phone = (process.env.TEST_PHONE || '').trim();
+          if (!phone) throw new Error('Add the dedicated test number as repository Actions secret PHONE_AUTH_TEST_PHONE before running this workflow.');
+          // Mask the provided number immediately so later logs do not reveal it.
+          console.log(`::add-mask::${phone}`);
+          const password = 'EB-test-' + crypto.randomUUID() + '-A9!';
+          const newPassword = 'EB-reset-' + crypto.randomUUID() + '-Z7!';
+          const answer = 'test-answer-' + crypto.randomUUID();
+          const wrongAnswer = 'wrong-answer-' + crypto.randomUUID();
+          const headers = {
+            'Origin': 'https://sirkoja1.github.io',
+            'Content-Type': 'application/json'
+          };
+
+          async function post(path, body) {
+            const res = await fetch(base + path, {
+              method: 'POST', headers, body: JSON.stringify(body),
+              signal: AbortSignal.timeout(20000)
+            });
+            const text = await res.text();
+            let data = {};
+            try { data = JSON.parse(text); } catch {}
+            return { status: res.status, data };
+          }
+          async function verifyFirebaseToken(customToken, label) {
+            const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=' + encodeURIComponent(process.env.FIREBASE_API_KEY || ''), {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token: customToken, returnSecureToken: true }),
+              signal: AbortSignal.timeout(20000)
+            });
+            const data = await res.json().catch(() => ({}));
+            const ok = res.ok && typeof data.idToken === 'string' && typeof data.refreshToken === 'string';
+            // Diagnostic output is limited to Firebase error text or response field names.
+            // Never print token values, keys, phone numbers, passwords, or full response bodies.
+            const firebaseError = data?.error?.message || '';
+            const responseFields = Object.keys(data || {}).sort().join(',');
+            check(ok, label, 'HTTP ' + res.status + (firebaseError ? '; Firebase error: ' + String(firebaseError).slice(0, 120) : '; response fields: ' + responseFields));
+            return ok;
+          }
+          function check(ok, label, details = '') {
+            console.log(`${ok ? 'PASS' : 'FAIL'} ${label}${details ? ': ' + details : ''}`);
+            if (!ok) process.exitCode = 1;
+          }
+          (async () => {
+            if (!/^(?:0[17]\d{8}|\+?254[17]\d{8})$/.test(phone.replace(/[\s()-]/g, ''))) {
+              throw new Error('Use a valid Kenyan mobile number format.');
+            }
+
+            // First confirm no account exists, using the public recovery-question route.
+            const before = await post('/recovery-question', { phone });
+            if (before.status === 200) {
+              throw new Error('This number already has phone recovery set up. No account was changed; use another dedicated test number.');
+            }
+            if (before.status !== 404) {
+              throw new Error('Pre-check did not confirm an unused number (HTTP ' + before.status + '). Stop without creating an account.');
+            }
+            check(true, 'Test number appears unused');
+
+            const registered = await post('/register', {
+              phone, password, securityQuestion: 'school', securityAnswer: answer
+            });
+            check(registered.status === 200 && typeof registered.data.customToken === 'string',
+              'Registration returns Firebase custom token', 'HTTP ' + registered.status);
+            if (registered.status !== 200) {
+              // Worker error text is generic and must not contain credentials; do not log request data.
+              console.log('Registration error response:', JSON.stringify(registered.data));
+            }
+            if (registered.status !== 200 || typeof registered.data.customToken !== 'string') {
+              throw new Error('Registration did not succeed; stopping before further tests.');
+            }
+
+            await verifyFirebaseToken(registered.data.customToken, 'Firebase accepts registration custom token');
+            const login = await post('/login', { phone, password });
+            check(login.status === 200 && typeof login.data.customToken === 'string',
+              'Correct password login', 'HTTP ' + login.status);
+            if (login.status === 200 && typeof login.data.customToken === 'string') {
+              await verifyFirebaseToken(login.data.customToken, 'Firebase accepts login custom token');
+            }
+
+            const question = await post('/recovery-question', { phone });
+            check(question.status === 200 && question.data.question === 'What was the name of your first school?',
+              'Recovery question retrieval', 'HTTP ' + question.status);
+
+            const wrong = await post('/reset-password', { phone, securityAnswer: wrongAnswer, newPassword });
+            check(wrong.status === 401, 'Wrong security answer rejected', 'HTTP ' + wrong.status);
+
+            const reset = await post('/reset-password', { phone, securityAnswer: answer, newPassword });
+            check(reset.status === 200 && reset.data.ok === true, 'Correct answer resets password', 'HTTP ' + reset.status);
+            if (reset.status !== 200) throw new Error('Password reset failed; stopping before final login checks.');
+
+            const oldLogin = await post('/login', { phone, password });
+            check(oldLogin.status === 401, 'Old password rejected after reset', 'HTTP ' + oldLogin.status);
+
+            const newLogin = await post('/login', { phone, password: newPassword });
+            check(newLogin.status === 200 && typeof newLogin.data.customToken === 'string',
+              'New password login works', 'HTTP ' + newLogin.status);
+            if (newLogin.status === 200 && typeof newLogin.data.customToken === 'string') {
+              await verifyFirebaseToken(newLogin.data.customToken, 'Firebase accepts post-recovery login token');
+            }
+
+            console.log('NOTE: This verifies Firebase token exchange through its Auth REST API; it does not exercise the full page in a browser. Remove this test-only D1 account after recording results.');
+          })().catch(err => {
+            console.error('TEST STOPPED:', err.message);
+            process.exitCode = 1;
+          });
+          NODE
