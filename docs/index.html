@@ -1111,6 +1111,7 @@
 
   <div id="authSection" class="card">
 
+    <div id="loginArea">
     <h2>Member Login</h2>
 
     <p class="section-intro">
@@ -1153,6 +1154,7 @@
     <button class="warning" onclick="resetPassword()">
       Forgot Password
     </button>
+    </div>
 
     <div id="registrationArea" class="hidden">
 
@@ -2103,22 +2105,17 @@
      ========================================================== */
 
   window.showRegistration = function () {
-
-    document
-      .getElementById("registrationArea")
-      .classList
-      .remove("hidden");
-
+    document.getElementById("loginArea").classList.add("hidden");
+    document.getElementById("registrationArea").classList.remove("hidden");
+    document.getElementById("authMessage").textContent = "";
+    document.getElementById("authSection").scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-
   window.hideRegistration = function () {
-
-    document
-      .getElementById("registrationArea")
-      .classList
-      .add("hidden");
-
+    document.getElementById("registrationArea").classList.add("hidden");
+    document.getElementById("loginArea").classList.remove("hidden");
+    document.getElementById("authMessage").textContent = "";
+    document.getElementById("authSection").scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
 
