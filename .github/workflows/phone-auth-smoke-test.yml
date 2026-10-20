@@ -1,0 +1,69 @@
+name: Phone auth smoke test
+
+on:
+  push:
+    branches:
+      - test-phone-login-2026-10-19
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check Cloudflare phone-auth preflight and safe validation responses
+        env:
+          WORKER_URL: https://elimu-bora-phone-auth.kojasalim2015.workers.dev
+        run: |
+          node <<'NODE'
+          const base = process.env.WORKER_URL;
+          const routes = ["/register", "/login", "/recovery-question", "/reset-password"];
+
+          async function request(path, options) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 15000);
+            try {
+              return await fetch(base + path, { ...options, signal: controller.signal });
+            } finally {
+              clearTimeout(timer);
+            }
+          }
+
+          (async () => {
+            let failed = false;
+            for (const path of routes) {
+              try {
+                const preflight = await request(path, {
+                  method: "OPTIONS",
+                  headers: {
+                    "Origin": "https://sirkoja1.github.io",
+                    "Access-Control-Request-Method": "POST",
+                    "Access-Control-Request-Headers": "content-type"
+                  }
+                });
+                const allowOrigin = preflight.headers.get("access-control-allow-origin");
+                const preflightOk = preflight.status >= 200 && preflight.status < 300 && !!allowOrigin;
+                console.log(`${preflightOk ? "PASS" : "FAIL"} OPTIONS ${path}: status=${preflight.status}, allow-origin=${allowOrigin || "missing"}`);
+                if (!preflightOk) failed = true;
+
+                // Empty JSON intentionally omits all credentials; this must not create or change an account.
+                const response = await request(path, {
+                  method: "POST",
+                  headers: {
+                    "Origin": "https://sirkoja1.github.io",
+                    "Content-Type": "application/json"
+                  },
+                  body: "{}"
+                });
+                const body = (await response.text()).slice(0, 300);
+                const routeOk = response.status >= 200 && response.status < 500 && response.status !== 404;
+                console.log(`${routeOk ? "PASS" : "FAIL"} POST ${path} with empty test body: status=${response.status}, body=${body.replace(/\s+/g, " ")}`);
+                if (!routeOk) failed = true;
+              } catch (error) {
+                failed = true;
+                console.log(`FAIL ${path}: ${String(error)}`);
+              }
+            }
+            if (failed) process.exit(1);
+          })();
+          NODE
