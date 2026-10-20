@@ -55,7 +55,7 @@ jobs:
               signal: AbortSignal.timeout(20000)
             });
             const data = await res.json().catch(() => ({}));
-            const ok = res.ok && typeof data.localId === 'string' && typeof data.idToken === 'string';
+            const ok = res.ok && typeof data.idToken === 'string' && typeof data.refreshToken === 'string';
             check(ok, label, 'HTTP ' + res.status);
             return ok;
           }
