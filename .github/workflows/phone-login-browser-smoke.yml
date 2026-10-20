@@ -58,7 +58,8 @@ jobs:
             const answer = page.locator('#securityAnswerInput');
 
             if (!(await login.isVisible())) throw new Error('Login identifier field is not visible');
-            if (!(await register.isVisible())) throw new Error('Registration identifier field is not visible');
+            await page.getByRole('button', { name: 'Create Account' }).first().click();
+            if (!(await register.isVisible())) throw new Error('Registration identifier field is not visible after opening registration');
             if (!(await question.count())) throw new Error('Phone recovery question field is missing');
             if (!(await answer.count())) throw new Error('Phone recovery answer field is missing');
 
