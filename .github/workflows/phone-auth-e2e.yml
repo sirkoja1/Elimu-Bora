@@ -2,11 +2,6 @@ name: Phone auth end-to-end test
 
 on:
   workflow_dispatch:
-    inputs:
-      phone:
-        description: "Dedicated Kenyan test phone number (not an existing member account)"
-        required: true
-        type: string
 
 permissions:
   contents: read
@@ -19,12 +14,13 @@ jobs:
       - name: Test registration, login, and security-question recovery
         env:
           WORKER_URL: https://elimu-bora-phone-auth.kojasalim2015.workers.dev
-          TEST_PHONE: ${{ inputs.phone }}
+          TEST_PHONE: ${{ secrets.PHONE_AUTH_TEST_PHONE }}
         run: |
           set -euo pipefail
           node <<'NODE'
           const base = process.env.WORKER_URL;
-          const phone = process.env.TEST_PHONE.trim();
+          const phone = (process.env.TEST_PHONE || '').trim();
+          if (!phone) throw new Error('Add the dedicated test number as repository Actions secret PHONE_AUTH_TEST_PHONE before running this workflow.');
           // Mask the provided number immediately so later logs do not reveal it.
           console.log(`::add-mask::${phone}`);
           const password = 'EB-test-' + crypto.randomUUID() + '-A9!';
