@@ -2347,8 +2347,8 @@
       showMessage("authMessage", "Enter a valid email address or Kenyan mobile number, such as 0712345678.");
       return;
     }
-    if (identity.isPhone && (password.length < 10 || password.length > 128)) {
-      showMessage("authMessage", "For phone-number accounts, use a password with 10–128 characters.");
+    if (identity.isPhone && (password.length < 6 || password.length > 128)) {
+      showMessage("authMessage", "For phone-number accounts, use a password with at least 6 characters (maximum 128).");
       return;
     }
     if (!identity.isPhone && password.length < 6) {
