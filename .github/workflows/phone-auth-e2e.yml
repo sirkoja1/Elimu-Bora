@@ -1,3 +1,4 @@
+# Re-run note: diagnostic logging is enabled on the isolated Cloudflare phone-auth Worker.
 name: Phone auth end-to-end test
 
 on:
