@@ -1952,6 +1952,7 @@
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    signInWithCustomToken,
     sendPasswordResetEmail,
     signOut,
     onAuthStateChanged,
@@ -2290,23 +2291,18 @@
     } else {
 
       examFields.classList
-        .add("hidden");
-
-    }
-
-  };
-
-
-  /* ==========================================================
+        .add  /* ==========================================================
      EMAIL OR PHONE LOGIN HELPERS
      ========================================================== */
 
+  const PHONE_AUTH_WORKER = "https://elimu-bora-phone-auth.kojasalim2015.workers.dev";
+
   function normalizeKenyanPhone(value) {
-    let phone = String(value || "").trim().replace(/[\s().-]/g, "");
+    let phone = String(value || "").trim().replace(/[\\s().-]/g, "");
     if (phone.startsWith("+")) phone = phone.slice(1);
     if (phone.startsWith("0")) phone = "254" + phone.slice(1);
-    else if (/^[17]\d{8}$/.test(phone)) phone = "254" + phone;
-    if (!/^254[17]\d{8}$/.test(phone)) return null;
+    else if (/^[17]\\d{8}$/.test(phone)) phone = "254" + phone;
+    if (!/^254[17]\\d{8}$/.test(phone)) return null;
     return phone;
   }
 
@@ -2317,13 +2313,22 @@
     }
     const phone = normalizeKenyanPhone(identifier);
     if (!phone) return null;
-    return {
-      email: "phone-" + phone + "@members.elimubora.invalid",
-      phone,
-      isPhone: true
-    };
+    return { email: null, phone, isPhone: true };
   }
 
+  async function phoneWorkerRequest(action, phone, password) {
+    const response = await fetch(PHONE_AUTH_WORKER + "/" + action, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone, password })
+    });
+    let result = {};
+    try { result = await response.json(); } catch (_) {}
+    if (!response.ok || !result.customToken) {
+      throw new Error(result.error || "Phone authentication is temporarily unavailable. Please try again later.");
+    }
+    return result.customToken;
+  }
 
   /* ==========================================================
      REGISTER
@@ -2342,17 +2347,29 @@
       showMessage("authMessage", "Enter a valid email address or Kenyan mobile number, such as 0712345678.");
       return;
     }
-    if (password.length < 6) {
+    if (identity.isPhone && (password.length < 10 || password.length > 128)) {
+      showMessage("authMessage", "For phone-number accounts, use a password with 10–128 characters.");
+      return;
+    }
+    if (!identity.isPhone && password.length < 6) {
       showMessage("authMessage", "Use a password with at least 6 characters.");
       return;
     }
 
     try {
-      const credential = await createUserWithEmailAndPassword(auth, identity.email, password);
+      let credential;
+      if (identity.isPhone) {
+        const customToken = await phoneWorkerRequest("register", identity.phone, password);
+        const { user } = await signInWithCustomToken(auth, customToken);
+        credential = { user };
+      } else {
+        credential = await createUserWithEmailAndPassword(auth, identity.email, password);
+      }
+
       await setDoc(doc(db, "members", credential.user.uid), {
         uid: credential.user.uid,
-        email: identity.email,
-        phone: identity.phone,
+        email: identity.isPhone ? null : identity.email,
+        phone: identity.isPhone ? "+" + identity.phone : null,
         loginMethod: identity.isPhone ? "phone" : "email",
         subscriptionStatus: "inactive",
         subscriptionExpiry: null,
@@ -2363,10 +2380,9 @@
       document.getElementById("registerPasswordInput").value = "";
       hideRegistration();
     } catch (error) {
-      showMessage("authMessage", "Registration error: " + error.message);
+      showMessage("authMessage", "Registration error: " + (error.message || "Please try again."));
     }
   };
-
 
   window.loginUser = async function () {
     const identifier = document.getElementById("emailInput").value.trim();
@@ -2383,68 +2399,37 @@
     }
 
     try {
-      await signInWithEmailAndPassword(auth, identity.email, password);
+      if (identity.isPhone) {
+        const customToken = await phoneWorkerRequest("login", identity.phone, password);
+        await signInWithCustomToken(auth, customToken);
+      } else {
+        await signInWithEmailAndPassword(auth, identity.email, password);
+      }
       showMessage("authMessage", "Login successful.");
     } catch (error) {
-      showMessage("authMessage", "Login failed. Check your email/phone number and password.");
+      showMessage("authMessage", "Login failed: " + (error.message || "Check your details and try again."));
     }
   };
 
-
   window.resetPassword = async function () {
-
-    const identifier =
-      document
-        .getElementById("emailInput")
-        .value
-        .trim()
-        .toLowerCase();
+    const identifier = document.getElementById("emailInput").value.trim().toLowerCase();
 
     if (identifier && !identifier.includes("@")) {
-      showMessage(
-        "authMessage",
-        "Phone-account password reset is not available automatically without email or OTP. Please contact the Elimu Bora administrator for account recovery."
-      );
+      showMessage("authMessage", "Phone-account recovery is not ready yet. Please use your registered email or contact the Elimu Bora administrator until security-question recovery is completed.");
       return;
     }
-
-    const email = identifier;
-
-    if (!email) {
-
-      showMessage(
-        "authMessage",
-        "Enter your email address first, then press Forgot Password."
-      );
-
+    if (!identifier) {
+      showMessage("authMessage", "Enter your email address first, then press Forgot Password.");
       return;
-
     }
 
     try {
-
-      await sendPasswordResetEmail(
-        auth,
-        email
-      );
-
-      showMessage(
-        "authMessage",
-        "Password reset email sent. Check your email inbox."
-      );
-
+      await sendPasswordResetEmail(auth, identifier);
+      showMessage("authMessage", "Password reset email sent. Check your email inbox.");
     } catch (error) {
-
-      showMessage(
-        "authMessage",
-        "Password reset error: " +
-        error.message
-      );
-
+      showMessage("authMessage", "Password reset error: " + error.message);
     }
-
   };
-
 
   /* ==========================================================
      LOGOUT
