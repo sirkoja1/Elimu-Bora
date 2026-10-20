@@ -1,11 +1,12 @@
-# Re-run note: diagnostic logging is enabled on the isolated Cloudflare phone-auth Worker.
+# Manual-only because the test uses one dedicated phone number and creates a persistent test account.
 name: Phone auth end-to-end test
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - test-phone-login-2026-10-19
+
+concurrency:
+  group: phone-auth-e2e-dedicated-test-number
+  cancel-in-progress: false
 
 permissions:
   contents: read
