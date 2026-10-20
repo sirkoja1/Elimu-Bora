@@ -60,7 +60,7 @@ jobs:
               // so the test does not depend on a separately configured Actions secret.
               const page = await fetch('https://sirkoja1.github.io/Elimu-Bora/', { signal: AbortSignal.timeout(20000) });
               const html = await page.text();
-              const match = html.match(/apiKey\\s*:\\s*["']([^"']+)["']/);
+              const match = html.match(/apiKey\s*:\s*["']([^"']+)["']/);
               if (!page.ok || !match) throw new Error('Could not read the public Firebase web API key from the live site.');
               apiKey = match[1];
             }
