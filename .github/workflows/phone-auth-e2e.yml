@@ -56,7 +56,11 @@ jobs:
             });
             const data = await res.json().catch(() => ({}));
             const ok = res.ok && typeof data.idToken === 'string' && typeof data.refreshToken === 'string';
-            check(ok, label, 'HTTP ' + res.status);
+            // Diagnostic output is limited to Firebase error text or response field names.
+            // Never print token values, keys, phone numbers, passwords, or full response bodies.
+            const firebaseError = data?.error?.message || '';
+            const responseFields = Object.keys(data || {}).sort().join(',');
+            check(ok, label, 'HTTP ' + res.status + (firebaseError ? '; Firebase error: ' + String(firebaseError).slice(0, 120) : '; response fields: ' + responseFields));
             return ok;
           }
           function check(ok, label, details = '') {
